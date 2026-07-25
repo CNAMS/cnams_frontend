@@ -90,6 +90,29 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Brand & landing page ─────────────────────────────────────────────────
+  ankurTagline: { en: 'Every child, growing well', hi: 'हर बच्चा, स्वस्थ विकास' },
+  whatItDoes: { en: 'What the system does', hi: 'यह प्रणाली क्या करती है' },
+  featureOfflineTitle: { en: 'Works offline', hi: 'ऑफ़लाइन काम करता है' },
+  featureOfflineBody: {
+    en: 'Workers register children and record measurements with no network at all. Data syncs on its own once a connection returns.',
+    hi: 'कार्यकर्ता बिना नेटवर्क के बच्चों का पंजीकरण और माप दर्ज करते हैं। कनेक्शन लौटते ही डेटा स्वयं सिंक हो जाता है।',
+  },
+  featureZScoreTitle: { en: 'WHO z-scores on device', hi: 'डिवाइस पर WHO ज़ेड-स्कोर' },
+  featureZScoreBody: {
+    en: 'Weight, height and MUAC are classified against WHO growth standards on the phone itself, so the result is immediate.',
+    hi: 'वज़न, लंबाई और MUAC को फ़ोन पर ही WHO मानकों के आधार पर वर्गीकृत किया जाता है, इसलिए परिणाम तुरंत मिलता है।',
+  },
+  featureReferralTitle: { en: 'Referrals tracked to outcome', hi: 'रेफरल का परिणाम तक अनुसरण' },
+  featureReferralBody: {
+    en: 'Every flagged child is followed from the moment of referral until an outcome is recorded — nothing is left open.',
+    hi: 'हर चिह्नित बच्चे का रेफरल से लेकर परिणाम दर्ज होने तक अनुसरण किया जाता है — कुछ भी अधूरा नहीं छोड़ा जाता।',
+  },
+  footerLine: {
+    en: 'Ankur — Child Growth Management System, Track D supervisory portal.',
+    hi: 'अंकुर — बाल विकास प्रबंधन प्रणाली, ट्रैक D पर्यवेक्षी पोर्टल।',
+  },
+
   // ── Navigation (role-driven shell, EX4) ──────────────────────────────────
   navHome: { en: 'Home', hi: 'होम' },
   navChildren: { en: 'Children', hi: 'बच्चे' },
