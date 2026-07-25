@@ -1,5 +1,5 @@
 'use client';
-
+/* mini */
 import Link from 'next/link';
 import { getDashboardMetrics } from '@/data/mockData';
 import { Activity, ShieldCheck, Users } from 'lucide-react';
