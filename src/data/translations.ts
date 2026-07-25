@@ -90,6 +90,16 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // Growth classification labels.
+  // These pair with src/theme/classification.ts — the word half of the
+  // "colour + word + icon" rule. Hindi wording follows the app's hi.arb so a
+  // supervisor reads the same term on the phone and in the portal.
+  classNormal: { en: 'Normal', hi: 'सामान्य' },
+  classOverweight: { en: 'Overweight', hi: 'अधिक वजन' },
+  classMam: { en: 'MAM', hi: 'मध्यम कुपोषण' },
+  classSam: { en: 'SAM', hi: 'गंभीर कुपोषण' },
+  classIndeterminate: { en: 'Indeterminate', hi: 'अनिर्धारित' },
+
   // Dual Role Login
   selectRole: { en: 'Select Your Role', hi: 'अपनी भूमिका चुनें' },
   supervisorRole: { en: 'Supervisor', hi: 'पर्यवेक्षक' },
