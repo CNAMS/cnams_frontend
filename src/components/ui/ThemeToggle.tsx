@@ -4,6 +4,7 @@ import React from 'react';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme, type ColorScheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import type { TranslationKey } from '@/data/translations';
 import { cn } from '@/lib/cn';
 
 /**
@@ -15,7 +16,7 @@ import { cn } from '@/lib/cn';
  * initial default.
  */
 
-const OPTIONS: { value: ColorScheme; icon: typeof Sun; labelKey: string }[] = [
+const OPTIONS: { value: ColorScheme; icon: typeof Sun; labelKey: TranslationKey }[] = [
   { value: 'light', icon: Sun, labelKey: 'themeLight' },
   { value: 'dark', icon: Moon, labelKey: 'themeDark' },
   { value: 'system', icon: Monitor, labelKey: 'themeSystem' },

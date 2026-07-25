@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '@/theme/roles';
+import type { TranslationKey } from '@/data/translations';
 
 /**
  * Role-driven navigation, from one table.
@@ -31,7 +32,7 @@ import type { AppRole } from '@/theme/roles';
 export type NavItem = {
   href: string;
   /** Key into src/data/translations.ts. */
-  labelKey: string;
+  labelKey: TranslationKey;
   icon: LucideIcon;
   built?: boolean;
 };
@@ -75,7 +76,7 @@ export function navFor(role: AppRole): NavItem[] {
 }
 
 /** Translation key for a role's display name. */
-export const ROLE_LABEL_KEY: Record<AppRole, string> = {
+export const ROLE_LABEL_KEY: Record<AppRole, TranslationKey> = {
   aww: 'roleAww',
   supervisor: 'roleSupervisor',
   doctor: 'roleDoctor',

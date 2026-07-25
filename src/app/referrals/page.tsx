@@ -1,114 +1,203 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { mockFlaggedChildren } from '@/data/mockData';
-import { ArrowLeft, SortAsc, SortDesc, Filter, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ArrowDownWideNarrow, ArrowUpNarrowWide, CheckCircle2, Inbox, XCircle } from 'lucide-react';
+import { mockFlaggedChildren, type FlaggedChild } from '@/data/mockData';
 import { useLanguage } from '@/context/LanguageContext';
-import LanguageToggle from '@/components/LanguageToggle';
+import { useTheme } from '@/context/ThemeContext';
+import { AppShell } from '@/components/nav/AppShell';
+import { Card, CardHeader } from '@/components/ui/Card';
+import { DataTable, type Column } from '@/components/ui/DataTable';
+import { StatusBadge } from '@/components/ui/ClassificationBadge';
+import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
+import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/cn';
 
 type SortOrder = 'asc' | 'desc';
+type Filter = 'ALL' | 'SAM' | 'MAM';
 
+/**
+ * The referral action list (§EX3, FR-APP-9): every flagged child pending a
+ * referral or an outcome, oldest first by default.
+ */
 export default function ReferralsPage() {
   const { t } = useLanguage();
+  const { role, setRole } = useTheme();
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
-  const [filterStatus, setFilterStatus] = useState<'ALL' | 'SAM' | 'MAM'>('ALL');
+  const [filter, setFilter] = useState<Filter>('ALL');
 
-  const filteredAndSorted = mockFlaggedChildren
-    .filter(c => filterStatus === 'ALL' || c.status === filterStatus)
-    .sort((a, b) => sortOrder === 'asc' ? a.daysElapsed - b.daysElapsed : b.daysElapsed - a.daysElapsed);
+  useEffect(() => {
+    if (role !== 'supervisor') setRole('supervisor');
+  }, [role, setRole]);
+
+  // The previous version called .sort() straight on the imported array, which
+  // mutates the shared module-level mockFlaggedChildren in place — so the
+  // dashboard's "first 3 pending referrals" silently changed order after a
+  // visit here. Copy before sorting.
+  const rows = useMemo(
+    () =>
+      mockFlaggedChildren
+        .filter((c) => filter === 'ALL' || c.status === filter)
+        .slice()
+        .sort((a, b) =>
+          sortOrder === 'asc'
+            ? a.daysElapsed - b.daysElapsed
+            : b.daysElapsed - a.daysElapsed,
+        ),
+    [filter, sortOrder],
+  );
+
+  const columns: Column<FlaggedChild>[] = [
+    {
+      key: 'child',
+      header: t('childInitials'),
+      primary: true,
+      cell: (c) => (
+        <span>
+          {c.initials}
+          <span className="ml-2 text-xs font-normal text-on-surface-variant">{c.icdsId}</span>
+        </span>
+      ),
+    },
+    {
+      key: 'centre',
+      header: t('centre'),
+      cell: (c) => <span className="text-on-surface-variant">{c.centreName}</span>,
+    },
+    {
+      key: 'status',
+      header: t('classification'),
+      cell: (c) => <StatusBadge status={c.status} />,
+    },
+    {
+      key: 'days',
+      header: t('daysPending'),
+      align: 'right',
+      cell: (c) => (
+        <span
+          className={cn(
+            'tabular-nums font-semibold',
+            // Age is a triage signal, so it is shown as one — but with a word,
+            // never colour alone.
+            c.daysElapsed >= 14 && 'text-class-sam',
+          )}
+        >
+          {c.daysElapsed}
+          {c.daysElapsed >= 14 && (
+            <span className="ml-1 text-xs font-medium">{t('overdue')}</span>
+          )}
+        </span>
+      ),
+    },
+    {
+      key: 'referred',
+      header: t('referralState'),
+      align: 'center',
+      cell: (c) =>
+        c.referred ? (
+          <span className="inline-flex items-center gap-1.5 text-sm text-class-normal font-medium">
+            <CheckCircle2 size={14} aria-hidden="true" />
+            {t('referred')}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-sm text-class-sam font-medium">
+            <XCircle size={14} aria-hidden="true" />
+            {t('notReferred')}
+          </span>
+        ),
+    },
+    {
+      key: 'outcome',
+      header: t('outcomeRecorded'),
+      align: 'center',
+      cell: (c) =>
+        c.outcomeRecorded ? (
+          <span className="inline-flex items-center gap-1.5 text-sm text-class-normal font-medium">
+            <CheckCircle2 size={14} aria-hidden="true" />
+            {t('resolved')}
+          </span>
+        ) : (
+          <span className="text-sm text-on-surface-variant">{t('pendingOutcome')}</span>
+        ),
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface font-sans">
+    <AppShell
+      title={t('referralsListTitle')}
+      subtitle={t('referralsListSubtitle')}
+      actions={<SampleDataChip />}
+    >
+      <Card flush>
+        <CardHeader
+          title={`${rows.length} ${t('flaggedChildren')}`}
+          action={
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSortOrder((s) => (s === 'asc' ? 'desc' : 'asc'))}
+              aria-label={`${t('daysPending')} — ${sortOrder === 'asc' ? t('sortAsc') : t('sortDesc')}`}
+            >
+              {sortOrder === 'asc' ? (
+                <ArrowUpNarrowWide size={16} aria-hidden="true" />
+              ) : (
+                <ArrowDownWideNarrow size={16} aria-hidden="true" />
+              )}
+              {t('daysPending')}
+            </Button>
+          }
+        />
 
-      {/* ── Header ───────────────────────────────────────────────── */}
-      <header className="bg-brand px-6 py-4 flex items-center justify-between shadow-md sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <Link href="/supervisor" className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-white">
-            <ArrowLeft size={20} />
-          </Link>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t('referralsListTitle')}</h1>
-            <p className="text-white/70 text-sm">{t('referralsListSubtitle')}</p>
-          </div>
-        </div>
-        <LanguageToggle />
-      </header>
-
-      <main className="max-w-6xl mx-auto p-6 space-y-5">
-
-        {/* ── Toolbar ──────────────────────────────────────────────── */}
-        <div className="bg-card border border-outline rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-1"><Filter size={14}/>{t('filter')}</span>
-            {(['ALL','SAM','MAM'] as const).map(f => (
-              <button key={f} onClick={() => setFilterStatus(f)}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-2 transition-colors
-                  ${filterStatus === f
-                    ? f==='SAM' ? 'bg-class-sam text-white border-class-sam'
-                    : f==='MAM' ? 'bg-class-mam text-on-surface border-class-mam'
-                    : 'bg-brand text-white border-brand'
-                  : 'bg-card text-on-surface-variant border-outline hover:bg-primary-container/40'}`}
-              >
-                {f === 'ALL' ? t('all') : t(f === 'SAM' ? 'sam' : 'mam')}
-              </button>
-            ))}
-          </div>
-          <button onClick={() => setSortOrder(s => s==='asc'?'desc':'asc')}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container border-2 border-brand rounded-xl text-sm font-bold transition-colors hover:bg-brand hover:text-white"
-          >
-            {t('daysPending')} {sortOrder==='asc' ? <SortAsc size={16}/> : <SortDesc size={16}/>}
-          </button>
-        </div>
-
-        {/* ── Table ────────────────────────────────────────────────── */}
-        <div className="bg-card border border-outline rounded-2xl shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-primary-container border-b border-brand/20 text-xs font-bold uppercase tracking-wider text-on-primary-container">
-                  <th className="px-6 py-4 text-left">{t('childInitials')}</th>
-                  <th className="px-6 py-4 text-left">{t('icdsId')}</th>
-                  <th className="px-6 py-4 text-left">{t('centre')}</th>
-                  <th className="px-6 py-4 text-left">{t('status')}</th>
-                  <th className="px-6 py-4 text-left">{t('daysPending')}</th>
-                  <th className="px-6 py-4 text-center">{t('referralState')}</th>
-                  <th className="px-6 py-4 text-center">{t('outcomeRecorded')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline/40">
-                {filteredAndSorted.map(child => (
-                  <tr key={child.id} className="hover:bg-primary-container/20 transition-colors">
-                    <td className="px-6 py-4 font-bold">{child.initials}</td>
-                    <td className="px-6 py-4 font-mono text-xs font-bold text-on-surface-variant">{child.icdsId}</td>
-                    <td className="px-6 py-4 font-medium text-on-surface-variant">{child.centreName}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${child.status === 'SAM' ? 'bg-class-sam text-white' : 'bg-class-mam text-on-surface'}`}>
-                        <AlertTriangle size={12}/>{child.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-bold text-on-surface-variant">{child.daysElapsed}d</td>
-                    <td className="px-6 py-4 text-center">
-                      {child.referred
-                        ? <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-class-normal text-white"><CheckCircle2 size={12}/>{t('referred')}</span>
-                        : <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-class-sam text-white"><XCircle size={12}/>{t('notReferred')}</span>}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {child.outcomeRecorded
-                        ? <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-class-normal text-white"><CheckCircle2 size={12}/>{t('resolved')}</span>
-                        : <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-class-mam text-on-surface"><AlertTriangle size={12}/>{t('pendingOutcome')}</span>}
-                    </td>
-                  </tr>
-                ))}
-                {filteredAndSorted.length === 0 && (
-                  <tr><td colSpan={7} className="px-6 py-12 text-center text-on-surface-variant font-bold">{t('noFlaggedFound')}</td></tr>
+        {/* ── Filter ────────────────────────────────────────────────────── */}
+        <div
+          role="radiogroup"
+          aria-label={t('filter')}
+          className="flex flex-wrap items-center gap-2 px-5 py-3 border-b border-outline-variant"
+        >
+          {(['ALL', 'SAM', 'MAM'] as const).map((f) => {
+            const active = filter === f;
+            return (
+              <button
+                key={f}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => setFilter(f)}
+                className={cn(
+                  'min-h-touch px-4 rounded-full text-sm font-semibold border-2',
+                  'transition-colors duration-fast ease-ankur',
+                  active
+                    ? 'border-brand bg-brand text-on-primary'
+                    : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant',
                 )}
-              </tbody>
-            </table>
-          </div>
+              >
+                {f === 'ALL' ? t('all') : f}
+              </button>
+            );
+          })}
         </div>
 
-      </main>
-    </div>
+        <DataTable
+          data={rows}
+          columns={columns}
+          getRowKey={(c) => c.id}
+          caption={t('referralsListTitle')}
+          empty={
+            <EmptyState
+              icon={Inbox}
+              title={t('noFlaggedFound')}
+              description={filter !== 'ALL' ? t('tryClearingFilter') : undefined}
+              action={
+                filter !== 'ALL' ? (
+                  <Button variant="secondary" size="sm" onClick={() => setFilter('ALL')}>
+                    {t('all')}
+                  </Button>
+                ) : undefined
+              }
+            />
+          }
+        />
+      </Card>
+    </AppShell>
   );
 }

@@ -1,13 +1,21 @@
 export type Language = 'en' | 'hi';
 
-type Translations = {
-  [key: string]: {
-    en: string;
-    hi: string;
-  };
-};
+/** Every string carries both locales. Hindi is primary, English the fallback. */
+type Entry = { en: string; hi: string };
 
-export const translations: Translations = {
+/**
+ * `satisfies` rather than a type annotation, deliberately.
+ *
+ * Annotating this as `Translations` with an index signature widened the key
+ * type to `string`, so `t('typoo')` type-checked fine and failed at runtime
+ * with a console warning nobody reads. `satisfies` validates the shape while
+ * preserving the literal keys, which makes TranslationKey a real union and a
+ * missing or misspelled key a compile error.
+ *
+ * This is the web equivalent of NFR-16 on the app side, where hardcoded
+ * user-facing strings fail the build.
+ */
+export const translations = {
   // Global & Headers
   appTitle: { en: 'Supervisor Dashboard', hi: 'पर्यवेक्षक डैशबोर्ड' },
   logout: { en: 'Logout', hi: 'लॉग आउट' },
@@ -90,6 +98,152 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── AWW / worker home ────────────────────────────────────────────────────
+  workerDashboard: { en: 'My centre', hi: 'मेरा केंद्र' },
+  todayAtCentre: { en: 'This month at your centre', hi: 'इस महीने आपके केंद्र पर' },
+  newMeasurement: { en: 'New measurement', hi: 'नई माप' },
+  newMeasurementHint: {
+    en: 'Measurements are captured on the field device.',
+    hi: 'माप फ़ील्ड डिवाइस पर दर्ज की जाती है।',
+  },
+  syncBacklog: { en: 'Waiting to sync', hi: 'सिंक बाकी' },
+  syncBacklogHint: { en: 'records in outbox', hi: 'आउटबॉक्स में रिकॉर्ड' },
+
+  // ── Doctor ───────────────────────────────────────────────────────────────
+  doctorInbox: { en: 'Case inbox', hi: 'मामला इनबॉक्स' },
+  doctorInboxSubtitle: {
+    en: 'Children referred to you, awaiting an outcome',
+    hi: 'आपको रेफर किए गए बच्चे, परिणाम की प्रतीक्षा में',
+  },
+  caseList: { en: 'Referred cases', hi: 'रेफर किए गए मामले' },
+  casesReferred: { en: 'Referred to you', hi: 'आपको रेफर किए गए' },
+  awaitingOutcome: { en: 'Awaiting outcome', hi: 'परिणाम की प्रतीक्षा' },
+  recordOutcome: { en: 'Record outcome', hi: 'परिणाम दर्ज करें' },
+  noCasesReferred: { en: 'No cases referred to you.', hi: 'आपको कोई मामला रेफर नहीं किया गया है।' },
+  noCasesReferredBody: {
+    en: 'Referred children appear here as soon as a worker flags them.',
+    hi: 'कार्यकर्ता द्वारा चिह्नित किए जाते ही रेफर किए गए बच्चे यहाँ दिखेंगे।',
+  },
+
+  // ── Parent ───────────────────────────────────────────────────────────────
+  myChild: { en: 'My child', hi: 'मेरा बच्चा' },
+  parentStatusNormal: {
+    en: 'Your child is growing well. Keep attending the regular monthly measurement at your Anganwadi centre.',
+    hi: 'आपका बच्चा अच्छी तरह बढ़ रहा है। अपने आंगनवाड़ी केंद्र पर हर महीने होने वाली नियमित माप के लिए आते रहें।',
+  },
+  nextVisit: { en: 'Next measurement', hi: 'अगली माप' },
+  nextVisitHint: { en: 'Next month at your centre', hi: 'अगले महीने आपके केंद्र पर' },
+  growthCardHint: {
+    en: 'A printable card showing your child’s growth over time.',
+    hi: 'समय के साथ आपके बच्चे के विकास को दर्शाने वाला प्रिंट करने योग्य कार्ड।',
+  },
+
+  // ── Admin console ────────────────────────────────────────────────────────
+  adminConsole: { en: 'Admin console', hi: 'प्रशासक कंसोल' },
+  adminConsoleSubtitle: {
+    en: 'Users, centres, configuration and system health',
+    hi: 'उपयोगकर्ता, केंद्र, विन्यास और सिस्टम स्वास्थ्य',
+  },
+  manage: { en: 'Manage', hi: 'प्रबंधन' },
+  manageHint: {
+    en: 'Each area opens its own page rather than crowding this one.',
+    hi: 'हर क्षेत्र इस पृष्ठ को भरने के बजाय अपना अलग पृष्ठ खोलता है।',
+  },
+  activeUsers: { en: 'Active users', hi: 'सक्रिय उपयोगकर्ता' },
+  devicesOnline: { en: 'Devices online', hi: 'ऑनलाइन डिवाइस' },
+  deadLetters: { en: 'Sync dead-letters', hi: 'सिंक विफल रिकॉर्ड' },
+  adminUsersHint: { en: 'Accounts, roles and approvals', hi: 'खाते, भूमिकाएँ और अनुमोदन' },
+  adminProgramHint: {
+    en: 'Coverage and SAM/MAM trends — child health outcomes',
+    hi: 'कवरेज और SAM/MAM रुझान — बाल स्वास्थ्य परिणाम',
+  },
+  adminAppHealthHint: {
+    en: 'Adoption, sync health, crashes — system performance',
+    hi: 'उपयोग, सिंक स्वास्थ्य, क्रैश — सिस्टम प्रदर्शन',
+  },
+  adminConfigHint: { en: 'Reference data and settings', hi: 'संदर्भ डेटा और सेटिंग्स' },
+  adminAudit: { en: 'Audit log', hi: 'ऑडिट लॉग' },
+  adminAuditHint: { en: 'Who changed what, and when', hi: 'किसने क्या बदला, और कब' },
+
+  // ── Centres ──────────────────────────────────────────────────────────────
+  noFlaggedHereBody: {
+    en: 'No child at this centre currently meets the SAM or MAM criteria.',
+    hi: 'इस केंद्र का कोई भी बच्चा वर्तमान में SAM या MAM मानदंड पूरा नहीं करता।',
+  },
+  centresSubtitle: {
+    en: 'Every Anganwadi centre in your sector',
+    hi: 'आपके सेक्टर के सभी आंगनवाड़ी केंद्र',
+  },
+
+  // ── Diagnostics ──────────────────────────────────────────────────────────
+  diagnosticsLogHint: {
+    en: 'Records where the on-device and server z-score engines disagreed, or a measurement fell outside biological plausibility.',
+    hi: 'ऐसे रिकॉर्ड जहाँ डिवाइस और सर्वर के ज़ेड-स्कोर इंजन असहमत थे, या माप जैविक रूप से असंभव था।',
+  },
+  noDataRecordsBody: {
+    en: 'The on-device and server engines agree on every measurement recorded so far.',
+    hi: 'अब तक दर्ज हर माप पर डिवाइस और सर्वर इंजन सहमत हैं।',
+  },
+  noStaleDetectedBody: {
+    en: 'Every device has synced within the last seven days.',
+    hi: 'हर डिवाइस ने पिछले सात दिनों में सिंक किया है।',
+  },
+  batteryDead: { en: 'dead', hi: 'खाली' },
+  daysAgo: { en: 'days ago', hi: 'दिन पहले' },
+
+  // ── Referrals ────────────────────────────────────────────────────────────
+  flaggedChildren: { en: 'flagged children', hi: 'चिह्नित बच्चे' },
+  overdue: { en: 'overdue', hi: 'विलंबित' },
+  sortAsc: { en: 'oldest last', hi: 'पुराने अंत में' },
+  sortDesc: { en: 'oldest first', hi: 'पुराने पहले' },
+  tryClearingFilter: {
+    en: 'No children match this filter. Clear it to see all flagged cases.',
+    hi: 'इस फ़िल्टर से कोई बच्चा मेल नहीं खाता। सभी चिह्नित मामले देखने के लिए इसे हटाएँ।',
+  },
+
+  // ── Supervisor dashboard ─────────────────────────────────────────────────
+  sectorOverview: { en: 'Sector overview', hi: 'सेक्टर अवलोकन' },
+  noCentres: { en: 'No centres assigned yet.', hi: 'अभी तक कोई केंद्र आवंटित नहीं है।' },
+  noPendingReferralsBody: {
+    en: 'Every flagged child has been referred and an outcome recorded.',
+    hi: 'हर चिह्नित बच्चे को रेफर किया जा चुका है और परिणाम दर्ज है।',
+  },
+
+  // ── Sign-in ──────────────────────────────────────────────────────────────
+  signIn: { en: 'Sign in', hi: 'साइन इन करें' },
+  signingIn: { en: 'Signing in…', hi: 'साइन इन हो रहा है…' },
+  pinTooShort: {
+    en: 'Enter at least 4 digits.',
+    hi: 'कम से कम 4 अंक दर्ज करें।',
+  },
+  mockAuthNotice: {
+    en: 'Demonstration sign-in. Real authentication (Google, phone OTP, email OTP and the offline PIN) arrives with the identity service.',
+    hi: 'प्रदर्शन हेतु साइन इन। वास्तविक प्रमाणीकरण (Google, फ़ोन OTP, ईमेल OTP और ऑफ़लाइन पिन) पहचान सेवा के साथ आएगा।',
+  },
+
+  // ── Brand & landing page ─────────────────────────────────────────────────
+  ankurTagline: { en: 'Every child, growing well', hi: 'हर बच्चा, स्वस्थ विकास' },
+  whatItDoes: { en: 'What the system does', hi: 'यह प्रणाली क्या करती है' },
+  featureOfflineTitle: { en: 'Works offline', hi: 'ऑफ़लाइन काम करता है' },
+  featureOfflineBody: {
+    en: 'Workers register children and record measurements with no network at all. Data syncs on its own once a connection returns.',
+    hi: 'कार्यकर्ता बिना नेटवर्क के बच्चों का पंजीकरण और माप दर्ज करते हैं। कनेक्शन लौटते ही डेटा स्वयं सिंक हो जाता है।',
+  },
+  featureZScoreTitle: { en: 'WHO z-scores on device', hi: 'डिवाइस पर WHO ज़ेड-स्कोर' },
+  featureZScoreBody: {
+    en: 'Weight, height and MUAC are classified against WHO growth standards on the phone itself, so the result is immediate.',
+    hi: 'वज़न, लंबाई और MUAC को फ़ोन पर ही WHO मानकों के आधार पर वर्गीकृत किया जाता है, इसलिए परिणाम तुरंत मिलता है।',
+  },
+  featureReferralTitle: { en: 'Referrals tracked to outcome', hi: 'रेफरल का परिणाम तक अनुसरण' },
+  featureReferralBody: {
+    en: 'Every flagged child is followed from the moment of referral until an outcome is recorded — nothing is left open.',
+    hi: 'हर चिह्नित बच्चे का रेफरल से लेकर परिणाम दर्ज होने तक अनुसरण किया जाता है — कुछ भी अधूरा नहीं छोड़ा जाता।',
+  },
+  footerLine: {
+    en: 'Ankur — Child Growth Management System, Track D supervisory portal.',
+    hi: 'अंकुर — बाल विकास प्रबंधन प्रणाली, ट्रैक D पर्यवेक्षी पोर्टल।',
+  },
+
   // ── Navigation (role-driven shell, EX4) ──────────────────────────────────
   navHome: { en: 'Home', hi: 'होम' },
   navChildren: { en: 'Children', hi: 'बच्चे' },
@@ -143,4 +297,7 @@ export const translations: Translations = {
   supervisorRole: { en: 'Supervisor', hi: 'पर्यवेक्षक' },
   workerRole: { en: 'Worker', hi: 'कार्यकर्ता' },
   workerLoginSubtitle: { en: 'Sign in to update centre records', hi: 'केंद्र रिकॉर्ड अपडेट करने के लिए साइन इन करें' },
-};
+} satisfies Record<string, Entry>;
+
+/** The union of every defined string key. */
+export type TranslationKey = keyof typeof translations;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { translations, Language } from '@/data/translations';
+import { translations, type Language, type TranslationKey } from '@/data/translations';
 
 /**
  * Hindi is the primary locale and English the fallback — not the other way
@@ -15,7 +15,7 @@ const STORAGE_KEY = 'app-language';
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: keyof typeof translations) => string;
+  t: (key: TranslationKey) => string;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -59,11 +59,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: keyof typeof translations): string => {
+    (key: TranslationKey): string => {
       const entry = translations[key];
       if (!entry) {
-        // Surface the key itself rather than an empty string so a missing
-        // translation is visible in review instead of silently blank.
+        // Unreachable via the type system now, but kept for strings that
+        // arrive from data rather than source.
         console.warn(`Translation key not found: ${String(key)}`);
         return String(key);
       }
