@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
 
 // Ankur's type pairing: Noto Sans Devanagari for Hindi, with a clean Latin
 // companion (ANKUR_EXPERIENCE_ROADMAP §2). Both are self-hosted by next/font
@@ -57,9 +58,17 @@ export default function RootLayout({
   // `lang` is hardcoded here and corrected on the client by LanguageProvider
   // once the persisted locale is known — see src/context/LanguageContext.tsx.
   return (
-    <html lang="hi" suppressHydrationWarning>
+    <html lang="hi" data-role="aww" suppressHydrationWarning>
+      <head>
+        {/* Applies the stored role skin and colour scheme before first paint.
+            Without it every navigation flashes the default teal light theme
+            before snapping to the user's actual role. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className={`${inter.variable} ${notoDevanagari.variable} antialiased`}>
-        <LanguageProvider>{children}</LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider>{children}</LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
