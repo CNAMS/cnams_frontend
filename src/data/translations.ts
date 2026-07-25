@@ -1,13 +1,21 @@
 export type Language = 'en' | 'hi';
 
-type Translations = {
-  [key: string]: {
-    en: string;
-    hi: string;
-  };
-};
+/** Every string carries both locales. Hindi is primary, English the fallback. */
+type Entry = { en: string; hi: string };
 
-export const translations: Translations = {
+/**
+ * `satisfies` rather than a type annotation, deliberately.
+ *
+ * Annotating this as `Translations` with an index signature widened the key
+ * type to `string`, so `t('typoo')` type-checked fine and failed at runtime
+ * with a console warning nobody reads. `satisfies` validates the shape while
+ * preserving the literal keys, which makes TranslationKey a real union and a
+ * missing or misspelled key a compile error.
+ *
+ * This is the web equivalent of NFR-16 on the app side, where hardcoded
+ * user-facing strings fail the build.
+ */
+export const translations = {
   // Global & Headers
   appTitle: { en: 'Supervisor Dashboard', hi: 'पर्यवेक्षक डैशबोर्ड' },
   logout: { en: 'Logout', hi: 'लॉग आउट' },
@@ -289,4 +297,7 @@ export const translations: Translations = {
   supervisorRole: { en: 'Supervisor', hi: 'पर्यवेक्षक' },
   workerRole: { en: 'Worker', hi: 'कार्यकर्ता' },
   workerLoginSubtitle: { en: 'Sign in to update centre records', hi: 'केंद्र रिकॉर्ड अपडेट करने के लिए साइन इन करें' },
-};
+} satisfies Record<string, Entry>;
+
+/** The union of every defined string key. */
+export type TranslationKey = keyof typeof translations;

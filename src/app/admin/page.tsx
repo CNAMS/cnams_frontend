@@ -19,6 +19,7 @@ import { Card, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import type { TranslationKey } from '@/data/translations';
 
 /**
  * The admin console (§EX3).
@@ -35,8 +36,8 @@ import { cn } from '@/lib/cn';
 
 type Destination = {
   href: string;
-  labelKey: string;
-  descriptionKey: string;
+  labelKey: TranslationKey;
+  descriptionKey: TranslationKey;
   icon: LucideIcon;
   built?: boolean;
 };
