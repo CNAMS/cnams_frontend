@@ -90,6 +90,22 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Diagnostics ──────────────────────────────────────────────────────────
+  diagnosticsLogHint: {
+    en: 'Records where the on-device and server z-score engines disagreed, or a measurement fell outside biological plausibility.',
+    hi: 'ऐसे रिकॉर्ड जहाँ डिवाइस और सर्वर के ज़ेड-स्कोर इंजन असहमत थे, या माप जैविक रूप से असंभव था।',
+  },
+  noDataRecordsBody: {
+    en: 'The on-device and server engines agree on every measurement recorded so far.',
+    hi: 'अब तक दर्ज हर माप पर डिवाइस और सर्वर इंजन सहमत हैं।',
+  },
+  noStaleDetectedBody: {
+    en: 'Every device has synced within the last seven days.',
+    hi: 'हर डिवाइस ने पिछले सात दिनों में सिंक किया है।',
+  },
+  batteryDead: { en: 'dead', hi: 'खाली' },
+  daysAgo: { en: 'days ago', hi: 'दिन पहले' },
+
   // ── Referrals ────────────────────────────────────────────────────────────
   flaggedChildren: { en: 'flagged children', hi: 'चिह्नित बच्चे' },
   overdue: { en: 'overdue', hi: 'विलंबित' },
