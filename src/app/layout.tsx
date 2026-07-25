@@ -1,16 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+// Ankur's type pairing: Noto Sans Devanagari for Hindi, with a clean Latin
+// companion (ANKUR_EXPERIENCE_ROADMAP §2). Both are self-hosted by next/font
+// at build time — no render-blocking request to fonts.googleapis.com, which
+// matters on the low-bandwidth connections these centres actually have.
+//
+// `latin` is subset on both faces because the UI mixes scripts constantly:
+// numerals, SAM/MAM classification codes, ICDS IDs and serial numbers stay
+// Latin even in Hindi mode.
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-latin",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const notoDevanagari = Noto_Sans_Devanagari({
+  subsets: ["devanagari", "latin"],
+  variable: "--font-devanagari",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -39,21 +49,17 @@ export const viewport: Viewport = {
   ],
 };
 
-import { LanguageProvider } from "@/context/LanguageContext";
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // `lang` is hardcoded here and corrected on the client by LanguageProvider
+  // once the persisted locale is known — see src/context/LanguageContext.tsx.
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+    <html lang="hi" suppressHydrationWarning>
+      <body className={`${inter.variable} ${notoDevanagari.variable} antialiased`}>
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

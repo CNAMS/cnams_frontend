@@ -9,7 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        // Matches the body stack in globals.css — Devanagari first (Hindi is
+        // the primary locale), Latin companion second.
+        sans: [
+          'var(--font-devanagari)',
+          'var(--font-latin)',
+          'system-ui',
+          '-apple-system',
+          'sans-serif',
+        ],
       },
       colors: {
         surface:    '#F4FBF9',
