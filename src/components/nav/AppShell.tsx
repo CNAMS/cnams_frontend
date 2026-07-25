@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LogOut, Menu, X } from 'lucide-react';
@@ -101,6 +101,7 @@ export function AppShell({
   const { role } = useTheme();
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   const items = navFor(role);
 
@@ -109,14 +110,57 @@ export function AppShell({
     setDrawerOpen(false);
   }, [pathname]);
 
-  // Escape closes the drawer — expected of anything modal.
+  // The drawer is a modal dialog, so it owes the keyboard three things:
+  // Escape to close, focus moved inside on open and restored on close, and a
+  // focus trap so Tab cannot wander into the page behind it. Without the trap
+  // a keyboard user tabs straight out of an open drawer into content they
+  // cannot see, with no way to tell where they are.
   useEffect(() => {
     if (!drawerOpen) return;
+
+    const opener = document.activeElement as HTMLElement | null;
+    const panel = drawerRef.current;
+
+    const focusable = () =>
+      Array.from(
+        panel?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+
+    focusable()[0]?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setDrawerOpen(false);
+      if (e.key === 'Escape') {
+        setDrawerOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const nodes = focusable();
+      if (nodes.length === 0) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
+
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Stop the page behind the overlay from scrolling under the drawer.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = previousOverflow;
+      opener?.focus();
+    };
   }, [drawerOpen]);
 
   const sidebar = (
@@ -179,7 +223,13 @@ export function AppShell({
               onClick={() => setDrawerOpen(false)}
               aria-hidden="true"
             />
-            <div className="relative w-72 max-w-[85vw] bg-surface-container h-full flex flex-col shadow-xl">
+            <div
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label={t('navMenu')}
+              className="relative w-72 max-w-[85vw] bg-surface-container h-full flex flex-col shadow-xl"
+            >
               <div className="flex items-center justify-between p-4 border-b border-outline-variant">
                 <AnkurWordmark size={28} />
                 <IconButton
