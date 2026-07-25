@@ -90,6 +90,73 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── AWW / worker home ────────────────────────────────────────────────────
+  workerDashboard: { en: 'My centre', hi: 'मेरा केंद्र' },
+  todayAtCentre: { en: 'This month at your centre', hi: 'इस महीने आपके केंद्र पर' },
+  newMeasurement: { en: 'New measurement', hi: 'नई माप' },
+  newMeasurementHint: {
+    en: 'Measurements are captured on the field device.',
+    hi: 'माप फ़ील्ड डिवाइस पर दर्ज की जाती है।',
+  },
+  syncBacklog: { en: 'Waiting to sync', hi: 'सिंक बाकी' },
+  syncBacklogHint: { en: 'records in outbox', hi: 'आउटबॉक्स में रिकॉर्ड' },
+
+  // ── Doctor ───────────────────────────────────────────────────────────────
+  doctorInbox: { en: 'Case inbox', hi: 'मामला इनबॉक्स' },
+  doctorInboxSubtitle: {
+    en: 'Children referred to you, awaiting an outcome',
+    hi: 'आपको रेफर किए गए बच्चे, परिणाम की प्रतीक्षा में',
+  },
+  caseList: { en: 'Referred cases', hi: 'रेफर किए गए मामले' },
+  casesReferred: { en: 'Referred to you', hi: 'आपको रेफर किए गए' },
+  awaitingOutcome: { en: 'Awaiting outcome', hi: 'परिणाम की प्रतीक्षा' },
+  recordOutcome: { en: 'Record outcome', hi: 'परिणाम दर्ज करें' },
+  noCasesReferred: { en: 'No cases referred to you.', hi: 'आपको कोई मामला रेफर नहीं किया गया है।' },
+  noCasesReferredBody: {
+    en: 'Referred children appear here as soon as a worker flags them.',
+    hi: 'कार्यकर्ता द्वारा चिह्नित किए जाते ही रेफर किए गए बच्चे यहाँ दिखेंगे।',
+  },
+
+  // ── Parent ───────────────────────────────────────────────────────────────
+  myChild: { en: 'My child', hi: 'मेरा बच्चा' },
+  parentStatusNormal: {
+    en: 'Your child is growing well. Keep attending the regular monthly measurement at your Anganwadi centre.',
+    hi: 'आपका बच्चा अच्छी तरह बढ़ रहा है। अपने आंगनवाड़ी केंद्र पर हर महीने होने वाली नियमित माप के लिए आते रहें।',
+  },
+  nextVisit: { en: 'Next measurement', hi: 'अगली माप' },
+  nextVisitHint: { en: 'Next month at your centre', hi: 'अगले महीने आपके केंद्र पर' },
+  growthCardHint: {
+    en: 'A printable card showing your child’s growth over time.',
+    hi: 'समय के साथ आपके बच्चे के विकास को दर्शाने वाला प्रिंट करने योग्य कार्ड।',
+  },
+
+  // ── Admin console ────────────────────────────────────────────────────────
+  adminConsole: { en: 'Admin console', hi: 'प्रशासक कंसोल' },
+  adminConsoleSubtitle: {
+    en: 'Users, centres, configuration and system health',
+    hi: 'उपयोगकर्ता, केंद्र, विन्यास और सिस्टम स्वास्थ्य',
+  },
+  manage: { en: 'Manage', hi: 'प्रबंधन' },
+  manageHint: {
+    en: 'Each area opens its own page rather than crowding this one.',
+    hi: 'हर क्षेत्र इस पृष्ठ को भरने के बजाय अपना अलग पृष्ठ खोलता है।',
+  },
+  activeUsers: { en: 'Active users', hi: 'सक्रिय उपयोगकर्ता' },
+  devicesOnline: { en: 'Devices online', hi: 'ऑनलाइन डिवाइस' },
+  deadLetters: { en: 'Sync dead-letters', hi: 'सिंक विफल रिकॉर्ड' },
+  adminUsersHint: { en: 'Accounts, roles and approvals', hi: 'खाते, भूमिकाएँ और अनुमोदन' },
+  adminProgramHint: {
+    en: 'Coverage and SAM/MAM trends — child health outcomes',
+    hi: 'कवरेज और SAM/MAM रुझान — बाल स्वास्थ्य परिणाम',
+  },
+  adminAppHealthHint: {
+    en: 'Adoption, sync health, crashes — system performance',
+    hi: 'उपयोग, सिंक स्वास्थ्य, क्रैश — सिस्टम प्रदर्शन',
+  },
+  adminConfigHint: { en: 'Reference data and settings', hi: 'संदर्भ डेटा और सेटिंग्स' },
+  adminAudit: { en: 'Audit log', hi: 'ऑडिट लॉग' },
+  adminAuditHint: { en: 'Who changed what, and when', hi: 'किसने क्या बदला, और कब' },
+
   // ── Centres ──────────────────────────────────────────────────────────────
   noFlaggedHereBody: {
     en: 'No child at this centre currently meets the SAM or MAM criteria.',
