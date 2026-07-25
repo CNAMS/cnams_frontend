@@ -91,6 +91,10 @@ export const translations: Translations = {
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
   // ── Centres ──────────────────────────────────────────────────────────────
+  noFlaggedHereBody: {
+    en: 'No child at this centre currently meets the SAM or MAM criteria.',
+    hi: 'इस केंद्र का कोई भी बच्चा वर्तमान में SAM या MAM मानदंड पूरा नहीं करता।',
+  },
   centresSubtitle: {
     en: 'Every Anganwadi centre in your sector',
     hi: 'आपके सेक्टर के सभी आंगनवाड़ी केंद्र',
