@@ -90,6 +90,12 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Centres ──────────────────────────────────────────────────────────────
+  centresSubtitle: {
+    en: 'Every Anganwadi centre in your sector',
+    hi: 'आपके सेक्टर के सभी आंगनवाड़ी केंद्र',
+  },
+
   // ── Diagnostics ──────────────────────────────────────────────────────────
   diagnosticsLogHint: {
     en: 'Records where the on-device and server z-score engines disagreed, or a measurement fell outside biological plausibility.',
