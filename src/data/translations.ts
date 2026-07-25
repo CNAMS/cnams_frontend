@@ -90,6 +90,14 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Supervisor dashboard ─────────────────────────────────────────────────
+  sectorOverview: { en: 'Sector overview', hi: 'सेक्टर अवलोकन' },
+  noCentres: { en: 'No centres assigned yet.', hi: 'अभी तक कोई केंद्र आवंटित नहीं है।' },
+  noPendingReferralsBody: {
+    en: 'Every flagged child has been referred and an outcome recorded.',
+    hi: 'हर चिह्नित बच्चे को रेफर किया जा चुका है और परिणाम दर्ज है।',
+  },
+
   // ── Sign-in ──────────────────────────────────────────────────────────────
   signIn: { en: 'Sign in', hi: 'साइन इन करें' },
   signingIn: { en: 'Signing in…', hi: 'साइन इन हो रहा है…' },
