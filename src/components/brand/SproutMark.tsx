@@ -31,6 +31,9 @@ export function SproutMark({
   title?: string;
 }) {
   const decorative = title === '';
+  // Must be called before any early return — hooks run in the same order on
+  // every render regardless of which variant is being drawn.
+  const uid = React.useId();
 
   if (monochrome) {
     return (
@@ -73,7 +76,6 @@ export function SproutMark({
 
   // Gradient ids must be unique per instance or a second mark on the page
   // reuses the first one's defs and renders wrong.
-  const uid = React.useId();
   const tileId = `ankur-tile-${uid}`;
   const leafId = `ankur-leaf-${uid}`;
 

@@ -90,6 +90,40 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Navigation (role-driven shell, EX4) ──────────────────────────────────
+  navHome: { en: 'Home', hi: 'होम' },
+  navChildren: { en: 'Children', hi: 'बच्चे' },
+  navMeasure: { en: 'Measure', hi: 'मापें' },
+  navOverview: { en: 'Overview', hi: 'अवलोकन' },
+  navCentres: { en: 'Centres', hi: 'केंद्र' },
+  navReferrals: { en: 'Referrals', hi: 'रेफरल' },
+  navDiagnostics: { en: 'Diagnostics', hi: 'निदान' },
+  navCases: { en: 'Cases', hi: 'मामले' },
+  navMyChild: { en: 'My Child', hi: 'मेरा बच्चा' },
+  navGrowthCard: { en: 'Growth Card', hi: 'विकास कार्ड' },
+  navUsers: { en: 'Users', hi: 'उपयोगकर्ता' },
+  navAnalytics: { en: 'Program Analytics', hi: 'कार्यक्रम विश्लेषण' },
+  navAppHealth: { en: 'App Health', hi: 'ऐप स्वास्थ्य' },
+  navConfig: { en: 'Configuration', hi: 'विन्यास' },
+  navSettings: { en: 'Settings', hi: 'सेटिंग्स' },
+  navComingSoon: { en: 'Soon', hi: 'जल्द' },
+  navMenu: { en: 'Menu', hi: 'मेन्यू' },
+  navCloseMenu: { en: 'Close menu', hi: 'मेन्यू बंद करें' },
+  skipToContent: { en: 'Skip to main content', hi: 'मुख्य सामग्री पर जाएँ' },
+
+  // ── Role names (ANKUR_EXPERIENCE_ROADMAP §1) ─────────────────────────────
+  roleAww: { en: 'Anganwadi Worker', hi: 'आंगनवाड़ी कार्यकर्ता' },
+  roleSupervisor: { en: 'Supervisor', hi: 'पर्यवेक्षक' },
+  roleDoctor: { en: 'Doctor', hi: 'चिकित्सक' },
+  roleParent: { en: 'Parent', hi: 'अभिभावक' },
+  roleAdmin: { en: 'Administrator', hi: 'प्रशासक' },
+
+  // ── Appearance ───────────────────────────────────────────────────────────
+  themeLight: { en: 'Light', hi: 'उजला' },
+  themeDark: { en: 'Dark', hi: 'गहरा' },
+  themeSystem: { en: 'System', hi: 'सिस्टम' },
+  toggleTheme: { en: 'Change theme', hi: 'थीम बदलें' },
+
   // Honesty marker for surfaces showing illustrative figures rather than live
   // data. Mirrors SampleChip / l10n.sampleData in the mobile app.
   sampleData: { en: 'Sample data', hi: 'नमूना डेटा' },
