@@ -90,6 +90,18 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Sign-in ──────────────────────────────────────────────────────────────
+  signIn: { en: 'Sign in', hi: 'साइन इन करें' },
+  signingIn: { en: 'Signing in…', hi: 'साइन इन हो रहा है…' },
+  pinTooShort: {
+    en: 'Enter at least 4 digits.',
+    hi: 'कम से कम 4 अंक दर्ज करें।',
+  },
+  mockAuthNotice: {
+    en: 'Demonstration sign-in. Real authentication (Google, phone OTP, email OTP and the offline PIN) arrives with the identity service.',
+    hi: 'प्रदर्शन हेतु साइन इन। वास्तविक प्रमाणीकरण (Google, फ़ोन OTP, ईमेल OTP और ऑफ़लाइन पिन) पहचान सेवा के साथ आएगा।',
+  },
+
   // ── Brand & landing page ─────────────────────────────────────────────────
   ankurTagline: { en: 'Every child, growing well', hi: 'हर बच्चा, स्वस्थ विकास' },
   whatItDoes: { en: 'What the system does', hi: 'यह प्रणाली क्या करती है' },
