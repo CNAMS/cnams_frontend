@@ -90,6 +90,16 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Referrals ────────────────────────────────────────────────────────────
+  flaggedChildren: { en: 'flagged children', hi: 'चिह्नित बच्चे' },
+  overdue: { en: 'overdue', hi: 'विलंबित' },
+  sortAsc: { en: 'oldest last', hi: 'पुराने अंत में' },
+  sortDesc: { en: 'oldest first', hi: 'पुराने पहले' },
+  tryClearingFilter: {
+    en: 'No children match this filter. Clear it to see all flagged cases.',
+    hi: 'इस फ़िल्टर से कोई बच्चा मेल नहीं खाता। सभी चिह्नित मामले देखने के लिए इसे हटाएँ।',
+  },
+
   // ── Supervisor dashboard ─────────────────────────────────────────────────
   sectorOverview: { en: 'Sector overview', hi: 'सेक्टर अवलोकन' },
   noCentres: { en: 'No centres assigned yet.', hi: 'अभी तक कोई केंद्र आवंटित नहीं है।' },
