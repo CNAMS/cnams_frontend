@@ -1,7 +1,16 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { translations, Language } from '@/data/translations';
+
+/**
+ * Hindi is the primary locale and English the fallback — not the other way
+ * round. This mirrors the Flutter app, where hi.arb is the default locale and
+ * en.arb the fallback (PRODUCTION_ROADMAP, "Localisation & Accessibility").
+ */
+export const DEFAULT_LANGUAGE: Language = 'hi';
+
+const STORAGE_KEY = 'app-language';
 
 type LanguageContextType = {
   language: Language;
@@ -11,29 +20,58 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en');
+function isLanguage(value: unknown): value is Language {
+  return value === 'hi' || value === 'en';
+}
 
-  // Load language preference from local storage if available
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+
+  // Restore the persisted choice. This runs after mount rather than during
+  // render because localStorage does not exist on the server, so the first
+  // paint is always DEFAULT_LANGUAGE and a returning English user briefly sees
+  // Hindi. That is the correct trade for a Hindi-first product: the majority
+  // case is never wrong, and the minority case self-corrects in one frame.
   useEffect(() => {
-    const saved = localStorage.getItem('app-language');
-    if (saved === 'hi' || saved === 'en') {
-      setLanguage(saved);
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (isLanguage(saved)) setLanguage(saved);
+    } catch {
+      // Private browsing or a blocked storage partition — fall back to Hindi.
     }
   }, []);
 
-  const changeLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('app-language', lang);
-  };
+  // Keep <html lang> honest. Screen readers pick a voice and pronunciation
+  // rules from this attribute, so a hardcoded lang="en" makes Devanagari get
+  // read out by an English synthesiser. layout.tsx renders lang="hi" and this
+  // corrects it whenever the user switches.
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
-  const t = (key: keyof typeof translations): string => {
-    if (!translations[key]) {
-      console.warn(`Translation key not found: ${String(key)}`);
-      return String(key);
+  const changeLanguage = useCallback((lang: Language) => {
+    setLanguage(lang);
+    try {
+      localStorage.setItem(STORAGE_KEY, lang);
+    } catch {
+      // Non-fatal: the switch still applies for this session.
     }
-    return translations[key][language];
-  };
+  }, []);
+
+  const t = useCallback(
+    (key: keyof typeof translations): string => {
+      const entry = translations[key];
+      if (!entry) {
+        // Surface the key itself rather than an empty string so a missing
+        // translation is visible in review instead of silently blank.
+        console.warn(`Translation key not found: ${String(key)}`);
+        return String(key);
+      }
+      // Fall back to English when a Hindi string has not landed yet.
+      return entry[language] || entry.en;
+    },
+    [language],
+  );
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage: changeLanguage, t }}>
