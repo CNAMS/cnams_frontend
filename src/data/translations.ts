@@ -90,6 +90,10 @@ export const translations: Translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // Honesty marker for surfaces showing illustrative figures rather than live
+  // data. Mirrors SampleChip / l10n.sampleData in the mobile app.
+  sampleData: { en: 'Sample data', hi: 'नमूना डेटा' },
+
   // Growth classification labels.
   // These pair with src/theme/classification.ts — the word half of the
   // "colour + word + icon" rule. Hindi wording follows the app's hi.arb so a
