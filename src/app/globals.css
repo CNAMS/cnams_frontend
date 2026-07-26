@@ -241,3 +241,112 @@ body {
     text-wrap: balance;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   The sprout-grow splash — Ankur's ONE signature animation.
+
+   ANKUR_EXPERIENCE_ROADMAP §2: "one signature — a sprout that 'grows' (stem
+   then leaves, ~900 ms, eased) on the splash; elsewhere, quiet fades and
+   150–200 ms transitions."
+
+   The order is the whole point and matches the brand idea (अंकुर = sprout):
+   ground settles, stem rises, leaves unfold. Everything is driven by the
+   --motion-sprout token so the timing stays in one place.
+
+   The global prefers-reduced-motion rule above collapses every duration to
+   0.01ms, which lands the sprout in its finished state immediately rather
+   than animating — the mark still appears, it simply does not grow.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Stem and soil use pathLength="1", so the dash maths is resolution- and
+   path-independent: 1 is always "the whole stroke". */
+@keyframes ankur-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ankur-unfurl {
+  from {
+    opacity: 0;
+    transform: scale(0.2) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes ankur-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ankur-splash-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.ankur-splash {
+  animation: ankur-splash-out 260ms var(--ease) forwards;
+  /* Held until the grow finishes; see SproutSplash for the timing contract. */
+  animation-delay: calc(var(--motion-sprout) + 320ms);
+}
+
+/* Set by splashInitScript before first paint when the splash has already
+   played this session — so a return to the landing page does not replay it,
+   and does not flash it either. */
+.splash-done .ankur-splash {
+  display: none;
+}
+
+.ankur-soil,
+.ankur-stem {
+  stroke-dasharray: 1;
+}
+
+.ankur-soil {
+  animation: ankur-draw 220ms var(--ease) both;
+}
+
+.ankur-stem {
+  animation: ankur-draw calc(var(--motion-sprout) * 0.5) var(--ease) both;
+  animation-delay: 160ms;
+}
+
+.ankur-leaf {
+  /* Leaves unfold from where they meet the stem, not from their own centre —
+     otherwise they slide in rather than growing out of it. */
+  transform-origin: 128px 128px;
+  animation: ankur-unfurl calc(var(--motion-sprout) * 0.45) var(--ease) both;
+}
+
+.ankur-leaf-left {
+  animation-delay: calc(var(--motion-sprout) * 0.45);
+}
+
+.ankur-leaf-right {
+  transform-origin: 128px 116px;
+  animation-delay: calc(var(--motion-sprout) * 0.58);
+}
+
+.ankur-vein {
+  animation: ankur-fade-up 200ms var(--ease) both;
+  animation-delay: calc(var(--motion-sprout) * 0.8);
+}
+
+.ankur-splash-word {
+  animation: ankur-fade-up 300ms var(--ease) both;
+  animation-delay: calc(var(--motion-sprout) * 0.7);
+}

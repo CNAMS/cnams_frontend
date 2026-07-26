@@ -19,10 +19,8 @@ export const translations = {
   // Global & Headers
   appTitle: { en: 'Supervisor Dashboard', hi: 'पर्यवेक्षक डैशबोर्ड' },
   logout: { en: 'Logout', hi: 'लॉग आउट' },
-  back: { en: 'Back', hi: 'वापस' },
   
   // Login Page
-  loginSubtitle: { en: 'Sign in to monitor Anganwadi Centres', hi: 'आंगनवाड़ी केंद्रों की निगरानी के लिए साइन इन करें' },
   pinLabel: { en: 'PIN / Password', hi: 'पिन / पासवर्ड' },
   mockLoginButton: { en: 'Mock Login', hi: 'मॉक लॉगिन' },
 
@@ -70,7 +68,6 @@ export const translations = {
   lastSynced: { en: 'Last Synced', hi: 'अंतिम सिंक' },
   malnutritionSummary: { en: 'Malnutrition Summary', hi: 'कुपोषण सारांश' },
   casesFromCriteria: { en: 'Cases determined from WHO Z-Score criteria', hi: 'WHO Z-स्कोर मानदंड से निर्धारित मामले' },
-  screeningStatus: { en: 'Screening Status', hi: 'जांच स्थिति' },
   lastReported: { en: 'Last reported:', hi: 'अंतिम रिपोर्ट:' },
   screeningHistory: { en: 'Screening History (Trend)', hi: 'जांच इतिहास (ट्रेंड)' },
   noTrendData: { en: 'No trend data available.', hi: 'कोई ट्रेंड डेटा उपलब्ध नहीं है।' },
@@ -97,6 +94,14 @@ export const translations = {
   totalCentresActive: { en: 'Active Centres', hi: 'सक्रिय केंद्र' },
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
+
+  // ── Not found ────────────────────────────────────────────────────────────
+  notFoundTitle: { en: 'Page not found', hi: 'पृष्ठ नहीं मिला' },
+  notFoundBody: {
+    en: 'This page does not exist, or the centre you were looking for has been removed.',
+    hi: 'यह पृष्ठ मौजूद नहीं है, या आप जिस केंद्र को खोज रहे थे उसे हटा दिया गया है।',
+  },
+  backToHome: { en: 'Back to home', hi: 'होम पर वापस' },
 
   // ── AWW / worker home ────────────────────────────────────────────────────
   workerDashboard: { en: 'My centre', hi: 'मेरा केंद्र' },
@@ -294,9 +299,6 @@ export const translations = {
 
   // Dual Role Login
   selectRole: { en: 'Select Your Role', hi: 'अपनी भूमिका चुनें' },
-  supervisorRole: { en: 'Supervisor', hi: 'पर्यवेक्षक' },
-  workerRole: { en: 'Worker', hi: 'कार्यकर्ता' },
-  workerLoginSubtitle: { en: 'Sign in to update centre records', hi: 'केंद्र रिकॉर्ड अपडेट करने के लिए साइन इन करें' },
 } satisfies Record<string, Entry>;
 
 /** The union of every defined string key. */
