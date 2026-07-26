@@ -3,7 +3,6 @@ import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
-import { splashInitScript } from "@/components/brand/SproutSplash";
 
 // Ankur's type pairing: Noto Sans Devanagari for Hindi, with a clean Latin
 // companion (ANKUR_EXPERIENCE_ROADMAP §2). Both are self-hosted by next/font
@@ -65,9 +64,6 @@ export default function RootLayout({
             Without it every navigation flashes the default teal light theme
             before snapping to the user's actual role. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        {/* Marks the splash as already played this session, before paint, so
-            returning to the landing page neither replays nor flashes it. */}
-        <script dangerouslySetInnerHTML={{ __html: splashInitScript }} />
       </head>
       <body className={`${inter.variable} ${notoDevanagari.variable} antialiased`}>
         <ThemeProvider>

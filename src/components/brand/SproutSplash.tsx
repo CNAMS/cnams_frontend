@@ -19,40 +19,34 @@ import React, { useEffect, useState } from 'react';
  * clears immediately. The mark is never withheld — only the movement is.
  */
 
-const SEEN_KEY = 'ankur-splash-seen';
-
 /**
- * Marks the splash as already played, before first paint.
+ * Whether the splash has already played for this loaded document.
  *
- * Same approach as themeInitScript: deciding this in an effect would mean
- * either a frame of landing page before the splash on a cold load, or a frame
- * of splash on every later visit. Doing it synchronously in <head> avoids
- * both.
+ * Deliberately a module-scoped variable rather than sessionStorage, because
+ * the two answer different questions:
+ *
+ *   sessionStorage  — "has it played in this TAB?"      survives a refresh
+ *   module variable — "has it played in this DOCUMENT?" resets on a refresh
+ *
+ * The second is what we actually want. A refresh is a fresh page load and
+ * should replay the splash — suppressing it there just looks broken. But a
+ * client-side navigation back to "/" (from /login, say) does not reload the
+ * document, so the module state survives and the splash correctly stays away.
+ *
+ * Next being a SPA is what makes this distinction free: no storage, no
+ * pre-paint script, no cleanup.
  */
-export const splashInitScript = `
-(function(){try{
-  if(sessionStorage.getItem('${SEEN_KEY}'))document.documentElement.classList.add('splash-done');
-}catch(e){}})();
-`;
+let playedThisDocument = false;
 
 export function SproutSplash() {
-  // Rendered on the server so it covers the page from the very first paint.
-  // The pre-paint script hides it via .splash-done for repeat visits.
-  const [present, setPresent] = useState(true);
+  // Read during the first render rather than in an effect, so a client-side
+  // navigation renders null immediately instead of flashing the overlay for
+  // one frame before an effect can remove it.
+  const [present, setPresent] = useState(!playedThisDocument);
 
   useEffect(() => {
-    let alreadySeen = false;
-    try {
-      alreadySeen = Boolean(sessionStorage.getItem(SEEN_KEY));
-      sessionStorage.setItem(SEEN_KEY, '1');
-    } catch {
-      // Storage blocked — the splash simply plays each time.
-    }
-
-    if (alreadySeen) {
-      setPresent(false);
-      return;
-    }
+    if (playedThisDocument) return;
+    playedThisDocument = true;
 
     // Slightly longer than the CSS animation so removal never clips the fade.
     const timer = window.setTimeout(() => setPresent(false), 1800);
