@@ -98,6 +98,14 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Not found ────────────────────────────────────────────────────────────
+  notFoundTitle: { en: 'Page not found', hi: 'पृष्ठ नहीं मिला' },
+  notFoundBody: {
+    en: 'This page does not exist, or the centre you were looking for has been removed.',
+    hi: 'यह पृष्ठ मौजूद नहीं है, या आप जिस केंद्र को खोज रहे थे उसे हटा दिया गया है।',
+  },
+  backToHome: { en: 'Back to home', hi: 'होम पर वापस' },
+
   // ── AWW / worker home ────────────────────────────────────────────────────
   workerDashboard: { en: 'My centre', hi: 'मेरा केंद्र' },
   todayAtCentre: { en: 'This month at your centre', hi: 'इस महीने आपके केंद्र पर' },
