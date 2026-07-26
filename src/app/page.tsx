@@ -5,6 +5,7 @@ import { Activity, ClipboardCheck, ShieldCheck, Users } from 'lucide-react';
 import { getDashboardMetrics } from '@/data/mockData';
 import { useLanguage } from '@/context/LanguageContext';
 import { AnkurWordmark, SproutMark } from '@/components/brand/SproutMark';
+import { SproutSplash } from '@/components/brand/SproutSplash';
 import { ButtonLink } from '@/components/ui/Button';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -34,6 +35,11 @@ export default function PublicLandingPage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-sans flex flex-col">
+      {/* Sits over the page rather than gating it: the real content renders
+          underneath from the first byte, so crawlers and reduced-motion users
+          are never waiting on an animation. */}
+      <SproutSplash />
+
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-brand focus:text-on-primary focus:px-4 focus:py-2.5 focus:rounded-xl"
