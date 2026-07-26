@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import { SproutMark } from '@/components/brand/SproutMark';
 import { ButtonLink } from '@/components/ui/Button';
