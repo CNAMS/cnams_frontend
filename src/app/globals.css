@@ -304,13 +304,6 @@ body {
   animation-delay: calc(var(--motion-sprout) + 320ms);
 }
 
-/* Set by splashInitScript before first paint when the splash has already
-   played this session — so a return to the landing page does not replay it,
-   and does not flash it either. */
-.splash-done .ankur-splash {
-  display: none;
-}
-
 .ankur-soil,
 .ankur-stem {
   stroke-dasharray: 1;
