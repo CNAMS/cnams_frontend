@@ -12,11 +12,17 @@ vendors.
 
 ## What this portal does
 
-- Sector rollup across centres: children screened, SAM/MAM counts, non-reporting centres.
-- Per-centre drill-down: device health, screening trend, flagged children.
-- Referral action list — every flagged child tracked from referral through to a recorded outcome.
-- Diagnostics: z-score engine mismatches, implausible measurements, devices that have stopped syncing.
-- Role-specific dashboards for all five roles.
+All five roles have a working dashboard and sub-pages — 21 routes in total.
+
+| Role | Surfaces |
+|---|---|
+| **AWW** | Home · child roster (search, overdue/flagged/consent filters) · measurement capture |
+| **Supervisor** | Sector rollup with SAM/MAM trend · centres index and drill-down · referral action list · diagnostics |
+| **Doctor** | Referred-case inbox, filterable by severity, with outcome recording |
+| **Parent** | Plain-language status, weight trend, printable growth card |
+| **Admin** | Console · users and role approvals · programme analytics · app health · configuration · audit log |
+
+Shared: `/settings` (language, appearance, role, privacy, about) and a localised 404.
 
 ## Stack
 
@@ -118,10 +124,11 @@ that is not true.
 
 ## Known limitations
 
-- **All data is mocked.** `src/data/mockData.ts` is a static import; there is no API layer yet.
-- **Authentication is a demonstration.** The role picker sets a theme and routes; it does not authenticate. Real identity (Google OAuth, phone OTP, email OTP, AWW offline PIN) arrives with the identity service — see §EX2.
+- **All data is mocked.** `src/data/mockData.ts` and `src/data/rosterData.ts` are static imports; there is no API layer yet. Every surface rendering them carries a sample-data chip.
+- **Authentication is a demonstration.** The role picker sets a theme and routes; it does not authenticate. Real identity (Google OAuth, phone OTP, email OTP, AWW offline PIN) arrives with the identity service — see §EX2. Admin approve/reject updates local state only.
+- **No z-scores are computed.** `/worker/measure` deliberately does not classify. The engine is on-device and Gate G2 is open — the WHO tables ship empty, so it reports `indeterminate` for everything except oedema, which forces SAM. The portal reproduces that exactly rather than inventing a number no clinical reviewer has approved.
 - **`/centres/[id]` returns HTTP 200 for an unknown id.** It is a client component, so `notFound()` resolves after hydration: users see the branded 404, crawlers see the wrong status. Fixing it means splitting the route into a server component that resolves the centre and a client child that renders it — worth doing when the data layer stops being a static import.
-- **Routes marked "Soon"** in the navigation are specified in the roadmap but not built.
+- **Config edit controls are disabled.** There is no config API; the clinical/operational split the page encodes is the durable part.
 
 ## Related
 
