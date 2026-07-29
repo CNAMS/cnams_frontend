@@ -95,6 +95,25 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Admin: programme analytics (child health outcomes) ───────────────────
+  analyticsSubtitle: { en: 'Coverage and malnutrition outcomes', hi: 'कवरेज और कुपोषण परिणाम' },
+  analyticsScreenedLatest: { en: 'Screened this month', hi: 'इस महीने जांच' },
+  analyticsSamChange: { en: 'SAM change', hi: 'SAM परिवर्तन' },
+  analyticsSinceFeb: { en: 'since February', hi: 'फ़रवरी से' },
+  analyticsCoverage: { en: 'Screening coverage', hi: 'जांच कवरेज' },
+  analyticsCoverageHint: {
+    en: 'Children measured each month across all centres.',
+    hi: 'सभी केंद्रों पर हर महीने मापे गए बच्चे।',
+  },
+  analyticsMalnutritionTrend: { en: 'SAM and MAM over time', hi: 'समय के साथ SAM और MAM' },
+  analyticsTrendHint: {
+    en: 'Falling counts with steady coverage indicate real improvement; falling counts with falling coverage may only mean fewer children were measured.',
+    hi: 'कवरेज स्थिर रहते हुए संख्या घटे तो वास्तविक सुधार है; कवरेज भी घटे तो शायद केवल कम बच्चों की माप हुई।',
+  },
+  analyticsCurrentMix: { en: 'Current classification mix', hi: 'वर्तमान वर्गीकरण वितरण' },
+  analyticsChildrenClassified: { en: 'children classified', hi: 'बच्चे वर्गीकृत' },
+  analyticsChildren: { en: 'Children', hi: 'बच्चे' },
+
   // ── Admin: users ─────────────────────────────────────────────────────────
   adminUsersSubtitle: { en: 'Accounts, roles and approvals', hi: 'खाते, भूमिकाएँ और अनुमोदन' },
   userAccounts: { en: 'Accounts', hi: 'खाते' },
