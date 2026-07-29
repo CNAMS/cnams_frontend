@@ -95,6 +95,60 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Measurement capture ──────────────────────────────────────────────────
+  measureSubtitle: { en: 'Record a growth measurement', hi: 'विकास माप दर्ज करें' },
+  measureProgress: { en: 'Capture progress', hi: 'माप प्रगति' },
+  measureStep: { en: 'Step', hi: 'चरण' },
+  measureStep_child: { en: 'Choose child', hi: 'बच्चा चुनें' },
+  measureStep_weight: { en: 'Weight and length', hi: 'वज़न और लंबाई' },
+  measureStep_muac: { en: 'MUAC and oedema', hi: 'MUAC और सूजन' },
+  measureStep_result: { en: 'Result', hi: 'परिणाम' },
+  measurePickChild: { en: 'Which child?', hi: 'कौन सा बच्चा?' },
+  measurePickChildHint: {
+    en: 'Only children with recorded consent are listed.',
+    hi: 'केवल वे बच्चे सूचीबद्ध हैं जिनकी सहमति दर्ज है।',
+  },
+  measureWeightLength: { en: 'Weight and length', hi: 'वज़न और लंबाई' },
+  measureMuacOedema: { en: 'MUAC and oedema', hi: 'MUAC और सूजन' },
+  measureWeight: { en: 'Weight', hi: 'वज़न' },
+  measureLength: { en: 'Length (lying down)', hi: 'लंबाई (लिटाकर)' },
+  measureHeight: { en: 'Height (standing)', hi: 'ऊँचाई (खड़े होकर)' },
+  measureLengthHint: {
+    en: 'Under 24 months — measure lying down.',
+    hi: '24 माह से कम — लिटाकर मापें।',
+  },
+  measureHeightHint: {
+    en: '24 months and over — measure standing.',
+    hi: '24 माह या अधिक — खड़े होकर मापें।',
+  },
+  measureManualFallback: {
+    en: 'No measuring device is paired with this portal. Enter the readings from the device manually — the same values it would have sent.',
+    hi: 'इस पोर्टल से कोई माप उपकरण जुड़ा नहीं है। उपकरण पर दिखे मान स्वयं दर्ज करें — वही मान जो वह भेजता।',
+  },
+  measureOedema: { en: 'Bilateral pitting oedema', hi: 'दोनों पैरों में गड्ढेदार सूजन' },
+  measureOedemaHint: {
+    en: 'Press both feet for 3 seconds. If a dent remains, oedema is present.',
+    hi: 'दोनों पैरों को 3 सेकंड दबाएँ। यदि गड्ढा रह जाए, तो सूजन मौजूद है।',
+  },
+  measureBack: { en: 'Back', hi: 'पीछे' },
+  measureNext: { en: 'Next', hi: 'आगे' },
+  measureNextChild: { en: 'Measure next child', hi: 'अगले बच्चे की माप' },
+  resultRecorded: { en: 'Readings recorded', hi: 'दर्ज मान' },
+  resultIndeterminate: {
+    en: 'The WHO reference tables are not yet loaded on this system, so no z-score can be computed. The readings are saved and will be classified once the tables are in place.',
+    hi: 'इस प्रणाली पर WHO संदर्भ तालिकाएँ अभी लोड नहीं हैं, इसलिए ज़ेड-स्कोर नहीं निकाला जा सकता। मान सुरक्षित हैं और तालिकाएँ आते ही वर्गीकरण हो जाएगा।',
+  },
+  resultOedemaSam: {
+    en: 'Bilateral pitting oedema is present. Under WHO rules this is classified as severe acute malnutrition regardless of any measurement.',
+    hi: 'दोनों पैरों में गड्ढेदार सूजन मौजूद है। WHO नियमों के अनुसार यह किसी भी माप से स्वतंत्र रूप से गंभीर तीव्र कुपोषण माना जाता है।',
+  },
+  resultReferralAdvice: {
+    en: 'It is advised that this child be shown to the ANM.',
+    hi: 'इस बच्चे को ANM को दिखाने की सलाह दी जाती है।',
+  },
+  yes: { en: 'Yes', hi: 'हाँ' },
+  no: { en: 'No', hi: 'नहीं' },
+
   // ── Child roster ─────────────────────────────────────────────────────────
   rosterSubtitle: { en: 'Children registered at your centre', hi: 'आपके केंद्र पर पंजीकृत बच्चे' },
   rosterRegistered: { en: 'Registered', hi: 'पंजीकृत' },
