@@ -95,6 +95,37 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Settings ─────────────────────────────────────────────────────────────
+  settingsSubtitle: { en: 'Language, appearance and account', hi: 'भाषा, रूप और खाता' },
+  settingsGeneral: { en: 'General', hi: 'सामान्य' },
+  settingsLanguage: { en: 'Language', hi: 'भाषा' },
+  settingsLanguageHint: {
+    en: 'Applies immediately and is remembered next time you visit.',
+    hi: 'तुरंत लागू होती है और अगली बार याद रखी जाती है।',
+  },
+  settingsTheme: { en: 'Appearance', hi: 'रूप' },
+  settingsThemeHint: {
+    en: 'Light, dark, or follow your device setting.',
+    hi: 'उजला, गहरा, या अपने डिवाइस की सेटिंग के अनुसार।',
+  },
+  settingsRole: { en: 'Role', hi: 'भूमिका' },
+  settingsRoleHint: {
+    en: 'Development only — switching roles previews each dashboard and theme. With real sign-in your role comes from your account.',
+    hi: 'केवल विकास हेतु — भूमिका बदलकर हर डैशबोर्ड और थीम देखी जा सकती है। वास्तविक साइन-इन के बाद भूमिका आपके खाते से तय होगी।',
+  },
+  settingsPrivacy: { en: 'Data & privacy', hi: 'डेटा और गोपनीयता' },
+  settingsPrivacyBody: {
+    en: 'Children are shown by initials and ICDS ID only — never full names. Measurement data is governed by the consent recorded for each child, and a withdrawn consent removes that child from screening lists.',
+    hi: 'बच्चों को केवल नाम के पहले अक्षर और आईसीडीएस आईडी से दिखाया जाता है — कभी पूरा नाम नहीं। माप डेटा हर बच्चे के लिए दर्ज सहमति से नियंत्रित होता है, और सहमति वापस लेने पर बच्चा जांच सूची से हट जाता है।',
+  },
+  settingsAbout: { en: 'About', hi: 'परिचय' },
+  aboutPortalVersion: { en: 'Portal version', hi: 'पोर्टल संस्करण' },
+  aboutEngine: { en: 'Reference tables', hi: 'संदर्भ तालिकाएँ' },
+  aboutMockNotice: {
+    en: 'This portal currently runs on sample data. No live centre records are shown.',
+    hi: 'यह पोर्टल अभी नमूना डेटा पर चलता है। कोई वास्तविक केंद्र रिकॉर्ड नहीं दिखाया जाता।',
+  },
+
   // ── Not found ────────────────────────────────────────────────────────────
   notFoundTitle: { en: 'Page not found', hi: 'पृष्ठ नहीं मिला' },
   notFoundBody: {
