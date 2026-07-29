@@ -95,6 +95,21 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Parent growth card ───────────────────────────────────────────────────
+  growthCardSubtitle: { en: 'Print or share your child’s growth record', hi: 'अपने बच्चे का विकास रिकॉर्ड प्रिंट या साझा करें' },
+  growthCardTitle: { en: 'Child growth card', hi: 'बाल विकास कार्ड' },
+  growthCardWeightTrend: { en: 'Weight over time', hi: 'समय के साथ वज़न' },
+  growthCardWeightHint: {
+    en: 'Each point is one monthly measurement at your Anganwadi centre.',
+    hi: 'हर बिंदु आपके आंगनवाड़ी केंद्र पर हुई एक मासिक माप है।',
+  },
+  growthCardFooter: {
+    en: 'Bring this card to your next visit. If you have any concern about your child’s growth, speak to your Anganwadi worker or ANM.',
+    hi: 'अगली बार आते समय यह कार्ड साथ लाएँ। अपने बच्चे के विकास को लेकर कोई भी चिंता हो तो अपनी आंगनवाड़ी कार्यकर्ता या ANM से बात करें।',
+  },
+  growthCardPrint: { en: 'Print', hi: 'प्रिंट करें' },
+  growthCardShare: { en: 'Share', hi: 'साझा करें' },
+
   // ── Measurement capture ──────────────────────────────────────────────────
   measureSubtitle: { en: 'Record a growth measurement', hi: 'विकास माप दर्ज करें' },
   measureProgress: { en: 'Capture progress', hi: 'माप प्रगति' },
