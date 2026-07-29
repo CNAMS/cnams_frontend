@@ -1,9 +1,12 @@
 'use client';
 /* mini */
 import Link from 'next/link';
-import { Activity, ClipboardCheck, ShieldCheck, Users } from 'lucide-react';
+import { Activity, Baby, ClipboardCheck, Cog, LayoutDashboard, ShieldCheck, Stethoscope, Users } from 'lucide-react';
 import { getDashboardMetrics } from '@/data/mockData';
 import { useLanguage } from '@/context/LanguageContext';
+import type { AppRole } from '@/theme/roles';
+import type { TranslationKey } from '@/data/translations';
+import { ROLE_LABEL_KEY } from '@/components/nav/navigation';
 import { AnkurWordmark, SproutMark } from '@/components/brand/SproutMark';
 import { SproutSplash } from '@/components/brand/SproutSplash';
 import { ButtonLink } from '@/components/ui/Button';
@@ -12,6 +15,19 @@ import { StatTile } from '@/components/ui/StatTile';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
+
+/** The five roles Ankur serves, in the order they touch a child's record. */
+const ROLE_SUMMARY: {
+  role: AppRole;
+  icon: React.ElementType;
+  descriptionKey: TranslationKey;
+}[] = [
+  { role: 'aww', icon: Baby, descriptionKey: 'roleAwwBlurb' },
+  { role: 'supervisor', icon: LayoutDashboard, descriptionKey: 'roleSupervisorBlurb' },
+  { role: 'doctor', icon: Stethoscope, descriptionKey: 'roleDoctorBlurb' },
+  { role: 'parent', icon: Users, descriptionKey: 'roleParentBlurb' },
+  { role: 'admin', icon: Cog, descriptionKey: 'roleAdminBlurb' },
+];
 
 /**
  * The public landing page.
@@ -100,6 +116,30 @@ export default function PublicLandingPage() {
               </Card>
             ))}
           </div>
+        </section>
+
+        {/* ── Who it's for ──────────────────────────────────────────────────
+            Ankur is a five-role product, and the landing page described none
+            of them — a visitor could not tell whether it was for them. */}
+        <section className="px-4 sm:px-6 pb-14 max-w-5xl mx-auto">
+          <SectionHeader title={t('whoItsFor')} description={t('whoItsForHint')} />
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {ROLE_SUMMARY.map(({ role, icon: Icon, descriptionKey }) => (
+              <li key={role}>
+                <Card className="flex items-start gap-3 h-full">
+                  <div className="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                    <Icon size={17} className="text-on-primary-container" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold">{t(ROLE_LABEL_KEY[role])}</p>
+                    <p className="text-sm text-on-surface-variant leading-relaxed">
+                      {t(descriptionKey)}
+                    </p>
+                  </div>
+                </Card>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* ── Coverage ──────────────────────────────────────────────────── */}

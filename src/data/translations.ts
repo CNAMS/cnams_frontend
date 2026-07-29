@@ -526,6 +526,31 @@ export const translations = {
     en: 'Every flagged child is followed from the moment of referral until an outcome is recorded — nothing is left open.',
     hi: 'हर चिह्नित बच्चे का रेफरल से लेकर परिणाम दर्ज होने तक अनुसरण किया जाता है — कुछ भी अधूरा नहीं छोड़ा जाता।',
   },
+  whoItsFor: { en: 'Who it’s for', hi: 'यह किसके लिए है' },
+  whoItsForHint: {
+    en: 'One system, five views — each role sees only what it needs, and only the children it is responsible for.',
+    hi: 'एक प्रणाली, पाँच दृश्य — हर भूमिका को केवल वही दिखता है जिसकी उसे ज़रूरत है, और केवल वे बच्चे जिनकी वह ज़िम्मेदार है।',
+  },
+  roleAwwBlurb: {
+    en: 'Registers children, records measurements and acts on results — entirely offline.',
+    hi: 'बच्चों का पंजीकरण, माप दर्ज करना और परिणाम पर कार्रवाई — पूरी तरह ऑफ़लाइन।',
+  },
+  roleSupervisorBlurb: {
+    en: 'Oversees every centre in a sector: coverage, flagged cases and referral follow-up.',
+    hi: 'सेक्टर के हर केंद्र की निगरानी: कवरेज, चिह्नित मामले और रेफरल अनुवर्तन।',
+  },
+  roleDoctorBlurb: {
+    en: 'Receives referred cases with the child’s growth history, and records the outcome.',
+    hi: 'बच्चे के विकास इतिहास सहित रेफर किए गए मामले प्राप्त करते हैं, और परिणाम दर्ज करते हैं।',
+  },
+  roleParentBlurb: {
+    en: 'Follows their own child’s growth in plain language, with a card they can keep.',
+    hi: 'सरल भाषा में अपने बच्चे का विकास देखते हैं, साथ में रखने योग्य कार्ड भी।',
+  },
+  roleAdminBlurb: {
+    en: 'Runs the system: accounts, centres, configuration and both analytics views.',
+    hi: 'प्रणाली का संचालन: खाते, केंद्र, विन्यास और दोनों विश्लेषण दृश्य।',
+  },
   footerLine: {
     en: 'Ankur — Child Growth Management System, Track D supervisory portal.',
     hi: 'अंकुर — बाल विकास प्रबंधन प्रणाली, ट्रैक D पर्यवेक्षी पोर्टल।',
