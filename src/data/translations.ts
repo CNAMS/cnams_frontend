@@ -95,6 +95,42 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Child roster ─────────────────────────────────────────────────────────
+  rosterSubtitle: { en: 'Children registered at your centre', hi: 'आपके केंद्र पर पंजीकृत बच्चे' },
+  rosterRegistered: { en: 'Registered', hi: 'पंजीकृत' },
+  rosterOverdue: { en: 'Overdue', hi: 'विलंबित' },
+  rosterFlagged: { en: 'Flagged', hi: 'चिह्नित' },
+  rosterNoConsent: { en: 'No consent', hi: 'सहमति नहीं' },
+  rosterSearchPlaceholder: {
+    en: 'Search by initials or ICDS ID',
+    hi: 'नाम के पहले अक्षर या आईसीडीएस आईडी से खोजें',
+  },
+  rosterClearSearch: { en: 'Clear search', hi: 'खोज साफ़ करें' },
+  rosterClearFilters: { en: 'Clear filters', hi: 'फ़िल्टर हटाएँ' },
+  rosterNoMatches: { en: 'No children match.', hi: 'कोई बच्चा मेल नहीं खाता।' },
+  rosterNoMatchesBody: {
+    en: 'Try a different search term, or clear the filters to see the whole roster.',
+    hi: 'कोई दूसरा खोज शब्द आज़माएँ, या पूरी सूची देखने के लिए फ़िल्टर हटाएँ।',
+  },
+  rosterLastMeasured: { en: 'Last measured', hi: 'अंतिम माप' },
+  rosterNever: { en: 'Never', hi: 'कभी नहीं' },
+  sexMale: { en: 'Boy', hi: 'लड़का' },
+  sexFemale: { en: 'Girl', hi: 'लड़की' },
+  months: { en: 'months', hi: 'माह' },
+  dobEstimated: { en: 'DOB estimated', hi: 'जन्मतिथि अनुमानित' },
+  dobMonthOnly: { en: 'DOB month only', hi: 'जन्म माह ही ज्ञात' },
+  oedemaPresent: { en: 'Oedema present — classified SAM', hi: 'सूजन मौजूद — SAM वर्गीकृत' },
+  waz: { en: 'WAZ', hi: 'WAZ' },
+  muac: { en: 'MUAC', hi: 'MUAC' },
+  consentMissingNote: {
+    en: 'Consent not yet recorded — this child cannot be measured.',
+    hi: 'सहमति अभी दर्ज नहीं — इस बच्चे की माप नहीं ली जा सकती।',
+  },
+  consentWithdrawnNote: {
+    en: 'Consent withdrawn — this child has been removed from screening.',
+    hi: 'सहमति वापस ली गई — इस बच्चे को जांच से हटा दिया गया है।',
+  },
+
   // ── Settings ─────────────────────────────────────────────────────────────
   settingsSubtitle: { en: 'Language, appearance and account', hi: 'भाषा, रूप और खाता' },
   settingsGeneral: { en: 'General', hi: 'सामान्य' },
