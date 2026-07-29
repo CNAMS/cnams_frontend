@@ -248,6 +248,11 @@ export const translations = {
     en: 'Bring this card to your next visit. If you have any concern about your child’s growth, speak to your Anganwadi worker or ANM.',
     hi: 'अगली बार आते समय यह कार्ड साथ लाएँ। अपने बच्चे के विकास को लेकर कोई भी चिंता हो तो अपनी आंगनवाड़ी कार्यकर्ता या ANM से बात करें।',
   },
+  growthCardOpen: { en: 'Open card', hi: 'कार्ड खोलें' },
+  parentTrendHint: {
+    en: 'Your child’s weight at each monthly visit.',
+    hi: 'हर मासिक भेंट पर आपके बच्चे का वज़न।',
+  },
   growthCardPrint: { en: 'Print', hi: 'प्रिंट करें' },
   growthCardShare: { en: 'Share', hi: 'साझा करें' },
 

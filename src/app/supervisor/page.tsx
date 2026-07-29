@@ -3,7 +3,19 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, Clock, Inbox, TrendingUp, Users } from 'lucide-react';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { getDashboardMetrics } from '@/data/mockData';
+import { mockProgrammeTrend } from '@/data/rosterData';
+import { styleFor } from '@/theme/classification';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
@@ -138,6 +150,68 @@ export default function SupervisorDashboard() {
             </ul>
           </Card>
         )}
+
+        {/* ── Sector trend ──────────────────────────────────────────────────
+            The dashboard previously showed only "now" — four counts with no
+            indication of direction. A supervisor's actual question is whether
+            things are improving, which a single month cannot answer. */}
+        <section>
+          <SectionHeader
+            title={t('analyticsMalnutritionTrend')}
+            description={t('analyticsTrendHint')}
+          />
+          <Card>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={mockProgrammeTrend}
+                  margin={{ top: 8, right: 8, left: -22, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                    dy={8}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                    tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 12,
+                      border: '1px solid var(--outline-variant)',
+                      background: 'var(--surface-container)',
+                      color: 'var(--on-surface)',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="sam"
+                    name={t('classSam')}
+                    stroke={styleFor('sam').color}
+                    strokeWidth={2.5}
+                    dot={{ r: 3 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="mam"
+                    name={t('classMam')}
+                    stroke={styleFor('mam').color}
+                    strokeWidth={2.5}
+                    strokeDasharray="5 4"
+                    dot={{ r: 3 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </section>
 
         {/* ── Centres ───────────────────────────────────────────────────── */}
         <section>
