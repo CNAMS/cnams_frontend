@@ -95,6 +95,36 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Admin: users ─────────────────────────────────────────────────────────
+  adminUsersSubtitle: { en: 'Accounts, roles and approvals', hi: 'खाते, भूमिकाएँ और अनुमोदन' },
+  userAccounts: { en: 'Accounts', hi: 'खाते' },
+  userActive: { en: 'Active', hi: 'सक्रिय' },
+  userPending: { en: 'Pending', hi: 'लंबित' },
+  userPendingApproval: { en: 'Awaiting approval', hi: 'अनुमोदन प्रतीक्षित' },
+  userSuspended: { en: 'Suspended', hi: 'निलंबित' },
+  userApprovalQueue: { en: 'Approval queue', hi: 'अनुमोदन कतार' },
+  userApprovalHint: {
+    en: 'A user requests a role on sign-up; an administrator approves it and binds them to a centre, sector or child. No role is self-granted.',
+    hi: 'उपयोगकर्ता साइन-अप पर भूमिका का अनुरोध करता है; प्रशासक उसे स्वीकृत कर केंद्र, सेक्टर या बच्चे से जोड़ता है। कोई भी भूमिका स्वयं नहीं ली जा सकती।',
+  },
+  userNoPending: { en: 'Nothing awaiting approval.', hi: 'कोई अनुमोदन प्रतीक्षित नहीं।' },
+  userNoPendingBody: {
+    en: 'New sign-ups appear here for you to approve and scope.',
+    hi: 'नए साइन-अप यहाँ दिखेंगे, जिन्हें आप स्वीकृत कर दायरा तय करेंगे।',
+  },
+  userRequesting: { en: 'Requesting', hi: 'अनुरोधित भूमिका' },
+  userApprove: { en: 'Approve', hi: 'स्वीकृत' },
+  userReject: { en: 'Reject', hi: 'अस्वीकृत' },
+  userDirectory: { en: 'All accounts', hi: 'सभी खाते' },
+  userName: { en: 'Name', hi: 'नाम' },
+  userScope: { en: 'Scope', hi: 'दायरा' },
+  userSignInMethod: { en: 'Sign-in', hi: 'साइन-इन' },
+  userNoAccounts: { en: 'No accounts yet.', hi: 'अभी कोई खाता नहीं।' },
+  authGoogle: { en: 'Google', hi: 'Google' },
+  authPhoneOtp: { en: 'Phone OTP', hi: 'फ़ोन OTP' },
+  authEmailOtp: { en: 'Email OTP', hi: 'ईमेल OTP' },
+  authPin: { en: 'Offline PIN', hi: 'ऑफ़लाइन पिन' },
+
   // ── Parent growth card ───────────────────────────────────────────────────
   growthCardSubtitle: { en: 'Print or share your child’s growth record', hi: 'अपने बच्चे का विकास रिकॉर्ड प्रिंट या साझा करें' },
   growthCardTitle: { en: 'Child growth card', hi: 'बाल विकास कार्ड' },
