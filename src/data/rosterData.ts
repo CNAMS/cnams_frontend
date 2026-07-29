@@ -1,4 +1,5 @@
 import type { GrowthClass } from '@/theme/classification';
+import type { TranslationKey } from '@/data/translations';
 
 /**
  * Roster, identity and telemetry mocks for the surfaces that the original
@@ -145,7 +146,8 @@ export const mockUsers: AppUser[] = [
 export interface AuditEntry {
   id: string;
   actor: string;
-  action: string;
+  /** Translation key, not an English sentence — the log localises too. */
+  action: TranslationKey;
   target: string;
   timestampIso: string;
   severity: 'info' | 'warning';
@@ -222,9 +224,9 @@ export const mockAppHealth = {
 
 export interface ConfigItem {
   id: string;
-  labelKey: string;
+  labelKey: TranslationKey;
   value: string;
-  descriptionKey: string;
+  descriptionKey: TranslationKey;
   /** Locked settings are clinical constants, not preferences. */
   locked?: boolean;
 }

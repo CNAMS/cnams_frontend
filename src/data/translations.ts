@@ -95,6 +95,69 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Admin: configuration ─────────────────────────────────────────────────
+  configSubtitle: { en: 'Reference data and operational settings', hi: 'संदर्भ डेटा और संचालन सेटिंग्स' },
+  configClinical: { en: 'Clinical constants', hi: 'नैदानिक स्थिरांक' },
+  configClinicalHint: {
+    en: 'These are not preferences. Every measurement records the engine version used, so a past z-score can be reproduced exactly — changing these from a settings screen would invalidate that history.',
+    hi: 'ये प्राथमिकताएँ नहीं हैं। हर माप में प्रयुक्त इंजन संस्करण दर्ज होता है, ताकि पुराना ज़ेड-स्कोर हूबहू दोहराया जा सके — इन्हें सेटिंग्स से बदलना उस इतिहास को अमान्य कर देगा।',
+  },
+  configOperational: { en: 'Operational settings', hi: 'संचालन सेटिंग्स' },
+  configOperationalHint: {
+    en: 'Thresholds the project team can tune without clinical review.',
+    hi: 'वे सीमाएँ जिन्हें टीम नैदानिक समीक्षा के बिना बदल सकती है।',
+  },
+  configEdit: { en: 'Edit', hi: 'बदलें' },
+  cfgReferenceTables: { en: 'WHO reference tables', hi: 'WHO संदर्भ तालिकाएँ' },
+  cfgReferenceTablesHint: {
+    en: 'The LMS growth standards every z-score is computed against.',
+    hi: 'वे LMS विकास मानक जिनके आधार पर हर ज़ेड-स्कोर निकाला जाता है।',
+  },
+  cfgEngineVersion: { en: 'Z-score engine', hi: 'ज़ेड-स्कोर इंजन' },
+  cfgEngineVersionHint: {
+    en: 'Stamped on every measurement row for reproducibility and audit.',
+    hi: 'पुनरुत्पादन और ऑडिट हेतु हर माप पंक्ति पर दर्ज।',
+  },
+  cfgOverdueThreshold: { en: 'Overdue threshold', hi: 'विलंब सीमा' },
+  cfgOverdueThresholdHint: {
+    en: 'How long since the last measurement before a child is flagged overdue.',
+    hi: 'अंतिम माप के कितने समय बाद बच्चा विलंबित माना जाए।',
+  },
+  cfgSyncBatchSize: { en: 'Sync batch size', hi: 'सिंक बैच आकार' },
+  cfgSyncBatchSizeHint: {
+    en: 'Records sent to the server per batch.',
+    hi: 'प्रति बैच सर्वर को भेजे गए रिकॉर्ड।',
+  },
+  cfgStaleDeviceDays: { en: 'Stale device threshold', hi: 'पुराना डिवाइस सीमा' },
+  cfgStaleDeviceDaysHint: {
+    en: 'How long without a sync before a device is reported stale.',
+    hi: 'कितने समय बिना सिंक रहने पर डिवाइस पुराना माना जाए।',
+  },
+  configGateTitle: { en: 'Reference tables not yet loaded', hi: 'संदर्भ तालिकाएँ अभी लोड नहीं' },
+  configGateBody: {
+    en: 'The official WHO tables have not been installed on this deployment. Until they are, the engine reports every result as indeterminate — with the exception that oedema still forces a SAM classification. This is deliberate fail-safe behaviour, not a fault.',
+    hi: 'इस परिनियोजन पर आधिकारिक WHO तालिकाएँ स्थापित नहीं हैं। तब तक इंजन हर परिणाम को अनिर्धारित बताता है — केवल सूजन होने पर SAM वर्गीकरण लागू रहता है। यह जानबूझकर बनाया गया सुरक्षित व्यवहार है, कोई खराबी नहीं।',
+  },
+
+  // ── Admin: audit ─────────────────────────────────────────────────────────
+  auditSubtitle: { en: 'Who changed what, and when', hi: 'किसने क्या बदला, और कब' },
+  auditRecent: { en: 'Recent activity', hi: 'हाल की गतिविधि' },
+  auditEmpty: { en: 'No activity recorded.', hi: 'कोई गतिविधि दर्ज नहीं।' },
+  auditEmptyBody: {
+    en: 'Approvals, measurements and consent changes will appear here.',
+    hi: 'अनुमोदन, माप और सहमति परिवर्तन यहाँ दिखेंगे।',
+  },
+  auditRetentionNote: {
+    en: 'Audit entries are retained for the life of the programme and cannot be edited or deleted from this screen.',
+    hi: 'ऑडिट प्रविष्टियाँ कार्यक्रम की पूरी अवधि तक रखी जाती हैं और इस स्क्रीन से न बदली जा सकती हैं न हटाई जा सकती हैं।',
+  },
+  auditApprovedUser: { en: 'approved the account of', hi: 'ने खाता स्वीकृत किया —' },
+  auditRecordedMeasurement: { en: 'recorded a measurement for', hi: 'ने माप दर्ज की —' },
+  auditRecordedOutcome: { en: 'recorded a referral outcome for', hi: 'ने रेफरल परिणाम दर्ज किया —' },
+  auditConsentWithdrawn: { en: 'processed a consent withdrawal for', hi: 'ने सहमति वापसी दर्ज की —' },
+  auditSuspendedUser: { en: 'suspended the account of', hi: 'ने खाता निलंबित किया —' },
+  auditReferenceTablesLoaded: { en: 'loaded reference tables', hi: 'ने संदर्भ तालिकाएँ लोड कीं —' },
+
   // ── Admin: app health (system performance, not children) ─────────────────
   appHealthSubtitle: { en: 'Adoption, sync and stability', hi: 'उपयोग, सिंक और स्थिरता' },
   healthCrashFree: { en: 'Crash-free sessions', hi: 'बिना क्रैश सत्र' },
