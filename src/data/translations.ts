@@ -95,6 +95,35 @@ export const translations = {
   childrenMonitored: { en: 'Children Monitored', hi: 'निगरानी किए गए बच्चे' },
   loginPortalBtn: { en: 'Login to Portal', hi: 'पोर्टल में लॉगिन करें' },
 
+  // ── Admin: app health (system performance, not children) ─────────────────
+  appHealthSubtitle: { en: 'Adoption, sync and stability', hi: 'उपयोग, सिंक और स्थिरता' },
+  healthCrashFree: { en: 'Crash-free sessions', hi: 'बिना क्रैश सत्र' },
+  healthSyncLatency: { en: 'Median sync time', hi: 'औसत सिंक समय' },
+  healthOutboxBacklog: { en: 'Outbox backlog', hi: 'आउटबॉक्स बैकलॉग' },
+  healthOutboxHint: { en: 'records waiting', hi: 'रिकॉर्ड प्रतीक्षारत' },
+  healthActiveDevices: { en: 'Active devices (7d)', hi: 'सक्रिय डिवाइस (7 दिन)' },
+  healthDeadLetters: { en: 'Dead-lettered records', hi: 'विफल रिकॉर्ड' },
+  healthDeadLettersHint: {
+    en: 'Records the server rejected outright. These will never sync without someone intervening.',
+    hi: 'सर्वर द्वारा अस्वीकृत रिकॉर्ड। किसी के हस्तक्षेप के बिना ये कभी सिंक नहीं होंगे।',
+  },
+  healthSyncTitle: { en: 'Sync success this week', hi: 'इस सप्ताह सिंक सफलता' },
+  healthSyncHint: {
+    en: 'Batches delivered to the server each day, and how many failed.',
+    hi: 'हर दिन सर्वर तक पहुँचे बैच, और कितने विफल हुए।',
+  },
+  healthSynced: { en: 'Synced', hi: 'सिंक हुए' },
+  healthFailed: { en: 'Failed', hi: 'विफल' },
+  healthOfflineTitle: { en: 'Offline usage', hi: 'ऑफ़लाइन उपयोग' },
+  healthOfflineHint: {
+    en: 'A high share is expected and healthy — the field app is built to work without a network.',
+    hi: 'अधिक हिस्सा अपेक्षित और सही है — फ़ील्ड ऐप बिना नेटवर्क चलने के लिए ही बना है।',
+  },
+  healthOfflineSessions: { en: 'Sessions started offline', hi: 'ऑफ़लाइन शुरू हुए सत्र' },
+  healthVersionSpread: { en: 'App versions in the field', hi: 'फ़ील्ड में ऐप संस्करण' },
+  healthCurrent: { en: 'Current', hi: 'वर्तमान' },
+  healthDevices: { en: 'devices', hi: 'डिवाइस' },
+
   // ── Admin: programme analytics (child health outcomes) ───────────────────
   analyticsSubtitle: { en: 'Coverage and malnutrition outcomes', hi: 'कवरेज और कुपोषण परिणाम' },
   analyticsScreenedLatest: { en: 'Screened this month', hi: 'इस महीने जांच' },
