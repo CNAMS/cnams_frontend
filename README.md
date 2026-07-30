@@ -127,7 +127,6 @@ that is not true.
 - **All data is mocked.** `src/data/mockData.ts` and `src/data/rosterData.ts` are static imports; there is no API layer yet. Every surface rendering them carries a sample-data chip.
 - **Authentication is a demonstration.** The role picker sets a theme and routes; it does not authenticate. Real identity (Google OAuth, phone OTP, email OTP, AWW offline PIN) arrives with the identity service — see §EX2. Admin approve/reject updates local state only.
 - **No z-scores are computed.** `/worker/measure` deliberately does not classify. The engine is on-device and Gate G2 is open — the WHO tables ship empty, so it reports `indeterminate` for everything except oedema, which forces SAM. The portal reproduces that exactly rather than inventing a number no clinical reviewer has approved.
-- **`/centres/[id]` returns HTTP 200 for an unknown id.** It is a client component, so `notFound()` resolves after hydration: users see the branded 404, crawlers see the wrong status. Fixing it means splitting the route into a server component that resolves the centre and a client child that renders it — worth doing when the data layer stops being a static import.
 - **Config edit controls are disabled.** There is no config API; the clinical/operational split the page encodes is the durable part.
 
 ## Related
