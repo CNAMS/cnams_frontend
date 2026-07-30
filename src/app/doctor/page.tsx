@@ -113,6 +113,9 @@ export default function DoctorDashboard() {
               </button>
             ))}
           </div>
+          <p aria-live="polite" className="sr-only">
+            {cases.length} {t('caseList')}
+          </p>
           <DataTable
             data={cases}
             columns={columns}

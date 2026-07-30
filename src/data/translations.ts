@@ -327,6 +327,7 @@ export const translations = {
     en: 'Try a different search term, or clear the filters to see the whole roster.',
     hi: 'कोई दूसरा खोज शब्द आज़माएँ, या पूरी सूची देखने के लिए फ़िल्टर हटाएँ।',
   },
+  rosterResultsAnnounce: { en: 'children shown', hi: 'बच्चे दिख रहे हैं' },
   rosterLastMeasured: { en: 'Last measured', hi: 'अंतिम माप' },
   rosterNever: { en: 'Never', hi: 'कभी नहीं' },
   sexMale: { en: 'Boy', hi: 'लड़का' },

@@ -150,6 +150,13 @@ export default function ChildrenRosterPage() {
           })}
         </div>
 
+        {/* Search and filtering change the list silently for anyone not
+            watching it. A polite live region announces the new count without
+            interrupting whatever the user is currently reading. */}
+        <p aria-live="polite" className="sr-only">
+          {results.length} {t('rosterResultsAnnounce')}
+        </p>
+
         {/* ── Roster ────────────────────────────────────────────────────── */}
         {results.length === 0 ? (
           <Card>
