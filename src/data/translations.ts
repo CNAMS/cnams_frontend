@@ -416,6 +416,24 @@ export const translations = {
   casesReferred: { en: 'Referred to you', hi: 'आपको रेफर किए गए' },
   awaitingOutcome: { en: 'Awaiting outcome', hi: 'परिणाम की प्रतीक्षा' },
   recordOutcome: { en: 'Record outcome', hi: 'परिणाम दर्ज करें' },
+  outcomeAttended: { en: 'Attended', hi: 'उपस्थित हुए' },
+  outcomeAttendedHint: {
+    en: 'The child was brought and was seen.',
+    hi: 'बच्चे को लाया गया और देखा गया।',
+  },
+  outcomeNotAttended: { en: 'Did not attend', hi: 'नहीं आए' },
+  outcomeNotAttendedHint: {
+    en: 'The referral was made but the child was not brought.',
+    hi: 'रेफरल किया गया लेकिन बच्चे को नहीं लाया गया।',
+  },
+  outcomeUnknown: { en: 'Unknown', hi: 'पता नहीं' },
+  outcomeUnknownHint: {
+    en: 'The family could not be traced. Recording this is better than guessing.',
+    hi: 'परिवार का पता नहीं चल सका। अनुमान लगाने से बेहतर है यही दर्ज करना।',
+  },
+  save: { en: 'Save', hi: 'सहेजें' },
+  cancel: { en: 'Cancel', hi: 'रद्द करें' },
+  close: { en: 'Close', hi: 'बंद करें' },
   noCasesReferred: { en: 'No cases referred to you.', hi: 'आपको कोई मामला रेफर नहीं किया गया है।' },
   noCasesReferredBody: {
     en: 'Referred children appear here as soon as a worker flags them.',
