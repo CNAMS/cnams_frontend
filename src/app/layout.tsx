@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
+import { ToastProvider } from "@/components/ui/Toast";
 
 // Ankur's type pairing: Noto Sans Devanagari for Hindi, with a clean Latin
 // companion (ANKUR_EXPERIENCE_ROADMAP §2). Both are self-hosted by next/font
@@ -67,7 +68,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${notoDevanagari.variable} antialiased`}>
         <ThemeProvider>
-          <LanguageProvider>{children}</LanguageProvider>
+          <LanguageProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

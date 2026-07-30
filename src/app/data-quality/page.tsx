@@ -11,6 +11,7 @@ import { StatTile } from '@/components/ui/StatTile';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button } from '@/components/ui/Button';
+import { useToast } from '@/components/ui/Toast';
 
 const STALE_DAYS = 7;
 
@@ -24,6 +25,7 @@ const STALE_DAYS = 7;
 export default function DataQualityPage() {
   const { t } = useLanguage();
   const { role, setRole } = useTheme();
+  const toast = useToast();
 
   useEffect(() => {
     if (role !== 'supervisor') setRole('supervisor');
@@ -159,7 +161,11 @@ export default function DataQualityPage() {
                     {record.details}
                   </p>
 
-                  <Button variant="secondary" size="sm">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => toast(t('reevaluateQueued'), 'info')}
+                  >
                     <RefreshCw size={15} aria-hidden="true" />
                     {t('reevaluate')}
                   </Button>

@@ -13,6 +13,7 @@ import { StatTile } from '@/components/ui/StatTile';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button } from '@/components/ui/Button';
+import { useToast } from '@/components/ui/Toast';
 import { cn } from '@/lib/cn';
 
 /**
@@ -41,6 +42,7 @@ export default function AdminUsersPage() {
   const { t } = useLanguage();
   const { role, setRole } = useTheme();
   const [decided, setDecided] = useState<Record<string, 'approved' | 'rejected'>>({});
+  const toast = useToast();
 
   useEffect(() => {
     if (role !== 'admin') setRole('admin');
@@ -131,7 +133,10 @@ export default function AdminUsersPage() {
                     <Button
                       variant="primary"
                       size="sm"
-                      onClick={() => setDecided((d) => ({ ...d, [u.id]: 'approved' }))}
+                      onClick={() => {
+                        setDecided((d) => ({ ...d, [u.id]: 'approved' }));
+                        toast(`${u.name} — ${t('userApprovedToast')}`);
+                      }}
                     >
                       <Check size={15} aria-hidden="true" />
                       {t('userApprove')}
@@ -139,7 +144,10 @@ export default function AdminUsersPage() {
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => setDecided((d) => ({ ...d, [u.id]: 'rejected' }))}
+                      onClick={() => {
+                        setDecided((d) => ({ ...d, [u.id]: 'rejected' }));
+                        toast(`${u.name} — ${t('userRejectedToast')}`, 'info');
+                      }}
                     >
                       <X size={15} aria-hidden="true" />
                       {t('userReject')}
