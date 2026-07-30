@@ -124,6 +124,7 @@ export default function ReferralsPage() {
 
   return (
     <AppShell
+      breadcrumbs={[{ labelKey: 'navOverview', href: '/supervisor' }, { labelKey: 'navReferrals' }]}
       title={t('referralsListTitle')}
       subtitle={t('referralsListSubtitle')}
       actions={<SampleDataChip />}

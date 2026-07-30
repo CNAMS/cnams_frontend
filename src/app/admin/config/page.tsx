@@ -34,7 +34,8 @@ export default function AdminConfigPage() {
   const editable = mockConfig.filter((c) => !c.locked);
 
   return (
-    <AppShell title={t('navConfig')} subtitle={t('configSubtitle')} actions={<SampleDataChip />}>
+    <AppShell
+      breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navConfig' }]} title={t('navConfig')} subtitle={t('configSubtitle')} actions={<SampleDataChip />}>
       <div className="max-w-3xl space-y-8">
         {/* ── Clinical constants ────────────────────────────────────────── */}
         <section>

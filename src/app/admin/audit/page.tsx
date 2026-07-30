@@ -31,7 +31,8 @@ export default function AdminAuditPage() {
   );
 
   return (
-    <AppShell title={t('adminAudit')} subtitle={t('auditSubtitle')} actions={<SampleDataChip />}>
+    <AppShell
+      breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'adminAudit' }]} title={t('adminAudit')} subtitle={t('auditSubtitle')} actions={<SampleDataChip />}>
       <div className="max-w-3xl">
         <Card flush>
           <CardHeader title={t('auditRecent')} />

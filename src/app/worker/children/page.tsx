@@ -77,6 +77,7 @@ export default function ChildrenRosterPage() {
 
   return (
     <AppShell
+      breadcrumbs={[{ labelKey: 'navHome', href: '/worker' }, { labelKey: 'navChildren' }]}
       title={t('navChildren')}
       subtitle={t('rosterSubtitle')}
       actions={<SampleDataChip />}

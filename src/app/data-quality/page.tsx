@@ -83,6 +83,7 @@ export default function DataQualityPage() {
 
   return (
     <AppShell
+      breadcrumbs={[{ labelKey: 'navOverview', href: '/supervisor' }, { labelKey: 'navDiagnostics' }]}
       title={t('dataQualityTitle')}
       subtitle={t('dataQualitySubtitle')}
       actions={<SampleDataChip />}

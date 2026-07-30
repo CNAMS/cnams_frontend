@@ -60,6 +60,7 @@ export default function ProgrammeAnalyticsPage() {
 
   return (
     <AppShell
+      breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navAnalytics' }]}
       title={t('navAnalytics')}
       subtitle={t('analyticsSubtitle')}
       actions={<SampleDataChip />}

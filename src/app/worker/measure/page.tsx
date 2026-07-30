@@ -97,7 +97,8 @@ export default function MeasurePage() {
   };
 
   return (
-    <AppShell title={t('navMeasure')} subtitle={t('measureSubtitle')} actions={<SampleDataChip />}>
+    <AppShell
+      breadcrumbs={[{ labelKey: 'navHome', href: '/worker' }, { labelKey: 'navMeasure' }]} title={t('navMeasure')} subtitle={t('measureSubtitle')} actions={<SampleDataChip />}>
       <div className="max-w-2xl space-y-6">
         {/* ── Progress ──────────────────────────────────────────────────── */}
         <ol className="flex items-center gap-2" aria-label={t('measureProgress')}>

@@ -42,7 +42,8 @@ export default function AppHealthPage() {
   const axis = { fill: 'var(--on-surface-variant)', fontSize: 12 };
 
   return (
-    <AppShell title={t('navAppHealth')} subtitle={t('appHealthSubtitle')} actions={<SampleDataChip />}>
+    <AppShell
+      breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navAppHealth' }]} title={t('navAppHealth')} subtitle={t('appHealthSubtitle')} actions={<SampleDataChip />}>
       <div className="space-y-8">
         <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           <StatTile

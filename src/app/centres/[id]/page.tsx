@@ -97,6 +97,7 @@ export default function CentreDetailPage({ params }: { params: { id: string } })
 
   return (
     <AppShell
+      breadcrumbs={[{ labelKey: 'navOverview', href: '/supervisor' }, { labelKey: 'navCentres', href: '/centres' }, { labelKey: 'centreDetailCrumb' }]}
       title={centre.name}
       subtitle={t('centreDrillDown')}
       actions={<SampleDataChip />}

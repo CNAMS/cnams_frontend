@@ -7,6 +7,7 @@ import { LogOut, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { navFor, ROLE_LABEL_KEY, type NavItem } from '@/components/nav/navigation';
+import { Breadcrumbs, type Crumb } from '@/components/nav/Breadcrumbs';
 import { SproutMark, AnkurWordmark } from '@/components/brand/SproutMark';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -89,12 +90,15 @@ export function AppShell({
   title,
   subtitle,
   actions,
+  breadcrumbs,
   children,
 }: {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   /** Page-level actions for the header, e.g. an export button. */
   actions?: React.ReactNode;
+  /** Trail from the role's home to here. Omit on a role's own home page. */
+  breadcrumbs?: Crumb[];
   children: React.ReactNode;
 }) {
   const { t } = useLanguage();
@@ -287,6 +291,7 @@ export function AppShell({
           </header>
 
           <main id="main" className="p-4 sm:p-6 max-w-6xl mx-auto">
+            {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
             {children}
           </main>
         </div>

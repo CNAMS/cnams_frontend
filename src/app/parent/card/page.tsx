@@ -52,7 +52,8 @@ export default function GrowthCardPage() {
   }, [role, setRole]);
 
   return (
-    <AppShell title={t('navGrowthCard')} subtitle={t('growthCardSubtitle')} actions={<SampleDataChip />}>
+    <AppShell
+      breadcrumbs={[{ labelKey: 'navMyChild', href: '/parent' }, { labelKey: 'navGrowthCard' }]} title={t('navGrowthCard')} subtitle={t('growthCardSubtitle')} actions={<SampleDataChip />}>
       <div className="max-w-2xl space-y-4">
         {/* ── The card itself ───────────────────────────────────────────── */}
         <Card elevation="raised" className="space-y-5 print:shadow-none print:border-black">
