@@ -377,6 +377,15 @@ export const translations = {
     hi: 'यह पोर्टल अभी नमूना डेटा पर चलता है। कोई वास्तविक केंद्र रिकॉर्ड नहीं दिखाया जाता।',
   },
 
+  // ── Error boundary ───────────────────────────────────────────────────────
+  errorTitle: { en: 'Something went wrong', hi: 'कुछ गड़बड़ हो गई' },
+  errorBody: {
+    en: 'This page could not be displayed. Your data has not been lost — nothing on this screen changes records.',
+    hi: 'यह पृष्ठ नहीं दिखाया जा सका। आपका डेटा सुरक्षित है — इस स्क्रीन से कोई रिकॉर्ड नहीं बदलता।',
+  },
+  errorReference: { en: 'Reference:', hi: 'संदर्भ:' },
+  errorRetry: { en: 'Try again', hi: 'फिर से कोशिश करें' },
+
   // ── Not found ────────────────────────────────────────────────────────────
   notFoundTitle: { en: 'Page not found', hi: 'पृष्ठ नहीं मिला' },
   notFoundBody: {
