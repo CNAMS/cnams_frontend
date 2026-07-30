@@ -604,6 +604,7 @@ export const translations = {
   navComingSoon: { en: 'Soon', hi: 'जल्द' },
   navMenu: { en: 'Menu', hi: 'मेन्यू' },
   breadcrumbLabel: { en: 'Breadcrumb', hi: 'पथ' },
+  navPrimary: { en: 'Primary', hi: 'मुख्य' },
   centreDetailCrumb: { en: 'Centre detail', hi: 'केंद्र विवरण' },
   navCloseMenu: { en: 'Close menu', hi: 'मेन्यू बंद करें' },
   skipToContent: { en: 'Skip to main content', hi: 'मुख्य सामग्री पर जाएँ' },
