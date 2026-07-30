@@ -35,7 +35,12 @@ export default function CentresPage() {
   }, [role, setRole]);
 
   return (
-    <AppShell title={t('navCentres')} subtitle={t('centresSubtitle')} actions={<SampleDataChip />}>
+    <AppShell
+      breadcrumbs={[{ labelKey: 'navOverview', href: '/supervisor' }, { labelKey: 'navCentres' }]}
+      title={t('navCentres')}
+      subtitle={t('centresSubtitle')}
+      actions={<SampleDataChip />}
+    >
       {mockCentres.length === 0 ? (
         <Card>
           <EmptyState icon={Users} title={t('noCentres')} />

@@ -2,13 +2,22 @@
 
 import React, { useEffect } from 'react';
 import { CalendarClock, IdCard } from 'lucide-react';
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
 import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
 import { SampleDataChip } from '@/components/ui/Feedback';
-import { Button } from '@/components/ui/Button';
+import { ButtonLink } from '@/components/ui/Button';
 import { SproutMark } from '@/components/brand/SproutMark';
 
 /**
@@ -19,6 +28,15 @@ import { SproutMark } from '@/components/brand/SproutMark';
  * visit, with no z-scores, no tables and no jargon. Access is limited to the
  * parent's own linked child (§1 access rule).
  */
+/** The child's recent weights — the same series the printable card shows. */
+const parentTrend = [
+  { month: 'मार्च · Mar', weight: 9.4 },
+  { month: 'अप्रैल · Apr', weight: 9.6 },
+  { month: 'मई · May', weight: 10.0 },
+  { month: 'जून · Jun', weight: 10.3 },
+  { month: 'जुल · Jul', weight: 10.7 },
+];
+
 export default function ParentDashboard() {
   const { t } = useLanguage();
   const { role, setRole } = useTheme();
@@ -58,6 +76,59 @@ export default function ParentDashboard() {
           </div>
         </Card>
 
+        {/* ── Growth so far ─────────────────────────────────────────────────
+            A parent's second question after "is my child alright?" is "have
+            they been growing?", and the dashboard previously had no answer —
+            just a link to a card that did not exist. */}
+        <Card>
+          <h2 className="font-semibold mb-1">{t('growthCardWeightTrend')}</h2>
+          <p className="text-sm text-on-surface-variant mb-3">{t('parentTrendHint')}</p>
+          <div className="h-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={parentTrend} margin={{ top: 8, right: 8, left: -22, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="parentHomeFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: 'var(--on-surface-variant)', fontSize: 11 }}
+                  dy={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  width={40}
+                  tick={{ fill: 'var(--on-surface-variant)', fontSize: 11 }}
+                  unit=" kg"
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: '1px solid var(--outline-variant)',
+                    background: 'var(--surface-container)',
+                    color: 'var(--on-surface)',
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="weight"
+                  name={t('measureWeight')}
+                  stroke="var(--primary)"
+                  strokeWidth={2.5}
+                  fill="url(#parentHomeFill)"
+                  dot={{ r: 3, fill: 'var(--primary)' }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
         {/* ── Growth card ───────────────────────────────────────────────── */}
         <Card className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -69,9 +140,9 @@ export default function ParentDashboard() {
               <p className="text-sm text-on-surface-variant">{t('growthCardHint')}</p>
             </div>
           </div>
-          <Button variant="secondary" size="sm" disabled>
-            {t('navComingSoon')}
-          </Button>
+          <ButtonLink href="/parent/card" variant="secondary" size="sm">
+            {t('growthCardOpen')}
+          </ButtonLink>
         </Card>
       </div>
     </AppShell>

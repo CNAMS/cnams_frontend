@@ -43,21 +43,41 @@ type Destination = {
 };
 
 const DESTINATIONS: Destination[] = [
-  { href: '/admin/users', labelKey: 'navUsers', descriptionKey: 'adminUsersHint', icon: Users },
+  {
+    href: '/admin/users',
+    labelKey: 'navUsers',
+    descriptionKey: 'adminUsersHint',
+    icon: Users,
+    built: true,
+  },
   {
     href: '/admin/analytics',
     labelKey: 'navAnalytics',
     descriptionKey: 'adminProgramHint',
     icon: BarChart3,
+    built: true,
   },
   {
     href: '/admin/app-health',
     labelKey: 'navAppHealth',
     descriptionKey: 'adminAppHealthHint',
     icon: Activity,
+    built: true,
   },
-  { href: '/admin/config', labelKey: 'navConfig', descriptionKey: 'adminConfigHint', icon: Cog },
-  { href: '/admin/audit', labelKey: 'adminAudit', descriptionKey: 'adminAuditHint', icon: ScrollText },
+  {
+    href: '/admin/config',
+    labelKey: 'navConfig',
+    descriptionKey: 'adminConfigHint',
+    icon: Cog,
+    built: true,
+  },
+  {
+    href: '/admin/audit',
+    labelKey: 'adminAudit',
+    descriptionKey: 'adminAuditHint',
+    icon: ScrollText,
+    built: true,
+  },
 ];
 
 export default function AdminDashboard() {

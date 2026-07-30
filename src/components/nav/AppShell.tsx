@@ -7,6 +7,7 @@ import { LogOut, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { navFor, ROLE_LABEL_KEY, type NavItem } from '@/components/nav/navigation';
+import { Breadcrumbs, type Crumb } from '@/components/nav/Breadcrumbs';
 import { SproutMark, AnkurWordmark } from '@/components/brand/SproutMark';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -85,16 +86,80 @@ function NavLink({
   );
 }
 
+
+/**
+ * Bottom navigation for phones.
+ *
+ * §EX4 specifies an adaptive shell whose bottom-nav changes per role. The
+ * drawer alone put every destination two taps away (open menu, then choose)
+ * and required reaching the top-left corner one-handed; a bottom bar puts the
+ * role's main destinations one thumb-tap away.
+ *
+ * Capped at four items — beyond that the labels stop being legible at phone
+ * widths. Roles with more (admin has six) keep the rest in the drawer, which
+ * is why the menu button stays.
+ */
+function BottomNav({
+  items,
+  pathname,
+}: {
+  items: NavItem[];
+  pathname: string;
+}) {
+  const { t } = useLanguage();
+  const shown = items.filter((i) => i.built).slice(0, 4);
+  if (shown.length < 2) return null;
+
+  return (
+    <nav
+      aria-label={t('navPrimary')}
+      className={cn(
+        'lg:hidden fixed bottom-0 inset-x-0 z-30',
+        'bg-surface-container/95 backdrop-blur border-t border-outline-variant',
+        // Keeps the bar clear of the iOS home indicator.
+        'pb-[env(safe-area-inset-bottom)]',
+      )}
+    >
+      <ul className="flex">
+        {shown.map((item) => {
+          const active = isActive(pathname, item.href);
+          const Icon = item.icon;
+          return (
+            <li key={item.href} className="flex-1">
+              <Link
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'flex flex-col items-center justify-center gap-0.5',
+                  'min-h-touch py-2 px-1 text-[11px] font-medium',
+                  'transition-colors duration-fast ease-ankur',
+                  active ? 'text-brand' : 'text-on-surface-variant',
+                )}
+              >
+                <Icon size={20} aria-hidden="true" />
+                <span className="truncate max-w-full">{t(item.labelKey)}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
 export function AppShell({
   title,
   subtitle,
   actions,
+  breadcrumbs,
   children,
 }: {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   /** Page-level actions for the header, e.g. an export button. */
   actions?: React.ReactNode;
+  /** Trail from the role's home to here. Omit on a role's own home page. */
+  breadcrumbs?: Crumb[];
   children: React.ReactNode;
 }) {
   const { t } = useLanguage();
@@ -286,9 +351,14 @@ export function AppShell({
             </div>
           </header>
 
-          <main id="main" className="p-4 sm:p-6 max-w-6xl mx-auto">
+          {/* pb-24 on small screens clears the fixed bottom bar; without it
+              the last card sits underneath it and cannot be reached. */}
+          <main id="main" className="p-4 sm:p-6 pb-24 lg:pb-6 max-w-6xl mx-auto">
+            {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
             {children}
           </main>
+
+          <BottomNav items={items} pathname={pathname} />
         </div>
       </div>
     </div>

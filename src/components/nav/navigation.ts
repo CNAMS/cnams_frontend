@@ -8,6 +8,7 @@ import {
   IdCard,
   LayoutDashboard,
   Ruler,
+  ScrollText,
   Stethoscope,
   Users,
   Wrench,
@@ -41,9 +42,9 @@ export const ROLE_NAV: Record<AppRole, NavItem[]> = {
   // AWW: Home / Children / Measure / Settings
   aww: [
     { href: '/worker', labelKey: 'navHome', icon: Home, built: true },
-    { href: '/worker/children', labelKey: 'navChildren', icon: Baby },
-    { href: '/worker/measure', labelKey: 'navMeasure', icon: Ruler },
-    { href: '/settings', labelKey: 'navSettings', icon: Cog },
+    { href: '/worker/children', labelKey: 'navChildren', icon: Baby, built: true },
+    { href: '/worker/measure', labelKey: 'navMeasure', icon: Ruler, built: true },
+    { href: '/settings', labelKey: 'navSettings', icon: Cog, built: true },
   ],
   // Supervisor: Overview / Centres / Referrals / Diagnostics
   supervisor: [
@@ -55,19 +56,24 @@ export const ROLE_NAV: Record<AppRole, NavItem[]> = {
   // Doctor: Cases / Search / Settings
   doctor: [
     { href: '/doctor', labelKey: 'navCases', icon: Stethoscope, built: true },
-    { href: '/settings', labelKey: 'navSettings', icon: Cog },
+    { href: '/settings', labelKey: 'navSettings', icon: Cog, built: true },
   ],
   // Parent: Child / Card
   parent: [
     { href: '/parent', labelKey: 'navMyChild', icon: Baby, built: true },
-    { href: '/parent/card', labelKey: 'navGrowthCard', icon: IdCard },
+    { href: '/parent/card', labelKey: 'navGrowthCard', icon: IdCard, built: true },
   ],
-  // Admin: Users / Centres / Analytics / Config
+  // Admin: Console / Users / Analytics / App health / Config / Audit.
+  // The console at /admin is its own destination — it was previously labelled
+  // "Users", which meant the nav had no entry for the actual user-management
+  // page and two different things claimed the same name.
   admin: [
-    { href: '/admin', labelKey: 'navUsers', icon: Users, built: true },
-    { href: '/admin/analytics', labelKey: 'navAnalytics', icon: BarChart3 },
-    { href: '/admin/app-health', labelKey: 'navAppHealth', icon: Activity },
-    { href: '/admin/config', labelKey: 'navConfig', icon: Cog },
+    { href: '/admin', labelKey: 'navConsole', icon: LayoutDashboard, built: true },
+    { href: '/admin/users', labelKey: 'navUsers', icon: Users, built: true },
+    { href: '/admin/analytics', labelKey: 'navAnalytics', icon: BarChart3, built: true },
+    { href: '/admin/app-health', labelKey: 'navAppHealth', icon: Activity, built: true },
+    { href: '/admin/config', labelKey: 'navConfig', icon: Cog, built: true },
+    { href: '/admin/audit', labelKey: 'adminAudit', icon: ScrollText, built: true },
   ],
 };
 

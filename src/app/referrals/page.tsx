@@ -124,6 +124,7 @@ export default function ReferralsPage() {
 
   return (
     <AppShell
+      breadcrumbs={[{ labelKey: 'navOverview', href: '/supervisor' }, { labelKey: 'navReferrals' }]}
       title={t('referralsListTitle')}
       subtitle={t('referralsListSubtitle')}
       actions={<SampleDataChip />}
@@ -176,6 +177,12 @@ export default function ReferralsPage() {
             );
           })}
         </div>
+
+        {/* Filtering and re-sorting rewrite the table with no announcement;
+            a polite live region reports the resulting count. */}
+        <p aria-live="polite" className="sr-only">
+          {rows.length} {t('flaggedChildren')}
+        </p>
 
         <DataTable
           data={rows}
