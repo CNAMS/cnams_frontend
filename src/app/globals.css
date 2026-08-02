@@ -17,24 +17,21 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Brand: AWW deep teal on warm sand (app_theme.dart _RolePalette.aww) ── */
-  --primary: #00695c;
-  --primary-dark: #004d40;
+  /* ── Brand: AWW India Green on warm cream (Indian tricolor 🟢) ────────── */
+  --primary: #138808;
+  --primary-dark: #0e6b06;
   --on-primary: #ffffff;
-  --primary-container: #c8f5ed;
-  --on-primary-container: #00201c;
+  --primary-container: #d4edcf;
+  --on-primary-container: #0a3a06;
 
   /* ── Surfaces ─────────────────────────────────────────────────────────── */
-  --surface: #fbf8f1; /* page background */
+  --surface: #fdfaf2; /* page background — warm cream, echoes the white band */
   --surface-container: #ffffff; /* cards, sheets, table bodies */
   --surface-variant: #f0ece2; /* subtle fills, table headers, hovers */
 
   /* ── Outline ──────────────────────────────────────────────────────────── */
-  /* Two distinct roles, previously both called "outline" with two values:
-     `outline` is the emphasis border (inputs, focus, selected state) and
-     `outline-variant` is the quiet one (card edges, table dividers). */
-  --outline: #6f9490;
-  --outline-variant: #d7cfc0;
+  --outline: #5a8a57;
+  --outline-variant: #d5cfc2;
 
   /* ── Text ─────────────────────────────────────────────────────────────── */
   --on-surface: #1a1a1a;
@@ -72,48 +69,51 @@
 
 /* ── Role skins: primary + surface temperature only ───────────────────────── */
 
+/* Supervisor — Deep Saffron (Indian tricolor 🟠) */
 [data-role='supervisor'] {
-  --primary: #2e7d32;
-  --primary-dark: #1b5e20;
-  --primary-container: #cdefcb;
-  --on-primary-container: #0b2410;
-  --surface: #f6f8f3;
-  --surface-variant: #e9efe6;
-  --outline: #6f8f6c;
-  --outline-variant: #cfdac9;
+  --primary: #d4781a;
+  --primary-dark: #b86510;
+  --primary-container: #ffe8cc;
+  --on-primary-container: #3d2000;
+  --surface: #fefaf4;
+  --surface-variant: #f6ede0;
+  --outline: #a8845a;
+  --outline-variant: #e5d8c5;
 }
 
+/* Doctor — Ashoka Chakra Navy Blue (Indian tricolor 🔵) */
 [data-role='doctor'] {
-  --primary: #1565c0;
-  --primary-dark: #0d47a1;
-  --primary-container: #d3e4fd;
-  --on-primary-container: #0a2647;
-  --surface: #f5f8fc;
-  --surface-variant: #e6edf6;
-  --outline: #6b86a8;
-  --outline-variant: #ccd8e6;
+  --primary: #1a3c8f;
+  --primary-dark: #0f2b6e;
+  --primary-container: #d8e2fd;
+  --on-primary-container: #0a1a3d;
+  --surface: #f5f7fc;
+  --surface-variant: #e6eaf4;
+  --outline: #6878a0;
+  --outline-variant: #ccd3e4;
 }
 
+/* Parent — Warm Saffron (Indian tricolor 🟠, lighter) */
 [data-role='parent'] {
-  --primary: #e68a00;
-  --primary-dark: #b36b00;
-  --primary-container: #ffe3b8;
-  --on-primary-container: #3d2400;
-  --surface: #fdf7ee;
+  --primary: #e8831a;
+  --primary-dark: #c06d0e;
+  --primary-container: #ffe0b8;
+  --on-primary-container: #3d2200;
+  --surface: #fef8f0;
   --surface-variant: #f6ebda;
-  --outline: #a9895c;
+  --outline: #a88a5c;
   --outline-variant: #e5d5bd;
 }
 
-/* Admin is a LIGHT console — dense and data-first, deliberately not dark. */
+/* Admin — Deep Navy, a LIGHT console (Indian tricolor 🔵, darker) */
 [data-role='admin'] {
-  --primary: #4b5570;
-  --primary-dark: #343c54;
-  --primary-container: #dde2ec;
-  --on-primary-container: #161b26;
+  --primary: #2c3e6b;
+  --primary-dark: #1e2d52;
+  --primary-container: #dde3f0;
+  --on-primary-container: #121b2e;
   --surface: #eef1f5;
   --surface-variant: #e2e6ee;
-  --outline: #78809a;
+  --outline: #6b7898;
   --outline-variant: #ccd2df;
 }
 
@@ -123,10 +123,10 @@
 
 .dark {
   --on-primary: #ffffff;
-  --surface: #12100c;
-  --surface-container: #1c1a15;
-  --surface-variant: #262319;
-  --outline: #8fa9a5;
+  --surface: #121008;
+  --surface-container: #1c1a12;
+  --surface-variant: #262318;
+  --outline: #7a9a76;
   --outline-variant: #3a362c;
   --on-surface: #f2efe8;
   --on-surface-variant: #b8b3a6;
@@ -143,48 +143,53 @@
   --class-indeterminate-on-container: #d6d6d6;
 }
 
+/* AWW dark — lightened India Green */
 .dark[data-role='aww'],
 .dark:not([data-role]) {
-  --primary: #5fd9c8;
-  --primary-dark: #86e4d6;
-  --primary-container: #00382f;
-  --on-primary-container: #b6f2e7;
+  --primary: #7ed87a;
+  --primary-dark: #a3e5a0;
+  --primary-container: #0a3006;
+  --on-primary-container: #c0edc0;
 }
 
+/* Supervisor dark — lightened Saffron */
 .dark[data-role='supervisor'] {
-  --primary: #82d982;
-  --primary-dark: #a3e5a3;
-  --primary-container: #10360f;
-  --on-primary-container: #c3edc0;
-  --surface: #101410;
-  --surface-container: #181d17;
-  --surface-variant: #22291f;
+  --primary: #ffb866;
+  --primary-dark: #ffcf99;
+  --primary-container: #4a2800;
+  --on-primary-container: #ffddb8;
+  --surface: #141008;
+  --surface-container: #1e1a10;
+  --surface-variant: #282114;
 }
 
+/* Doctor dark — lightened Ashoka Navy */
 .dark[data-role='doctor'] {
-  --primary: #8ec0ff;
-  --primary-dark: #b3d5ff;
-  --primary-container: #0d3260;
-  --on-primary-container: #d0e4ff;
-  --surface: #0d1218;
-  --surface-container: #151b23;
-  --surface-variant: #1e2630;
+  --primary: #92b4f4;
+  --primary-dark: #b8cfff;
+  --primary-container: #0f2555;
+  --on-primary-container: #d0deff;
+  --surface: #0d1018;
+  --surface-container: #151823;
+  --surface-variant: #1e2230;
 }
 
+/* Parent dark — lightened Warm Saffron */
 .dark[data-role='parent'] {
-  --primary: #ffb84d;
-  --primary-dark: #ffcd80;
-  --primary-container: #4a2d00;
+  --primary: #ffb04d;
+  --primary-dark: #ffc880;
+  --primary-container: #4a2800;
   --on-primary-container: #ffdfae;
   --surface: #17120a;
   --surface-container: #201a10;
   --surface-variant: #2b2317;
 }
 
+/* Admin dark — lightened Deep Navy */
 .dark[data-role='admin'] {
-  --primary: #aeb8d4;
-  --primary-dark: #c8d0e6;
-  --primary-container: #2b3247;
+  --primary: #a8b6d8;
+  --primary-dark: #c4cee6;
+  --primary-container: #1e2840;
   --on-primary-container: #dde3f2;
   --surface: #0f1116;
   --surface-container: #171a21;
@@ -233,6 +238,21 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@layer base {
+  html, body {
+    @apply antialiased min-h-screen text-on-surface bg-surface;
+    /* Add smooth transition for theme changes as a fallback for browsers without View Transitions */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* We also want surface containers (cards, sidebars) to transition smoothly */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
   }
 }
 

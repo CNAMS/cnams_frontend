@@ -21,7 +21,7 @@ type LanguageContextType = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 function isLanguage(value: unknown): value is Language {
-  return value === 'hi' || value === 'en';
+  return value === 'hi' || value === 'en' || value === 'mr';
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {

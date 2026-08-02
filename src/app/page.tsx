@@ -63,11 +63,11 @@ export default function PublicLandingPage() {
         {t('skipToContent')}
       </a>
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
-      <header className="border-b border-outline-variant bg-surface-container">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
-          <Link href="/" className="inline-flex min-w-0">
-            <AnkurWordmark size={32} />
+      {/* ── Floating pill header ────────────────────────────────────────── */}
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-5xl">
+        <div className="bg-surface-container/85 backdrop-blur-xl border border-outline-variant rounded-full px-6 sm:px-8 py-3 flex items-center gap-4 sm:gap-6 shadow-lg shadow-black/[0.06]">
+          <Link href="/" className="inline-flex min-w-0 shrink-0">
+            <AnkurWordmark size={30} />
           </Link>
           <div className="flex-1" />
           <ThemeToggle className="hidden sm:inline-flex" />
@@ -76,7 +76,7 @@ export default function PublicLandingPage() {
             href="/login"
             variant="primary"
             size="sm"
-            className="hidden sm:inline-flex"
+            className="hidden sm:inline-flex rounded-full"
           >
             {t('loginPortalBtn')}
           </ButtonLink>
@@ -85,7 +85,7 @@ export default function PublicLandingPage() {
 
       <main id="main" className="flex-1">
         {/* ── Hero ──────────────────────────────────────────────────────── */}
-        <section className="px-4 sm:px-6 py-14 sm:py-20">
+        <section className="px-4 sm:px-6 pt-24 sm:pt-28 pb-20 sm:pb-32">
           <div className="max-w-3xl mx-auto text-center flex flex-col items-center gap-5">
             <SproutMark size={68} title="" />
             <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-balance">
@@ -103,9 +103,9 @@ export default function PublicLandingPage() {
         </section>
 
         {/* ── What the system does ──────────────────────────────────────── */}
-        <section className="px-4 sm:px-6 pb-14 max-w-5xl mx-auto">
+        <section className="px-4 sm:px-6 pb-20 sm:pb-28 max-w-5xl mx-auto">
           <SectionHeader title={t('whatItDoes')} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 sm:grid-cols-3">
             {features.map(({ icon: Icon, title, body }) => (
               <Card key={title} className="flex flex-col gap-2">
                 <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
@@ -121,9 +121,9 @@ export default function PublicLandingPage() {
         {/* ── Who it's for ──────────────────────────────────────────────────
             Ankur is a five-role product, and the landing page described none
             of them — a visitor could not tell whether it was for them. */}
-        <section className="px-4 sm:px-6 pb-14 max-w-5xl mx-auto">
+        <section className="px-4 sm:px-6 pb-20 sm:pb-28 max-w-5xl mx-auto">
           <SectionHeader title={t('whoItsFor')} description={t('whoItsForHint')} />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ROLE_SUMMARY.map(({ role, icon: Icon, descriptionKey }) => (
               <li key={role}>
                 <Card className="flex items-start gap-3 h-full">
@@ -143,9 +143,9 @@ export default function PublicLandingPage() {
         </section>
 
         {/* ── Coverage ──────────────────────────────────────────────────── */}
-        <section className="px-4 sm:px-6 pb-20 max-w-5xl mx-auto">
+        <section className="px-4 sm:px-6 pb-28 sm:pb-36 max-w-5xl mx-auto">
           <SectionHeader title={t('systemOverview')} action={<SampleDataChip />} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 sm:grid-cols-3">
             <StatTile
               icon={ShieldCheck}
               value={metrics.centres.length}
