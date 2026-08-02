@@ -65,7 +65,7 @@ export default function PublicLandingPage() {
 
       {/* ── Floating pill header ────────────────────────────────────────── */}
       <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-5xl">
-        <div className="bg-surface-container/85 backdrop-blur-xl border border-outline-variant rounded-full px-5 sm:px-6 py-2.5 flex items-center gap-3 shadow-lg shadow-black/[0.06]">
+        <div className="bg-surface-container/85 backdrop-blur-xl border border-outline-variant rounded-full px-6 sm:px-8 py-3 flex items-center gap-4 sm:gap-6 shadow-lg shadow-black/[0.06]">
           <Link href="/" className="inline-flex min-w-0 shrink-0">
             <AnkurWordmark size={30} />
           </Link>

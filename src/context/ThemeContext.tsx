@@ -104,22 +104,35 @@ export function ThemeProvider({
   }, [resolvedScheme]);
 
   const setRole = useCallback((next: AppRole) => {
-    setRoleState(next);
-    try {
-      localStorage.setItem(ROLE_KEY, next);
-    } catch {
-      /* non-fatal */
+    const update = () => {
+      setRoleState(next);
+      try { localStorage.setItem(ROLE_KEY, next); } catch {}
+      // We also update the DOM manually here so the view transition catches it
+      // immediately before the next frame, rather than waiting for the useEffect.
+      document.documentElement.setAttribute('data-role', next);
+    };
+
+    if (typeof document !== 'undefined' && (document as any).startViewTransition) {
+      (document as any).startViewTransition(update);
+    } else {
+      update();
     }
   }, []);
 
   const setColorScheme = useCallback((next: ColorScheme) => {
-    setSchemeState(next);
-    try {
-      localStorage.setItem(SCHEME_KEY, next);
-    } catch {
-      /* non-fatal */
+    const update = () => {
+      setSchemeState(next);
+      try { localStorage.setItem(SCHEME_KEY, next); } catch {}
+      const nextResolved = next === 'system' ? (systemDark ? 'dark' : 'light') : next;
+      document.documentElement.classList.toggle('dark', nextResolved === 'dark');
+    };
+
+    if (typeof document !== 'undefined' && (document as any).startViewTransition) {
+      (document as any).startViewTransition(update);
+    } else {
+      update();
     }
-  }, []);
+  }, [systemDark]);
 
   return (
     <ThemeContext.Provider
