@@ -81,7 +81,7 @@ export default function LoginPage() {
         </div>
       </header>
 
-      <main className="flex-1 flex items-start justify-center px-4 pt-24 sm:pt-28 pb-10 sm:pb-16">
+      <main className="flex-1 flex items-start justify-center px-6 pt-32 sm:pt-40 pb-16 sm:pb-24">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-1">
             <h1 className="text-2xl font-bold tracking-tight">{t('signIn')}</h1>

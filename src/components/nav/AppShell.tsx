@@ -326,7 +326,7 @@ export function AppShell({
         </div>
 
         {/* Main content */}
-        <main id="main" className="p-4 sm:p-6 pt-6 sm:pt-8 pb-24 lg:pb-6 w-full max-w-5xl flex-1">
+        <main id="main" className="p-6 sm:p-10 pt-10 sm:pt-14 pb-28 lg:pb-12 w-full max-w-5xl flex-1">
           {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
           {children}
         </main>

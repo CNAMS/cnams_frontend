@@ -241,6 +241,21 @@ body {
   }
 }
 
+@layer base {
+  html, body {
+    @apply antialiased min-h-screen text-on-surface bg-surface;
+    /* Add smooth transition for theme changes as a fallback for browsers without View Transitions */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* We also want surface containers (cards, sidebars) to transition smoothly */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

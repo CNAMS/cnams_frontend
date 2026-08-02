@@ -34,7 +34,7 @@ export function Card({
         'bg-surface-container border border-outline-variant rounded-2xl',
         'overflow-hidden',
         elevation === 'raised' && 'shadow-sm',
-        !flush && 'p-5',
+        !flush && 'p-6 sm:p-8',
         className,
       )}
     >
@@ -61,7 +61,7 @@ export function CardHeader({
     <div
       className={cn(
         'flex items-center justify-between gap-4',
-        'px-5 py-4 border-b border-outline-variant bg-surface-variant',
+        'px-6 sm:px-8 py-5 border-b border-outline-variant bg-surface-variant',
         className,
       )}
     >
@@ -94,7 +94,7 @@ export function SectionHeader({
 }) {
   const Heading = level === 2 ? 'h2' : 'h3';
   return (
-    <div className={cn('flex items-end justify-between gap-4 mb-3', className)}>
+    <div className={cn('flex items-end justify-between gap-4 mb-5', className)}>
       <div className="min-w-0">
         <Heading className="text-lg font-semibold text-on-surface">{title}</Heading>
         {description && (
