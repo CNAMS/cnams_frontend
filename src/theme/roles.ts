@@ -34,51 +34,48 @@ export type RolePalette = {
 };
 
 export const ROLE_PALETTES: Record<AppRole, RolePalette> = {
-  // The original field theme: deep teal on warm sand. Used outdoors in bright
-  // sun, so it stays the highest-contrast of the five. Do not "modernise" it.
+  // India Green — the field theme, echoing the green band of the tricolor.
   aww: {
-    primary: '#00695C',
-    primaryDark: '#004D40',
-    primaryContainer: '#C8F5ED',
-    onPrimaryContainer: '#00201C',
-    surface: '#FBF8F1',
-    surfaceDark: '#12100C',
+    primary: '#138808',
+    primaryDark: '#0E6B06',
+    primaryContainer: '#D4EDCF',
+    onPrimaryContainer: '#0A3A06',
+    surface: '#FDFAF2',
+    surfaceDark: '#121008',
   },
-  // Sprout green — oversight of growth across centres.
+  // Deep Saffron — oversight of growth, warm and authoritative.
   supervisor: {
-    primary: '#2E7D32',
-    primaryDark: '#1B5E20',
-    primaryContainer: '#CDEFCB',
-    onPrimaryContainer: '#0B2410',
-    surface: '#F6F8F3',
-    surfaceDark: '#101410',
+    primary: '#D4781A',
+    primaryDark: '#B86510',
+    primaryContainer: '#FFE8CC',
+    onPrimaryContainer: '#3D2000',
+    surface: '#FEFAF4',
+    surfaceDark: '#141008',
   },
-  // Clinical blue — reads as medical, calm and precise.
+  // Ashoka Chakra Navy — reads as precise and trustworthy.
   doctor: {
-    primary: '#1565C0',
-    primaryDark: '#0D47A1',
-    primaryContainer: '#D3E4FD',
-    onPrimaryContainer: '#0A2647',
-    surface: '#F5F8FC',
-    surfaceDark: '#0D1218',
+    primary: '#1A3C8F',
+    primaryDark: '#0F2B6E',
+    primaryContainer: '#D8E2FD',
+    onPrimaryContainer: '#0A1A3D',
+    surface: '#F5F7FC',
+    surfaceDark: '#0D1018',
   },
-  // Warm amber — reassuring and approachable for a guardian, not clinical.
+  // Warm Saffron — reassuring and approachable for a guardian.
   parent: {
-    primary: '#E68A00',
-    primaryDark: '#B36B00',
-    primaryContainer: '#FFE3B8',
-    onPrimaryContainer: '#3D2400',
-    surface: '#FDF7EE',
+    primary: '#E8831A',
+    primaryDark: '#C06D0E',
+    primaryContainer: '#FFE0B8',
+    onPrimaryContainer: '#3D2200',
+    surface: '#FEF8F0',
     surfaceDark: '#17120A',
   },
-  // A light "console" — slate/indigo on cool grey. Deliberately NOT dark:
-  // the roadmap is explicit that the admin surface is dense and data-first
-  // but still a light theme.
+  // Deep Navy console — dense and data-first, deliberately a light theme.
   admin: {
-    primary: '#4B5570',
-    primaryDark: '#343C54',
-    primaryContainer: '#DDE2EC',
-    onPrimaryContainer: '#161B26',
+    primary: '#2C3E6B',
+    primaryDark: '#1E2D52',
+    primaryContainer: '#DDE3F0',
+    onPrimaryContainer: '#121B2E',
     surface: '#EEF1F5',
     surfaceDark: '#0F1116',
   },

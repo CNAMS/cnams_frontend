@@ -69,10 +69,11 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-sans flex flex-col">
-      <header className="border-b border-outline-variant bg-surface-container">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
-          <Link href="/" className="inline-flex min-w-0">
-            <AnkurWordmark size={32} />
+      {/* ── Floating pill header ────────────────────────────────────────── */}
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-5xl">
+        <div className="bg-surface-container/85 backdrop-blur-xl border border-outline-variant rounded-full px-5 sm:px-6 py-2.5 flex items-center gap-3 shadow-lg shadow-black/[0.06]">
+          <Link href="/" className="inline-flex min-w-0 shrink-0">
+            <AnkurWordmark size={30} />
           </Link>
           <div className="flex-1" />
           <ThemeToggle className="hidden sm:inline-flex" />
@@ -80,7 +81,7 @@ export default function LoginPage() {
         </div>
       </header>
 
-      <main className="flex-1 flex items-start justify-center px-4 py-10 sm:py-16">
+      <main className="flex-1 flex items-start justify-center px-4 pt-24 sm:pt-28 pb-10 sm:pb-16">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-1">
             <h1 className="text-2xl font-bold tracking-tight">{t('signIn')}</h1>

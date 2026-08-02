@@ -318,12 +318,14 @@ export function AppShell({
         {/* ── Content column ───────────────────────────────────────────────── */}
         <div className="flex-1 min-w-0">
           <header
-            className={cn(
-              'sticky top-0 z-30 bg-surface-container/95 backdrop-blur',
-              'border-b border-outline-variant',
-            )}
+            className="sticky top-3 z-30 mx-3 sm:mx-5 mt-3"
           >
-            <div className="flex items-center gap-3 px-4 sm:px-6 py-3">
+            <div className={cn(
+              'bg-surface-container/85 backdrop-blur-xl',
+              'border border-outline-variant rounded-full',
+              'flex items-center gap-3 px-4 sm:px-5 py-2.5',
+              'shadow-lg shadow-black/[0.06]',
+            )}>
               <IconButton
                 label={t('navMenu')}
                 onClick={() => setDrawerOpen(true)}
@@ -332,7 +334,7 @@ export function AppShell({
                 <Menu size={22} aria-hidden="true" />
               </IconButton>
 
-              <SproutMark size={28} title="" className="lg:hidden" />
+              <SproutMark size={26} title="" className="lg:hidden" />
 
               <div className="min-w-0 flex-1">
                 <h1 className="text-base sm:text-lg font-semibold truncate">{title}</h1>
@@ -353,7 +355,7 @@ export function AppShell({
 
           {/* pb-24 on small screens clears the fixed bottom bar; without it
               the last card sits underneath it and cannot be reached. */}
-          <main id="main" className="p-4 sm:p-6 pb-24 lg:pb-6 max-w-6xl mx-auto">
+          <main id="main" className="p-4 sm:p-6 pt-6 sm:pt-8 pb-24 lg:pb-6 max-w-6xl mx-auto">
             {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
             {children}
           </main>
