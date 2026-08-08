@@ -249,7 +249,8 @@ body {
   }
 
   /* We also want surface containers (cards, sidebars) to transition smoothly */
-  * {
+  /* Replaced '*' universal selector with targeted elements to fix severe LCP/rendering delay */
+  header, footer, nav, aside, .card, [class*="bg-"], [class*="border-"] {
     transition-property: background-color, border-color, color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
