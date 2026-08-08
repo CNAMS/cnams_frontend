@@ -63,7 +63,7 @@ export default function LanguageToggle({ className }: { className?: string }) {
           role="listbox"
           className={cn(
             'absolute right-0 top-[calc(100%+0.5rem)] min-w-[120px] z-50',
-            'bg-surface-container/95 backdrop-blur-xl',
+            'bg-surface-container backdrop-blur-xl',
             'border border-outline-variant rounded-xl overflow-hidden',
             'shadow-xl shadow-black/[0.08]',
             'py-1 flex flex-col'
