@@ -2,9 +2,9 @@
 
 import React, { useEffect } from 'react';
 import { RefreshCw, TriangleAlert } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { SproutMark } from '@/components/brand/SproutMark';
+import { useTranslations } from 'next-intl';
 
 /**
  * Route error boundary.
@@ -14,7 +14,7 @@ import { SproutMark } from '@/components/brand/SproutMark';
  * English-only, unbranded, and with no way forward except the back button.
  *
  * `reset()` re-renders the segment, which recovers from a transient failure
- * without a full page reload and without losing the user's language or theme.
+ * without a full page reload and without losing the user's locale or theme.
  */
 export default function RouteError({
   error,
@@ -23,8 +23,7 @@ export default function RouteError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const { t } = useLanguage();
-
+  const t = useTranslations();
   useEffect(() => {
     // P6 instruments crash reporting; until that exists this is the only
     // record that something failed, so it is deliberately not silenced.

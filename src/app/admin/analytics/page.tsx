@@ -17,12 +17,12 @@ import {
 } from 'recharts';
 import { mockClassBreakdown, mockProgrammeTrend } from '@/data/rosterData';
 import { styleFor } from '@/theme/classification';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
 import { SampleDataChip } from '@/components/ui/Feedback';
+import { useTranslations } from 'next-intl';
 
 /**
  * Programme analytics — CHILD HEALTH OUTCOMES.
@@ -38,7 +38,7 @@ import { SampleDataChip } from '@/components/ui/Feedback';
  * pill three pages away.
  */
 export default function ProgrammeAnalyticsPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

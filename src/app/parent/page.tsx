@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
@@ -19,12 +18,13 @@ import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { ButtonLink } from '@/components/ui/Button';
 import { SproutMark } from '@/components/brand/SproutMark';
+import { useTranslations } from 'next-intl';
 
 /**
- * The parent view (§EX3): their child front and centre, in plain language.
+ * The parent view (§EX3): their child front and centre, in plain locale.
  *
  * "Minimal, reassuring" — the roadmap is explicit that this surface is not
- * clinical. It shows one status, one plain-language sentence and the next
+ * clinical. It shows one status, one plain-locale sentence and the next
  * visit, with no z-scores, no tables and no jargon. Access is limited to the
  * parent's own linked child (§1 access rule).
  */
@@ -38,7 +38,7 @@ const parentTrend = [
 ];
 
 export default function ParentDashboard() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

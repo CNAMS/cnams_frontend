@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Globe, Info, Palette, ShieldCheck, UserCog } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { APP_ROLES, type AppRole } from '@/theme/roles';
 import { ROLE_LABEL_KEY } from '@/components/nav/navigation';
@@ -12,11 +11,12 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import { SproutMark } from '@/components/brand/SproutMark';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * Settings — shared by every role.
  *
- * The language switch lives here because §P1 requires it to be reachable from
+ * The locale switch lives here because §P1 requires it to be reachable from
  * Settings and to persist across restarts, not only from a header control that
  * disappears on small screens.
  */
@@ -49,13 +49,13 @@ function Row({
 }
 
 export default function SettingsPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   return (
     <AppShell title={t('navSettings')} subtitle={t('settingsSubtitle')}>
       <div className="max-w-3xl space-y-8">
-        {/* ── Appearance & language ─────────────────────────────────────── */}
+        {/* ── Appearance & locale ─────────────────────────────────────── */}
         <section>
           <SectionHeader title={t('settingsGeneral')} />
           <Card className="divide-y divide-outline-variant">

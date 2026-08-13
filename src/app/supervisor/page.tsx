@@ -16,7 +16,6 @@ import {
 import { getDashboardMetrics } from '@/data/mockData';
 import { mockProgrammeTrend } from '@/data/rosterData';
 import { styleFor } from '@/theme/classification';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
@@ -26,6 +25,7 @@ import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { ButtonLink } from '@/components/ui/Button';
 import type { CentreData, FlaggedChild } from '@/data/mockData';
+import { useTranslations } from 'next-intl';
 
 /**
  * The supervisor's sector rollup (§EX3): children screened across centres,
@@ -33,7 +33,7 @@ import type { CentreData, FlaggedChild } from '@/data/mockData';
  */
 export default function SupervisorDashboard() {
   const metrics = getDashboardMetrics();
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   // Landing here directly (a bookmark, a deep link, a page refresh) should put

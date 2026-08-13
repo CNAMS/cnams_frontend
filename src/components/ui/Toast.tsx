@@ -2,8 +2,8 @@
 
 import React, { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 import { CheckCircle2, Info, X } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * Transient confirmation of an action.
@@ -23,8 +23,7 @@ const ToastContext = createContext<((message: string, tone?: Toast['tone']) => v
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
-  const { t } = useLanguage();
-
+  const t = useTranslations();
   const dismiss = useCallback((id: number) => {
     setToasts((list) => list.filter((x) => x.id !== id));
   }, []);

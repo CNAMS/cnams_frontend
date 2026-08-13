@@ -3,9 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
-import type { TranslationKey } from '@/data/translations';
-
+import { useTranslations } from 'next-intl';
 /**
  * Trail from a role's home to the current sub-page.
  *
@@ -20,13 +18,13 @@ import type { TranslationKey } from '@/data/translations';
  */
 
 export type Crumb = {
-  labelKey: TranslationKey;
+  labelKey: string;
   href?: string;
 };
 
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
-  const { t } = useLanguage();
-  if (items.length === 0) return null;
+  const t = useTranslations();
+if (items.length === 0) return null;
 
   return (
     <nav aria-label={t('breadcrumbLabel')} className="mb-4">

@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LogOut, Menu, X } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { navFor, ROLE_LABEL_KEY, type NavItem } from '@/components/nav/navigation';
 import { Breadcrumbs, type Crumb } from '@/components/nav/Breadcrumbs';
@@ -13,6 +12,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import { IconButton, ButtonLink } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * The signed-in shell: floating pill header, and a floating pill sidebar on desktop.
@@ -35,7 +35,7 @@ function NavLink({
   active: boolean;
   onNavigate?: () => void;
 }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const Icon = item.icon;
   const label = t(item.labelKey);
 
@@ -87,7 +87,7 @@ function BottomNav({
   items: NavItem[];
   pathname: string;
 }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const shown = items.filter((i) => i.built).slice(0, 4);
   if (shown.length < 2) return null;
 
@@ -140,7 +140,7 @@ export function AppShell({
   breadcrumbs?: Crumb[];
   children: React.ReactNode;
 }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role } = useTheme();
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);

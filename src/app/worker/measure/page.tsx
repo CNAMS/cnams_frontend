@@ -12,15 +12,14 @@ import {
 } from 'lucide-react';
 import { mockRoster, type RosterChild } from '@/data/rosterData';
 import type { GrowthClass } from '@/theme/classification';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import type { TranslationKey } from '@/data/translations';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * The capture flow: child → weight/length → MUAC + oedema → result.
@@ -45,10 +44,10 @@ const STEPS: Step[] = ['child', 'weight', 'muac', 'result'];
 
 /**
  * Explicit map rather than a `measureStep_${step}` template key. A template
- * literal defeats the TranslationKey union — the whole point of which is that
+ * literal defeats the string union — the whole point of which is that
  * a missing string fails the build rather than rendering the key name.
  */
-const STEP_LABEL: Record<Step, TranslationKey> = {
+const STEP_LABEL: Record<Step, string> = {
   child: 'measureStep_child',
   weight: 'measureStep_weight',
   muac: 'measureStep_muac',
@@ -64,7 +63,7 @@ function classify(oedema: boolean): GrowthClass {
 }
 
 export default function MeasurePage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   const [step, setStep] = useState<Step>('child');

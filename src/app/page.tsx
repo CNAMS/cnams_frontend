@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { Activity, Baby, ClipboardCheck, Cog, LayoutDashboard, ShieldCheck, Stethoscope, Users } from 'lucide-react';
 import { getDashboardMetrics } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import type { AppRole } from '@/theme/roles';
-import type { TranslationKey } from '@/data/translations';
 import { ROLE_LABEL_KEY } from '@/components/nav/navigation';
 import { AnkurWordmark, SproutMark } from '@/components/brand/SproutMark';
 import { SproutSplash } from '@/components/brand/SproutSplash';
@@ -15,12 +13,13 @@ import { StatTile } from '@/components/ui/StatTile';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
+import { useTranslations } from 'next-intl';
 
 /** The five roles Ankur serves, in the order they touch a child's record. */
 const ROLE_SUMMARY: {
   role: AppRole;
   icon: React.ElementType;
-  descriptionKey: TranslationKey;
+  descriptionKey: string;
 }[] = [
   { role: 'aww', icon: Baby, descriptionKey: 'roleAwwBlurb' },
   { role: 'supervisor', icon: LayoutDashboard, descriptionKey: 'roleSupervisorBlurb' },
@@ -41,8 +40,7 @@ const ROLE_SUMMARY: {
  */
 export default function PublicLandingPage() {
   const metrics = getDashboardMetrics();
-  const { t } = useLanguage();
-
+  const t = useTranslations();
   const features = [
     { icon: ClipboardCheck, title: t('featureOfflineTitle'), body: t('featureOfflineBody') },
     { icon: Activity, title: t('featureZScoreTitle'), body: t('featureZScoreBody') },

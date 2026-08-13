@@ -4,13 +4,13 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Battery, ChevronRight, Users, Wifi, WifiOff, Wrench } from 'lucide-react';
 import { mockCentres, type CentreData } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
 import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * The centres index.
@@ -27,7 +27,7 @@ const DEVICE_STATUS = {
 } as const;
 
 export default function CentresPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

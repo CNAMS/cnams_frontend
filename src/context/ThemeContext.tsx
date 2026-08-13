@@ -112,11 +112,9 @@ export function ThemeProvider({
       document.documentElement.setAttribute('data-role', next);
     };
 
-    if (typeof document !== 'undefined' && (document as any).startViewTransition) {
-      (document as any).startViewTransition(update);
-    } else {
-      update();
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const vt = typeof document !== 'undefined' && (document as any).startViewTransition;
+    if (vt) { vt.call(document, update); } else { update(); }
   }, []);
 
   const setColorScheme = useCallback((next: ColorScheme) => {
@@ -127,11 +125,9 @@ export function ThemeProvider({
       document.documentElement.classList.toggle('dark', nextResolved === 'dark');
     };
 
-    if (typeof document !== 'undefined' && (document as any).startViewTransition) {
-      (document as any).startViewTransition(update);
-    } else {
-      update();
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const vt = typeof document !== 'undefined' && (document as any).startViewTransition;
+    if (vt) { vt.call(document, update); } else { update(); }
   }, [systemDark]);
 
   return (

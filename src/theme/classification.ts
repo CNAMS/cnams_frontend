@@ -15,8 +15,6 @@
  * quietly drop the icon.
  */
 
-import type { TranslationKey } from '@/data/translations';
-
 export const GROWTH_CLASSES = [
   'normal',
   'overweight',
@@ -39,7 +37,7 @@ export type ClassificationStyle = {
   /** lucide-react icon name. Never render the colour without it. */
   icon: 'CheckCircle2' | 'Info' | 'AlertTriangle' | 'OctagonAlert' | 'HelpCircle';
   /** Translation key for the label word. Never render the colour without it. */
-  labelKey: TranslationKey;
+  labelKey: string;
 };
 
 export const CLASSIFICATION_STYLES: Record<GrowthClass, ClassificationStyle> = {

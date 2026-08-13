@@ -10,8 +10,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { styleFor, styleForStatus, type GrowthClass } from '@/theme/classification';
-import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * A growth classification, rendered as colour + WORD + ICON.
@@ -90,7 +90,7 @@ export function ClassificationBadge({
   growthClass,
   ...props
 }: { growthClass: GrowthClass } & Props) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const style = styleFor(growthClass);
   return (
     <Badge

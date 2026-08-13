@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Source_Sans_3, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/context/LanguageContext";
+import { LocaleProvider } from "@/context/LocaleContext";
 import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
 import { ToastProvider } from "@/components/ui/Toast";
 
@@ -56,8 +56,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // `lang` is hardcoded here and corrected on the client by LanguageProvider
-  // once the persisted locale is known — see src/context/LanguageContext.tsx.
+  // `lang` is hardcoded here and corrected on the client by LocaleProvider
+  // once the persisted locale is known — see src/context/LocaleContext.tsx.
   return (
     <html lang="hi" data-role="aww" suppressHydrationWarning>
       <head>
@@ -68,9 +68,9 @@ export default function RootLayout({
       </head>
       <body className={`${sourceSans3.variable} ${notoDevanagari.variable} antialiased`}>
         <ThemeProvider>
-          <LanguageProvider>
+          <LocaleProvider>
             <ToastProvider>{children}</ToastProvider>
-          </LanguageProvider>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>
