@@ -20,53 +20,68 @@ type LocaleContextType = {
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
+/** Load messages for a given locale. */
+async function loadMessages(locale: Locale) {
+  const mod = await import(`../../messages/${locale}.json`);
+  return mod.default as Record<string, string>;
+}
+
 /**
  * Manages the active locale and wraps children in NextIntlClientProvider.
  *
  * On mount, restores the persisted locale from localStorage.
  * On change, persists it and dynamically loads the new message bundle.
+ *
+ * IMPORTANT: locale and messages are always updated together so
+ * NextIntlClientProvider never receives mismatched props.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
-  const [messages, setMessages] = useState<Record<string, string> | null>(null);
+  const [state, setState] = useState<{
+    locale: Locale;
+    messages: Record<string, string> | null;
+  }>({ locale: defaultLocale, messages: null });
 
-  // Load messages for the current locale
+  // On mount: load messages for the initial locale (or the saved one)
   useEffect(() => {
-    import(`../../messages/${locale}.json`).then((mod) => {
-      setMessages(mod.default);
+    const saved = (() => {
+      try {
+        const v = localStorage.getItem(STORAGE_KEY);
+        return isLocale(v) ? v : null;
+      } catch {
+        return null;
+      }
+    })();
+
+    const initial = saved ?? defaultLocale;
+
+    loadMessages(initial).then((messages) => {
+      setState({ locale: initial, messages });
     });
-  }, [locale]);
-
-  // Restore persisted locale on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (isLocale(saved)) setLocaleState(saved);
-    } catch {
-      // Private browsing — fall back to default.
-    }
   }, []);
 
   // Keep <html lang> in sync
   useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
+    document.documentElement.lang = state.locale;
+  }, [state.locale]);
 
   const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // Non-fatal.
-    }
+    // Load messages first, then update both atomically
+    loadMessages(next).then((messages) => {
+      setState({ locale: next, messages });
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        // Non-fatal.
+      }
+    });
   }, []);
 
   // Show nothing until messages are loaded (prevents flash of translation keys)
-  if (!messages) return null;
+  if (!state.messages) return null;
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale }}>
-      <NextIntlClientProvider locale={locale} messages={messages}>
+    <LocaleContext.Provider value={{ locale: state.locale, setLocale }}>
+      <NextIntlClientProvider key={state.locale} locale={state.locale} messages={state.messages}>
         {children}
       </NextIntlClientProvider>
     </LocaleContext.Provider>
