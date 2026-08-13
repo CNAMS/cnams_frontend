@@ -3,12 +3,12 @@
 import React, { useEffect } from 'react';
 import { AlertTriangle, Info, ScrollText } from 'lucide-react';
 import { mockAuditLog, type AuditEntry } from '@/data/rosterData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * The audit trail — who changed what, and when.
@@ -18,7 +18,7 @@ import { cn } from '@/lib/cn';
  * readable in English is not an audit trail for a Hindi-first team.
  */
 export default function AdminAuditPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function AdminAuditPage() {
 }
 
 function AuditRow({ entry }: { entry: AuditEntry }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const warning = entry.severity === 'warning';
   const Icon = warning ? AlertTriangle : Info;
 

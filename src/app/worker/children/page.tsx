@@ -8,9 +8,7 @@ import {
   daysSinceMeasured,
   type RosterChild,
 } from '@/data/rosterData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import type { TranslationKey } from '@/data/translations';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -18,6 +16,7 @@ import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 type Filter = 'all' | 'overdue' | 'flagged' | 'noConsent';
 
@@ -30,7 +29,7 @@ type Filter = 'all' | 'overdue' | 'flagged' | 'noConsent';
  * row cannot do at that width.
  */
 export default function ChildrenRosterPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
@@ -68,7 +67,7 @@ export default function ChildrenRosterPage() {
       .sort((a, b) => Number(isOverdue(b)) - Number(isOverdue(a)));
   }, [centreRoster, query, filter]);
 
-  const FILTERS: { key: Filter; labelKey: TranslationKey; count: number }[] = [
+  const FILTERS: { key: Filter; labelKey: string; count: number }[] = [
     { key: 'all', labelKey: 'all', count: counts.total },
     { key: 'overdue', labelKey: 'rosterOverdue', count: counts.overdue },
     { key: 'flagged', labelKey: 'rosterFlagged', count: counts.flagged },
@@ -191,7 +190,7 @@ export default function ChildrenRosterPage() {
 }
 
 function ChildCard({ child }: { child: RosterChild }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const overdue = isOverdue(child);
   const days = daysSinceMeasured(child);
   const consentBlocked = child.consent !== 'given';

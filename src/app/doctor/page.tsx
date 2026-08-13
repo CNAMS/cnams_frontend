@@ -3,9 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Inbox, Stethoscope, X } from 'lucide-react';
 import { mockFlaggedChildren, type FlaggedChild } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import type { TranslationKey } from '@/data/translations';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -14,6 +12,7 @@ import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button, IconButton } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * The doctor's case inbox (§EX3): referred SAM/MAM cases, filterable by
@@ -31,22 +30,22 @@ import { cn } from '@/lib/cn';
 const OUTCOMES = ['attended', 'not_attended', 'unknown'] as const;
 type Outcome = (typeof OUTCOMES)[number];
 
-const OUTCOME_LABEL: Record<Outcome, TranslationKey> = {
+const OUTCOME_LABEL: Record<Outcome, string> = {
   attended: 'outcomeAttended',
   not_attended: 'outcomeNotAttended',
   unknown: 'outcomeUnknown',
 };
 
 // Explicit, not `${OUTCOME_LABEL[o]}Hint` — a template literal defeats the
-// TranslationKey union, which exists so a missing string fails the build.
-const OUTCOME_HINT: Record<Outcome, TranslationKey> = {
+// string union, which exists so a missing string fails the build.
+const OUTCOME_HINT: Record<Outcome, string> = {
   attended: 'outcomeAttendedHint',
   not_attended: 'outcomeNotAttendedHint',
   unknown: 'outcomeUnknownHint',
 };
 
 export default function DoctorDashboard() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const [severity, setSeverity] = useState<'ALL' | 'SAM' | 'MAM'>('ALL');
   const [recording, setRecording] = useState<FlaggedChild | null>(null);
@@ -193,7 +192,7 @@ function OutcomeDialog({
   onClose: () => void;
   onRecord: (outcome: Outcome) => void;
 }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const [choice, setChoice] = useState<Outcome | null>(null);
 
   useEffect(() => {

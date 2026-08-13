@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react';
 import { AlertTriangle, Baby, CloudOff, Ruler, Users } from 'lucide-react';
 import { getDashboardMetrics } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
@@ -11,6 +10,7 @@ import { StatTile } from '@/components/ui/StatTile';
 import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button } from '@/components/ui/Button';
+import { useTranslations } from 'next-intl';
 
 /**
  * The AWW's home (§EX3): today's list, screened / flagged tiles, a large
@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/Button';
  * the day's summary, not a replacement for the field flow.
  */
 export default function WorkerDashboard() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const metrics = getDashboardMetrics();
 

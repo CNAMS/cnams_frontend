@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
@@ -19,6 +18,7 @@ import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
 import { Button } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { SproutMark } from '@/components/brand/SproutMark';
+import { useTranslations } from 'next-intl';
 
 /**
  * The parent growth card (FR-APP-11) — preview, share, print.
@@ -44,7 +44,7 @@ const growthSeries = [
 ];
 
 export default function GrowthCardPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

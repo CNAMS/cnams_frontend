@@ -12,15 +12,13 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { mockCentres } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
-import type { TranslationKey } from '@/data/translations';
-
+import { useTranslations } from 'next-intl';
 /**
  * The admin console (§EX3).
  *
@@ -36,8 +34,8 @@ import type { TranslationKey } from '@/data/translations';
 
 type Destination = {
   href: string;
-  labelKey: TranslationKey;
-  descriptionKey: TranslationKey;
+  labelKey: string;
+  descriptionKey: string;
   icon: LucideIcon;
   built?: boolean;
 };
@@ -81,7 +79,7 @@ const DESTINATIONS: Destination[] = [
 ];
 
 export default function AdminDashboard() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

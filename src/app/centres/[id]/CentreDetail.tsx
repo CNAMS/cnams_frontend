@@ -21,7 +21,6 @@ import {
   YAxis,
 } from 'recharts';
 import { getChildrenByCentre, type CentreData, type FlaggedChild } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
@@ -30,6 +29,7 @@ import { DataTable, type Column } from '@/components/ui/DataTable';
 import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 const DEVICE_STATUS = {
   connected: { icon: Wifi, tone: 'text-class-normal', labelKey: 'connected' },
@@ -38,7 +38,7 @@ const DEVICE_STATUS = {
 } as const;
 
 export default function CentreDetail({ centre }: { centre: CentreData }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

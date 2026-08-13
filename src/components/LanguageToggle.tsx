@@ -2,11 +2,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLocale } from '@/context/LocaleContext';
+import { locales, type Locale } from '@/i18n/config';
 import { cn } from '@/lib/cn';
-import type { Language } from '@/data/translations';
 
-const LANGUAGES: Record<Language, string> = {
+const LANGUAGE_LABELS: Record<Locale, string> = {
   hi: 'हिन्दी',
   en: 'English',
   mr: 'मराठी',
@@ -14,7 +14,7 @@ const LANGUAGES: Record<Language, string> = {
 };
 
 export default function LanguageToggle({ className }: { className?: string }) {
-  const { language, setLanguage } = useLanguage();
+  const { locale, setLocale } = useLocale();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +54,7 @@ export default function LanguageToggle({ className }: { className?: string }) {
           open && 'ring-2 ring-brand ring-offset-1 ring-offset-surface-container'
         )}
       >
-        <span lang={language}>{LANGUAGES[language]}</span>
+        <span lang={locale}>{LANGUAGE_LABELS[locale]}</span>
         <ChevronDown size={16} className={cn("transition-transform", open && "rotate-180")} />
       </button>
 
@@ -69,8 +69,8 @@ export default function LanguageToggle({ className }: { className?: string }) {
             'py-1 flex flex-col'
           )}
         >
-          {(Object.entries(LANGUAGES) as [Language, string][]).map(([code, label]) => {
-            const active = language === code;
+          {locales.map((code) => {
+            const active = locale === code;
             return (
               <li key={code} role="presentation">
                 <button
@@ -78,7 +78,7 @@ export default function LanguageToggle({ className }: { className?: string }) {
                   role="option"
                   aria-selected={active}
                   onClick={() => {
-                    setLanguage(code);
+                    setLocale(code);
                     setOpen(false);
                   }}
                   lang={code}
@@ -90,7 +90,7 @@ export default function LanguageToggle({ className }: { className?: string }) {
                       : 'text-on-surface hover:bg-surface-variant'
                   )}
                 >
-                  {label}
+                  {LANGUAGE_LABELS[code]}
                 </button>
               </li>
             );

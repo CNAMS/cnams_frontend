@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Baby, Cog, LayoutDashboard, Stethoscope, Users, type LucideIcon } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { AppRole } from '@/theme/roles';
 import { ROLE_LABEL_KEY } from '@/components/nav/navigation';
@@ -14,6 +13,7 @@ import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * Role-based sign-in.
@@ -45,7 +45,7 @@ const ROLE_HOME: Record<AppRole, string> = {
 const SELECTABLE: AppRole[] = ['aww', 'supervisor', 'doctor', 'parent', 'admin'];
 
 export default function LoginPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const router = useRouter();
   const [pin, setPin] = useState('');

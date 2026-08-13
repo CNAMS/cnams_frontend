@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { FlaskConical, type LucideIcon } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * Empty, loading and honesty states.
@@ -61,8 +61,8 @@ export function EmptyState({
  * page, where "42 children monitored" reads as a real programme statistic.
  */
 export function SampleDataChip({ className }: { className?: string }) {
-  const { t } = useLanguage();
-  return (
+  const t = useTranslations();
+return (
     <span
       className={cn(
         'inline-flex items-center gap-1.5 shrink-0',
