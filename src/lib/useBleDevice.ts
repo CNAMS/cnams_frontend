@@ -6,7 +6,6 @@ import {
   BLE_GATT_MEASUREMENT_CHAR_UUID,
   BLE_DEVICE_NAME_PREFIX,
   decodeBleFrame,
-  encodeBleFrame,
   type DecodedBlePacket,
 } from './bleCodec';
 
@@ -68,11 +67,8 @@ export interface UseBleDeviceReturn {
   errorMessage: string | null;
   weight: ChannelReading | null;
   length: ChannelReading | null;
-  isSimulated: boolean;
   connect: () => Promise<void>;
   disconnect: () => void;
-  startSimulation: () => void;
-  stopSimulation: () => void;
   resetReadings: () => void;
 }
 
@@ -85,11 +81,9 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
 
   const [weight, setWeight] = useState<ChannelReading | null>(null);
   const [length, setLength] = useState<ChannelReading | null>(null);
-  const [isSimulated, setIsSimulated] = useState<boolean>(false);
 
   const deviceRef = useRef<BluetoothDeviceLike | null>(null);
   const characteristicRef = useRef<BluetoothRemoteGATTCharacteristicLike | null>(null);
-  const simTimerRef = useRef<NodeJS.Timeout | null>(null);
   const callbackRef = useRef(onReading);
 
   useEffect(() => {
@@ -109,7 +103,7 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
     setConnectionState('unsupported');
   }, []);
 
-  // Process a decoded packet
+  // Process a decoded packet from ESP32-S3
   const handlePacket = useCallback((packet: DecodedBlePacket) => {
     const reading: ChannelReading = {
       value: packet.valueFormatted,
@@ -130,7 +124,7 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
     }
   }, []);
 
-  // Handle characteristic notification event
+  // Handle characteristic notification event from ESP32-S3
   const handleCharacteristicValue = useCallback((event: Event) => {
     try {
       const target = event.target as BluetoothRemoteGATTCharacteristicLike;
@@ -139,7 +133,7 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
       const packet = decodeBleFrame(target.value);
       handlePacket(packet);
     } catch (err: unknown) {
-      console.warn('[BLE] Frame decode error:', err);
+      console.warn('[BLE ESP32] Frame decode error:', err);
     }
   }, [handlePacket]);
 
@@ -158,23 +152,16 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
     const nav = navigator as NavigatorWithBluetooth;
 
     if (!nav.bluetooth) {
-      setErrorMessage('Web Bluetooth is not supported in this browser. Please use Chrome, Edge, or enable Simulation Mode.');
+      setErrorMessage('Web Bluetooth is not supported in this browser. Please open in Google Chrome or Microsoft Edge.');
       setConnectionState('unsupported');
       return;
-    }
-
-    // Stop any active simulation
-    if (simTimerRef.current) {
-      clearInterval(simTimerRef.current);
-      simTimerRef.current = null;
-      setIsSimulated(false);
     }
 
     try {
       setErrorMessage(null);
       setConnectionState('scanning');
 
-      // Request device with service filter + name prefix filter
+      // Request ESP32-S3 device advertising CGMS GATT service
       const device = await nav.bluetooth.requestDevice({
         filters: [
           { namePrefix: BLE_DEVICE_NAME_PREFIX },
@@ -184,14 +171,14 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
       });
 
       deviceRef.current = device;
-      setDeviceName(device.name || 'CGMS Scale');
+      setDeviceName(device.name || 'CGMS-ANKUR-S3');
       setDeviceSerial(device.id || 'ESP32-S3');
 
       device.addEventListener('gattserverdisconnected', handleDisconnected);
 
       setConnectionState('connecting');
       const server = await device.gatt?.connect();
-      if (!server) throw new Error('Could not connect to GATT server');
+      if (!server) throw new Error('Could not connect to ESP32 GATT server');
 
       const service = await server.getPrimaryService(BLE_GATT_SERVICE_UUID);
       const characteristic = await service.getCharacteristic(BLE_GATT_MEASUREMENT_CHAR_UUID);
@@ -202,10 +189,10 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
 
       setConnectionState('connected');
     } catch (err: unknown) {
-      console.error('[BLE] Connection failed:', err);
+      console.error('[BLE ESP32] Connection failed:', err);
       const isUserCancel = err instanceof Error && err.name === 'NotFoundError';
       if (!isUserCancel) {
-        setErrorMessage(err instanceof Error ? err.message : 'Failed to connect to BLE device');
+        setErrorMessage(err instanceof Error ? err.message : 'Failed to connect to ESP32 scale');
         setConnectionState('error');
       } else {
         setConnectionState('disconnected');
@@ -213,14 +200,8 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
     }
   }, [handleCharacteristicValue, handleDisconnected]);
 
-  // Disconnect device
+  // Disconnect ESP32 device
   const disconnect = useCallback(() => {
-    if (simTimerRef.current) {
-      clearInterval(simTimerRef.current);
-      simTimerRef.current = null;
-      setIsSimulated(false);
-    }
-
     if (characteristicRef.current) {
       try {
         characteristicRef.current.removeEventListener('characteristicvaluechanged', handleCharacteristicValue);
@@ -238,60 +219,6 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
     handleDisconnected();
   }, [handleCharacteristicValue, handleDisconnected]);
 
-  // Simulation mode (generates jitter -> stable lock frames identical to ESP32-S3)
-  const startSimulation = useCallback(() => {
-    disconnect();
-    setIsSimulated(true);
-    setConnectionState('connected');
-    setDeviceName('CGMS-ANKUR-S3 (Simulated)');
-    setDeviceSerial('SIM-84B02A3C');
-    setErrorMessage(null);
-
-    let step = 0;
-    const baseWeightGrams = 11800; // ~11.8 kg
-    const baseLengthMm = 820;      // ~82.0 cm
-
-    if (simTimerRef.current) clearInterval(simTimerRef.current);
-
-    simTimerRef.current = setInterval(() => {
-      step++;
-      const isStable = step >= 8; // After 8 ticks (~4 seconds), reading locks stable
-
-      // Alternate weight and length frames (matching ESP32 firmware)
-      if (step % 2 === 1) {
-        // Weight channel
-        const jitter = isStable ? 0 : Math.floor((Math.random() - 0.5) * 400);
-        const rawWeight = baseWeightGrams + jitter;
-        const frame = encodeBleFrame('weight', rawWeight, isStable, step);
-        const decoded = decodeBleFrame(frame);
-        handlePacket(decoded);
-      } else {
-        // Length channel
-        const jitter = isStable ? 0 : Math.floor((Math.random() - 0.5) * 15);
-        const rawLength = baseLengthMm + jitter;
-        const frame = encodeBleFrame('length', rawLength, isStable, step);
-        const decoded = decodeBleFrame(frame);
-        handlePacket(decoded);
-      }
-
-      // Reset cycle after being stable for a few seconds
-      if (step > 16) {
-        step = 0;
-      }
-    }, 500);
-  }, [disconnect, handlePacket]);
-
-  const stopSimulation = useCallback(() => {
-    if (simTimerRef.current) {
-      clearInterval(simTimerRef.current);
-      simTimerRef.current = null;
-    }
-    setIsSimulated(false);
-    setConnectionState('disconnected');
-    setDeviceName(null);
-    setDeviceSerial(null);
-  }, []);
-
   const resetReadings = useCallback(() => {
     setWeight(null);
     setLength(null);
@@ -300,7 +227,6 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (simTimerRef.current) clearInterval(simTimerRef.current);
       if (deviceRef.current && deviceRef.current.gatt?.connected) {
         deviceRef.current.gatt.disconnect();
       }
@@ -315,11 +241,8 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
     errorMessage,
     weight,
     length,
-    isSimulated,
     connect,
     disconnect,
-    startSimulation,
-    stopSimulation,
     resetReadings,
   };
 }

@@ -10,11 +10,9 @@ import {
   Check,
   Lock,
   Radio,
-  RefreshCw,
   Ruler,
   RotateCcw,
   Scale,
-  Sparkles,
   Unlock,
   AlertCircle,
 } from 'lucide-react';
@@ -34,8 +32,9 @@ import type { DecodedBlePacket } from '@/lib/bleCodec';
 /**
  * The capture flow: child → weight/length → MUAC + oedema → result.
  *
- * Supports automatic Web Bluetooth data streaming and stabilization locking
- * from the ESP32-S3 hardware scale (GATT service 4fafc201-1fb5-459e-8fcc-c5c9c331914b).
+ * Receives live Bluetooth GATT notifications from the ESP32-S3 microcontroller
+ * (Service: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, Char: beb5483e-36e1-4688-b7f5-ea07361b26a8)
+ * and automatically locks in weight and length when the ESP32 signals stability.
  */
 
 type Step = 'child' | 'weight' | 'muac' | 'result';
@@ -69,7 +68,7 @@ export default function MeasurePage() {
     if (role !== 'aww') setRole('aww');
   }, [role, setRole]);
 
-  // Handle incoming live packet from the BLE scale
+  // Handle incoming live packet from the ESP32-S3 scale
   const handleBlePacket = useCallback(
     (packet: DecodedBlePacket) => {
       if (!autoFillEnabled) return;
@@ -90,11 +89,8 @@ export default function MeasurePage() {
     errorMessage: bleError,
     weight: bleWeight,
     length: bleLength,
-    isSimulated: bleIsSimulated,
     connect: connectBle,
     disconnect: disconnectBle,
-    startSimulation: startBleSimulation,
-    stopSimulation: stopBleSimulation,
   } = useBleDevice(handleBlePacket);
 
   // Only children with recorded consent may be measured.
@@ -219,64 +215,42 @@ export default function MeasurePage() {
                     </h3>
                     <p className="text-xs text-on-surface-variant">
                       {bleState === 'connected'
-                        ? bleIsSimulated
-                          ? 'Streaming simulated sensor data (GATT Demo)'
-                          : 'Live streaming BLE GATT frames (11-byte CRC16)'
+                        ? 'Receiving live Bluetooth GATT notifications from ESP32 scale'
                         : bleState === 'connecting'
-                        ? 'Connecting to hardware device...'
+                        ? 'Connecting to ESP32-S3 scale...'
                         : bleState === 'scanning'
-                        ? 'Scanning for CGMS Bluetooth devices...'
-                        : 'Connect wireless scale for automated measurement lock-in'}
+                        ? 'Searching for CGMS-ANKUR-S3 Bluetooth device...'
+                        : isBleSupported
+                        ? 'Connect to ESP32-S3 for automatic measurement lock-in'
+                        : 'Web Bluetooth is not supported in this browser (use Google Chrome or MS Edge)'}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div>
                   {bleState === 'connected' ? (
                     <Button
                       variant="ghost"
-                      onClick={bleIsSimulated ? stopBleSimulation : disconnectBle}
+                      onClick={disconnectBle}
                       className="text-xs h-8 px-2.5 text-error hover:bg-error-container"
                     >
                       <BluetoothOff size={14} className="mr-1" />
                       Disconnect
                     </Button>
                   ) : (
-                    <div className="flex items-center gap-1.5">
-                      {isBleSupported ? (
-                        <Button
-                          variant="primary"
-                          onClick={connectBle}
-                          disabled={bleState === 'connecting' || bleState === 'scanning'}
-                          className="text-xs h-8 px-3"
-                        >
-                          <Bluetooth size={14} className="mr-1.5" />
-                          Connect Scale
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="secondary"
-                          onClick={startBleSimulation}
-                          className="text-xs h-8 px-3"
-                        >
-                          <Sparkles size={14} className="mr-1.5 text-brand" />
-                          Simulate Scale
-                        </Button>
-                      )}
-
-                      {/* Demo simulation mode toggle for testing */}
-                      {isBleSupported && (
-                        <Button
-                          variant="ghost"
-                          onClick={startBleSimulation}
-                          title="Simulate hardware stream in browser"
-                          className="text-xs h-8 px-2 text-on-surface-variant hover:text-brand"
-                        >
-                          <Sparkles size={14} className="mr-1" />
-                          Demo Mode
-                        </Button>
-                      )}
-                    </div>
+                    <Button
+                      variant="primary"
+                      onClick={connectBle}
+                      disabled={!isBleSupported || bleState === 'connecting' || bleState === 'scanning'}
+                      className="text-xs h-8 px-3"
+                    >
+                      <Bluetooth size={14} className="mr-1.5" />
+                      {bleState === 'scanning'
+                        ? 'Scanning...'
+                        : bleState === 'connecting'
+                        ? 'Connecting...'
+                        : 'Connect Scale'}
+                    </Button>
                   )}
                 </div>
               </div>
@@ -288,7 +262,7 @@ export default function MeasurePage() {
                 </div>
               )}
 
-              {/* ── Live Streaming Gauges ──────────────────────────────── */}
+              {/* ── Live Streaming Gauges from ESP32 ────────────────────── */}
               {bleState === 'connected' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   {/* Weight Stream Gauge */}
@@ -303,7 +277,7 @@ export default function MeasurePage() {
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
                         <Scale size={14} />
-                        Weight Stream
+                        Live Weight
                       </span>
                       {bleWeight ? (
                         <span
@@ -320,12 +294,12 @@ export default function MeasurePage() {
                             </>
                           ) : (
                             <>
-                              <Unlock size={10} className="animate-pulse" /> Stabilizing...
+                              <Unlock size={10} className="animate-pulse" /> Reading...
                             </>
                           )}
                         </span>
                       ) : (
-                        <span className="text-xs text-on-surface-variant">Waiting...</span>
+                        <span className="text-xs text-on-surface-variant">Waiting for ESP32...</span>
                       )}
                     </div>
                     <div className="flex items-baseline justify-between">
@@ -348,7 +322,7 @@ export default function MeasurePage() {
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
                         <Ruler size={14} />
-                        {child && child.ageMonths < 24 ? 'Length Stream' : 'Height Stream'}
+                        {child && child.ageMonths < 24 ? 'Live Length' : 'Live Height'}
                       </span>
                       {bleLength ? (
                         <span
@@ -365,12 +339,12 @@ export default function MeasurePage() {
                             </>
                           ) : (
                             <>
-                              <Unlock size={10} className="animate-pulse" /> Stabilizing...
+                              <Unlock size={10} className="animate-pulse" /> Reading...
                             </>
                           )}
                         </span>
                       ) : (
-                        <span className="text-xs text-on-surface-variant">Waiting...</span>
+                        <span className="text-xs text-on-surface-variant">Waiting for ESP32...</span>
                       )}
                     </div>
                     <div className="flex items-baseline justify-between">
@@ -384,7 +358,7 @@ export default function MeasurePage() {
               )}
             </Card>
 
-            {/* ── Form Inputs (Auto-Filled or Manual Entry) ──────────────── */}
+            {/* ── Form Inputs (Auto-Filled from ESP32 or Manual Entry) ───── */}
             <Card className="space-y-4">
               <div className="flex items-center justify-between border-b border-outline-variant pb-2">
                 <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
@@ -410,7 +384,7 @@ export default function MeasurePage() {
                 onChange={setWeightKg}
                 hint={
                   bleWeight?.stable && weightKg === bleWeight.value
-                    ? '✓ Locked automatically from Bluetooth scale'
+                    ? '✓ Locked automatically from ESP32-S3 scale'
                     : undefined
                 }
               />
@@ -424,7 +398,7 @@ export default function MeasurePage() {
                 onChange={setHeightCm}
                 hint={
                   bleLength?.stable && heightCm === bleLength.value
-                    ? '✓ Locked automatically from Bluetooth scale'
+                    ? '✓ Locked automatically from ESP32-S3 scale'
                     : child
                     ? child.ageMonths < 24
                       ? t('measureLengthHint')
