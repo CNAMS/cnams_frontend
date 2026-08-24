@@ -54,22 +54,13 @@ export function BleScaleCard({
   const handleReading = useCallback((packet: DecodedBlePacket) => {
     if (onPacketRef.current) onPacketRef.current(packet);
 
-    // ── LOG 3: BleScaleCard consumer callback ─────────────────────────────
-    console.log(
-      `[BLE] 🎛️  BleScaleCard.handleReading | ch=${packet.channel} stable=${packet.stable} raw=${packet.valueRaw} fmt=${packet.valueFormatted}`
-    );
-
     // Auto-fill: fire the lock handlers when ESP32 confirms a stable non-zero reading
     if (packet.stable && packet.valueRaw > 0) {
       if (packet.channel === 'weight' && onWeightLockRef.current) {
-        console.log(`[BLE] ✅ AUTO-FILL weight → calling onWeightLock("${packet.valueFormatted}")`);
         onWeightLockRef.current(packet.valueFormatted);
       } else if (packet.channel === 'length' && onLengthLockRef.current) {
-        console.log(`[BLE] ✅ AUTO-FILL length → calling onLengthLock("${packet.valueFormatted}")`);
         onLengthLockRef.current(packet.valueFormatted);
       }
-    } else {
-      console.log(`[BLE] ⏩ Skipping auto-fill | stable=${packet.stable} raw=${packet.valueRaw}`);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally empty — refs keep it fresh without recreating

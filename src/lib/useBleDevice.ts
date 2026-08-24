@@ -116,11 +116,6 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
   // return 0 on unconnected ADC pins) immediately after the capture cycle locks.
   // The reading is only replaced when a new measurement cycle begins (stable=false).
   const handlePacket = useCallback((packet: DecodedBlePacket) => {
-    // ── LOG 2: Decoded packet from ESP32 ─────────────────────────────────────
-    console.log(
-      `[BLE] 📦 Decoded packet | ch=${packet.channel} | raw=${packet.valueRaw} | fmt=${packet.valueFormatted} | stable=${packet.stable} | seq=${packet.sequence}`
-    );
-
     const incoming: ChannelReading = {
       value: packet.valueFormatted,
       raw: packet.valueRaw,
@@ -131,41 +126,22 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
 
     if (packet.channel === 'weight') {
       setWeight((prev) => {
-        // If we already have a non-zero stable lock, don't overwrite with a zero stable packet.
         if (prev && prev.stable && prev.raw > 0 && packet.stable && packet.valueRaw === 0) {
-          console.warn(
-            `[BLE] 🛡️ GUARD: Ignoring zero-stable WEIGHT packet (prev locked at ${prev.value} kg). Firmware ADC glitch suppressed.`
-          );
           return prev;
-        }
-        if (packet.stable && packet.valueRaw > 0) {
-          console.log(`[BLE] 🔒 WEIGHT LOCKED at ${packet.valueFormatted} kg (raw=${packet.valueRaw} g)`);
         }
         return incoming;
       });
     } else {
       setLength((prev) => {
         if (prev && prev.stable && prev.raw > 0 && packet.stable && packet.valueRaw === 0) {
-          console.warn(
-            `[BLE] 🛡️ GUARD: Ignoring zero-stable LENGTH packet (prev locked at ${prev.value} cm). Firmware ADC glitch suppressed.`
-          );
           return prev;
-        }
-        if (packet.stable && packet.valueRaw > 0) {
-          console.log(`[BLE] 🔒 LENGTH LOCKED at ${packet.valueFormatted} cm (raw=${packet.valueRaw} mm)`);
         }
         return incoming;
       });
     }
 
-    // Only fire the consumer callback for meaningful non-zero stable locks,
-    // or for any unstable reading (so the live gauge keeps updating).
-    // Skip zero-stable packets to prevent overwriting auto-filled form fields.
     const isZeroStable = packet.stable && packet.valueRaw === 0;
-    if (isZeroStable) {
-      console.warn(`[BLE] ⏭️ SKIPPED callback for zero-stable ${packet.channel} packet (ADC glitch).`);
-    } else if (callbackRef.current) {
-      console.log(`[BLE] 📡 Forwarding packet to consumer callback | ch=${packet.channel} stable=${packet.stable} val=${packet.valueFormatted}`);
+    if (!isZeroStable && callbackRef.current) {
       callbackRef.current(packet);
     }
   }, []);
@@ -176,15 +152,10 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
       const target = event.target as BluetoothRemoteGATTCharacteristicLike;
       if (!target?.value) return;
 
-      // ── LOG 1: Raw bytes arriving from ESP32 ─────────────────────────────
-      const bytes = new Uint8Array(target.value.buffer);
-      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
-      console.log(`[BLE] 📻 Raw GATT notification (${bytes.length} bytes): ${hex}`);
-
       const packet = decodeBleFrame(target.value);
       handlePacket(packet);
     } catch (err: unknown) {
-      console.warn('[BLE] ❌ Frame decode error:', err);
+      console.warn('[BLE] Frame decode error:', err);
     }
   }, [handlePacket]);
 

@@ -83,13 +83,8 @@ export default function MeasurePage() {
   // Direct lock handlers from ESP32-S3
   const handleWeightLock = useCallback(
     (val: string) => {
-      // ── LOG 4a: Final form field write ──────────────────────────────────
-      console.log(`[BLE] 📝 handleWeightLock called | val="${val}" | autoFillEnabled=${autoFillEnabled}`);
       if (autoFillEnabled) {
-        console.log(`[BLE] ✏️  Setting weightKg → "${val}"`);
         setWeightKg(val);
-      } else {
-        console.log('[BLE] 🚫 Auto-fill DISABLED — weight not written to form');
       }
     },
     [autoFillEnabled]
@@ -97,13 +92,8 @@ export default function MeasurePage() {
 
   const handleLengthLock = useCallback(
     (val: string) => {
-      // ── LOG 4b: Final form field write ──────────────────────────────────
-      console.log(`[BLE] 📝 handleLengthLock called | val="${val}" | autoFillEnabled=${autoFillEnabled}`);
       if (autoFillEnabled) {
-        console.log(`[BLE] ✏️  Setting heightCm → "${val}"`);
         setHeightCm(val);
-      } else {
-        console.log('[BLE] 🚫 Auto-fill DISABLED — length not written to form');
       }
     },
     [autoFillEnabled]
