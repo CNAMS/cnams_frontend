@@ -1,20 +1,14 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
   ArrowRight,
-  Bluetooth,
-  BluetoothConnected,
-  BluetoothOff,
   Check,
-  Lock,
-  Radio,
   Ruler,
   RotateCcw,
   Scale,
-  Unlock,
-  AlertCircle,
 } from 'lucide-react';
 import { mockRoster, type RosterChild } from '@/data/rosterData';
 import type { GrowthClass } from '@/theme/classification';
@@ -26,8 +20,26 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
 import { useTranslations } from 'next-intl';
-import { useBleDevice } from '@/lib/useBleDevice';
 import type { DecodedBlePacket } from '@/lib/bleCodec';
+
+/**
+ * BleScaleCard is loaded only on the client (ssr: false) so it never
+ * runs on the server. This eliminates the React hydration mismatch
+ * (NotFoundError: insertBefore) caused by navigator.bluetooth being
+ * undefined on the server while the client changes connection state
+ * during the first useEffect.
+ */
+const BleScaleCard = dynamic(
+  () => import('@/components/ble/BleScaleCard').then((m) => m.BleScaleCard),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-2xl border border-outline-variant bg-surface-container p-6 text-sm text-on-surface-variant animate-pulse">
+        Loading Bluetooth scale...
+      </div>
+    ),
+  }
+);
 
 /**
  * The capture flow: child → weight/length → MUAC + oedema → result.
@@ -72,7 +84,6 @@ export default function MeasurePage() {
   const handleBlePacket = useCallback(
     (packet: DecodedBlePacket) => {
       if (!autoFillEnabled) return;
-
       if (packet.channel === 'weight' && packet.stable) {
         setWeightKg(packet.valueFormatted);
       } else if (packet.channel === 'length' && packet.stable) {
@@ -81,17 +92,6 @@ export default function MeasurePage() {
     },
     [autoFillEnabled]
   );
-
-  const {
-    isSupported: isBleSupported,
-    connectionState: bleState,
-    deviceName: bleDeviceName,
-    errorMessage: bleError,
-    weight: bleWeight,
-    length: bleLength,
-    connect: connectBle,
-    disconnect: disconnectBle,
-  } = useBleDevice(handleBlePacket);
 
   // Only children with recorded consent may be measured.
   const eligible = mockRoster.filter((c) => c.centreId === 'c1' && c.consent === 'given');
@@ -144,7 +144,7 @@ export default function MeasurePage() {
         {/* ── Step: choose child ────────────────────────────────────────── */}
         {step === 'child' && (
           <section>
-            <SectionHeader title={t('measurePickChild')} description={t('measurePickChildHint')} />
+            <SectionHeader title={t('measurePickChild')} />
             <ul className="space-y-2">
               {eligible.map((c) => (
                 <li key={c.id}>
@@ -181,182 +181,11 @@ export default function MeasurePage() {
           <section className="space-y-4">
             <SectionHeader title={t('measureWeightLength')} />
 
-            {/* ── Smart BLE Hardware Scale Card ─────────────────────────── */}
-            <Card className="border-2 border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div
-                    className={cn(
-                      'w-9 h-9 rounded-lg flex items-center justify-center transition-colors',
-                      bleState === 'connected'
-                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                        : bleState === 'scanning' || bleState === 'connecting'
-                        ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 animate-pulse'
-                        : 'bg-surface-variant text-on-surface-variant'
-                    )}
-                  >
-                    {bleState === 'connected' ? (
-                      <BluetoothConnected size={20} />
-                    ) : bleState === 'scanning' || bleState === 'connecting' ? (
-                      <Radio size={20} className="animate-spin" />
-                    ) : (
-                      <Bluetooth size={20} />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm flex items-center gap-2">
-                      <span>ESP32-S3 Wireless Scale</span>
-                      {bleState === 'connected' && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                          {bleDeviceName || 'Connected'}
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-xs text-on-surface-variant">
-                      {bleState === 'connected'
-                        ? 'Receiving live Bluetooth GATT notifications from ESP32 scale'
-                        : bleState === 'connecting'
-                        ? 'Connecting to ESP32-S3 scale...'
-                        : bleState === 'scanning'
-                        ? 'Searching for CGMS-ANKUR-S3 Bluetooth device...'
-                        : isBleSupported
-                        ? 'Connect to ESP32-S3 for automatic measurement lock-in'
-                        : 'Web Bluetooth is not supported in this browser (use Google Chrome or MS Edge)'}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  {bleState === 'connected' ? (
-                    <Button
-                      variant="ghost"
-                      onClick={disconnectBle}
-                      className="text-xs h-8 px-2.5 text-error hover:bg-error-container"
-                    >
-                      <BluetoothOff size={14} className="mr-1" />
-                      Disconnect
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="primary"
-                      onClick={connectBle}
-                      disabled={!isBleSupported || bleState === 'connecting' || bleState === 'scanning'}
-                      className="text-xs h-8 px-3"
-                    >
-                      <Bluetooth size={14} className="mr-1.5" />
-                      {bleState === 'scanning'
-                        ? 'Scanning...'
-                        : bleState === 'connecting'
-                        ? 'Connecting...'
-                        : 'Connect Scale'}
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              {bleError && (
-                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-error-container text-on-error-container text-xs">
-                  <AlertCircle size={15} className="shrink-0" />
-                  <span>{bleError}</span>
-                </div>
-              )}
-
-              {/* ── Live Streaming Gauges from ESP32 ────────────────────── */}
-              {bleState === 'connected' && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  {/* Weight Stream Gauge */}
-                  <div
-                    className={cn(
-                      'p-3.5 rounded-xl border-2 transition-all duration-base',
-                      bleWeight?.stable
-                        ? 'bg-emerald-500/10 border-emerald-500/40'
-                        : 'bg-surface border-outline-variant'
-                    )}
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
-                        <Scale size={14} />
-                        Live Weight
-                      </span>
-                      {bleWeight ? (
-                        <span
-                          className={cn(
-                            'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full',
-                            bleWeight.stable
-                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
-                              : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
-                          )}
-                        >
-                          {bleWeight.stable ? (
-                            <>
-                              <Lock size={10} /> Locked
-                            </>
-                          ) : (
-                            <>
-                              <Unlock size={10} className="animate-pulse" /> Reading...
-                            </>
-                          )}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-on-surface-variant">Waiting for ESP32...</span>
-                      )}
-                    </div>
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-2xl font-bold tabular-nums tracking-tight">
-                        {bleWeight ? bleWeight.value : '—'}
-                      </span>
-                      <span className="text-sm font-medium text-on-surface-variant">kg</span>
-                    </div>
-                  </div>
-
-                  {/* Length Stream Gauge */}
-                  <div
-                    className={cn(
-                      'p-3.5 rounded-xl border-2 transition-all duration-base',
-                      bleLength?.stable
-                        ? 'bg-emerald-500/10 border-emerald-500/40'
-                        : 'bg-surface border-outline-variant'
-                    )}
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
-                        <Ruler size={14} />
-                        {child && child.ageMonths < 24 ? 'Live Length' : 'Live Height'}
-                      </span>
-                      {bleLength ? (
-                        <span
-                          className={cn(
-                            'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full',
-                            bleLength.stable
-                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
-                              : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
-                          )}
-                        >
-                          {bleLength.stable ? (
-                            <>
-                              <Lock size={10} /> Locked
-                            </>
-                          ) : (
-                            <>
-                              <Unlock size={10} className="animate-pulse" /> Reading...
-                            </>
-                          )}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-on-surface-variant">Waiting for ESP32...</span>
-                      )}
-                    </div>
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-2xl font-bold tabular-nums tracking-tight">
-                        {bleLength ? bleLength.value : '—'}
-                      </span>
-                      <span className="text-sm font-medium text-on-surface-variant">cm</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Card>
+            {/* ── BLE Scale Card (client-only, no SSR) ───────────────── */}
+            <BleScaleCard
+              ageMonths={child?.ageMonths}
+              onPacket={handleBlePacket}
+            />
 
             {/* ── Form Inputs (Auto-Filled from ESP32 or Manual Entry) ───── */}
             <Card className="space-y-4">
@@ -382,11 +211,6 @@ export default function MeasurePage() {
                 icon={Scale}
                 value={weightKg}
                 onChange={setWeightKg}
-                hint={
-                  bleWeight?.stable && weightKg === bleWeight.value
-                    ? '✓ Locked automatically from ESP32-S3 scale'
-                    : undefined
-                }
               />
 
               <Field
@@ -397,9 +221,7 @@ export default function MeasurePage() {
                 value={heightCm}
                 onChange={setHeightCm}
                 hint={
-                  bleLength?.stable && heightCm === bleLength.value
-                    ? '✓ Locked automatically from ESP32-S3 scale'
-                    : child
+                  child
                     ? child.ageMonths < 24
                       ? t('measureLengthHint')
                       : t('measureHeightHint')

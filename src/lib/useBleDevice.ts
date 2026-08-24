@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, startTransition } from 'react';
 import {
   BLE_GATT_SERVICE_UUID,
   BLE_GATT_MEASUREMENT_CHAR_UUID,
@@ -113,15 +113,17 @@ export function useBleDevice(onReading?: (packet: DecodedBlePacket) => void): Us
       lastUpdated: Date.now(),
     };
 
-    if (packet.channel === 'weight') {
-      setWeight(reading);
-    } else {
-      setLength(reading);
-    }
+    startTransition(() => {
+      if (packet.channel === 'weight') {
+        setWeight(reading);
+      } else {
+        setLength(reading);
+      }
 
-    if (callbackRef.current) {
-      callbackRef.current(packet);
-    }
+      if (callbackRef.current) {
+        callbackRef.current(packet);
+      }
+    });
   }, []);
 
   // Handle characteristic notification event from ESP32-S3
