@@ -1,15 +1,13 @@
 'use client';
 
 /**
- * BleScaleCard — all Web Bluetooth logic lives here.
+ * BleScaleCard — Web Bluetooth logic, live gauges, and device triggers.
  *
- * This component is intentionally imported with `next/dynamic` + `ssr: false`
- * so it never renders on the server. This avoids the React hydration mismatch
- * (NotFoundError: insertBefore) caused by navigator.bluetooth being undefined
- * on the server while the client immediately modifies connection state.
+ * This component is imported with `next/dynamic` + `ssr: false`
+ * to avoid hydration mismatches.
  */
 
-import React from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import {
   Bluetooth,
   BluetoothConnected,
@@ -20,6 +18,8 @@ import {
   Scale,
   Unlock,
   AlertCircle,
+  Play,
+  RotateCcw,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -29,10 +29,51 @@ import type { DecodedBlePacket } from '@/lib/bleCodec';
 
 interface BleScaleCardProps {
   ageMonths?: number;
-  onPacket: (packet: DecodedBlePacket) => void;
+  onPacket?: (packet: DecodedBlePacket) => void;
+  onWeightLock?: (weightKg: string) => void;
+  onLengthLock?: (lengthCm: string) => void;
 }
 
-export function BleScaleCard({ ageMonths, onPacket }: BleScaleCardProps) {
+export function BleScaleCard({
+  ageMonths,
+  onPacket,
+  onWeightLock,
+  onLengthLock,
+}: BleScaleCardProps) {
+  // Use refs for the lock callbacks so the BLE event handler (which fires from
+  // a browser event, outside React's render cycle) always sees the latest values.
+  const onWeightLockRef = useRef(onWeightLock);
+  const onLengthLockRef = useRef(onLengthLock);
+  const onPacketRef = useRef(onPacket);
+
+  useEffect(() => { onWeightLockRef.current = onWeightLock; }, [onWeightLock]);
+  useEffect(() => { onLengthLockRef.current = onLengthLock; }, [onLengthLock]);
+  useEffect(() => { onPacketRef.current = onPacket; }, [onPacket]);
+
+  // Stable callback reference — never recreated, always reads fresh refs
+  const handleReading = useCallback((packet: DecodedBlePacket) => {
+    if (onPacketRef.current) onPacketRef.current(packet);
+
+    // ── LOG 3: BleScaleCard consumer callback ─────────────────────────────
+    console.log(
+      `[BLE] 🎛️  BleScaleCard.handleReading | ch=${packet.channel} stable=${packet.stable} raw=${packet.valueRaw} fmt=${packet.valueFormatted}`
+    );
+
+    // Auto-fill: fire the lock handlers when ESP32 confirms a stable non-zero reading
+    if (packet.stable && packet.valueRaw > 0) {
+      if (packet.channel === 'weight' && onWeightLockRef.current) {
+        console.log(`[BLE] ✅ AUTO-FILL weight → calling onWeightLock("${packet.valueFormatted}")`);
+        onWeightLockRef.current(packet.valueFormatted);
+      } else if (packet.channel === 'length' && onLengthLockRef.current) {
+        console.log(`[BLE] ✅ AUTO-FILL length → calling onLengthLock("${packet.valueFormatted}")`);
+        onLengthLockRef.current(packet.valueFormatted);
+      }
+    } else {
+      console.log(`[BLE] ⏩ Skipping auto-fill | stable=${packet.stable} raw=${packet.valueRaw}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally empty — refs keep it fresh without recreating
+
   const {
     isSupported: isBleSupported,
     connectionState: bleState,
@@ -42,7 +83,9 @@ export function BleScaleCard({ ageMonths, onPacket }: BleScaleCardProps) {
     length: bleLength,
     connect: connectBle,
     disconnect: disconnectBle,
-  } = useBleDevice(onPacket);
+    triggerMeasurement,
+    tareScale,
+  } = useBleDevice(handleReading);
 
   return (
     <Card className="border-2 border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
@@ -79,7 +122,7 @@ export function BleScaleCard({ ageMonths, onPacket }: BleScaleCardProps) {
             </h3>
             <p className="text-xs text-on-surface-variant">
               {bleState === 'connected'
-                ? 'Receiving live GATT notifications from ESP32 scale'
+                ? 'Scale ready — press Take Measurement or click BOOT on ESP32'
                 : bleState === 'connecting'
                 ? 'Connecting to ESP32-S3...'
                 : bleState === 'scanning'
@@ -91,16 +134,36 @@ export function BleScaleCard({ ageMonths, onPacket }: BleScaleCardProps) {
           </div>
         </div>
 
-        <div>
+        <div className="flex items-center gap-2">
           {bleState === 'connected' ? (
-            <Button
-              variant="ghost"
-              onClick={disconnectBle}
-              className="text-xs h-8 px-2.5 text-error hover:bg-error-container"
-            >
-              <BluetoothOff size={14} className="mr-1" />
-              <span>Disconnect</span>
-            </Button>
+            <>
+              <Button
+                variant="primary"
+                onClick={() => triggerMeasurement()}
+                className="text-xs h-8 px-3 bg-brand hover:bg-brand/90 text-on-brand"
+                title="Trigger a new measurement cycle on the ESP32 scale"
+              >
+                <Play size={13} className="mr-1 fill-current" />
+                <span>Take Measurement</span>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => tareScale()}
+                className="text-xs h-8 px-2 text-on-surface-variant hover:text-on-surface"
+                title="Zero/Tare scale"
+              >
+                <RotateCcw size={13} className="mr-1" />
+                <span>Zero</span>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={disconnectBle}
+                className="text-xs h-8 px-2 text-error hover:bg-error-container"
+              >
+                <BluetoothOff size={13} className="mr-1" />
+                <span>Disconnect</span>
+              </Button>
+            </>
           ) : (
             <Button
               variant="primary"
@@ -137,12 +200,14 @@ export function BleScaleCard({ ageMonths, onPacket }: BleScaleCardProps) {
             icon={Scale}
             unit="kg"
             reading={bleWeight}
+            onUseValue={onWeightLock}
           />
           <Gauge
             label={ageMonths !== undefined && ageMonths < 24 ? 'Live Length' : 'Live Height'}
             icon={Ruler}
             unit="cm"
             reading={bleLength}
+            onUseValue={onLengthLock}
           />
         </div>
       )}
@@ -157,11 +222,13 @@ function Gauge({
   icon: Icon,
   unit,
   reading,
+  onUseValue,
 }: {
   label: string;
   icon: React.ElementType;
   unit: string;
   reading: ChannelReading | null;
+  onUseValue?: (val: string) => void;
 }) {
   const isStable = reading?.stable ?? false;
 
@@ -170,8 +237,8 @@ function Gauge({
       className={cn(
         'p-3.5 rounded-xl border-2 transition-all duration-300',
         isStable
-          ? 'bg-emerald-500/10 border-emerald-500/40'
-          : 'bg-surface border-outline-variant'
+          ? 'bg-emerald-500/10 border-emerald-500/50 shadow-sm'
+          : 'bg-amber-500/5 border-amber-500/40'
       )}
     >
       <div className="flex items-center justify-between mb-1.5">
@@ -183,21 +250,21 @@ function Gauge({
         {reading ? (
           <span
             className={cn(
-              'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full',
+              'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full transition-colors',
               isStable
-                ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
-                : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
+                ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold'
+                : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 animate-pulse'
             )}
           >
             {isStable ? (
               <span className="inline-flex items-center gap-1">
-                <Lock size={10} aria-hidden="true" />
+                <Lock size={11} className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                 <span>Locked</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1">
-                <Unlock size={10} className="animate-pulse" aria-hidden="true" />
-                <span>Reading...</span>
+                <Unlock size={11} className="animate-pulse text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                <span>Stabilizing...</span>
               </span>
             )}
           </span>
@@ -207,10 +274,28 @@ function Gauge({
       </div>
 
       <div className="flex items-baseline justify-between">
-        <span className="text-2xl font-bold tabular-nums tracking-tight">
+        <span
+          className={cn(
+            'text-2xl font-bold tabular-nums tracking-tight transition-colors',
+            isStable
+              ? 'text-emerald-700 dark:text-emerald-300'
+              : 'text-on-surface'
+          )}
+        >
           {reading ? reading.value : '—'}
         </span>
-        <span className="text-sm font-medium text-on-surface-variant">{unit}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-on-surface-variant">{unit}</span>
+          {reading && onUseValue && (
+            <button
+              type="button"
+              onClick={() => onUseValue(reading.value)}
+              className="text-[11px] font-semibold text-brand hover:underline inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 rounded bg-primary-container"
+            >
+              <span>Use</span>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

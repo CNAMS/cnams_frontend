@@ -15,6 +15,7 @@ export const FRAME_LENGTH = 11;
 
 export const BLE_GATT_SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 export const BLE_GATT_MEASUREMENT_CHAR_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
+export const BLE_GATT_CONTROL_CHAR_UUID = 'beb5483f-36e1-4688-b7f5-ea07361b26a8';
 export const BLE_DEVICE_NAME_PREFIX = 'CGMS';
 
 export type DeviceChannel = 'weight' | 'length';

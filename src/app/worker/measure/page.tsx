@@ -80,14 +80,30 @@ export default function MeasurePage() {
     if (role !== 'aww') setRole('aww');
   }, [role, setRole]);
 
-  // Handle incoming live packet from the ESP32-S3 scale
-  const handleBlePacket = useCallback(
-    (packet: DecodedBlePacket) => {
-      if (!autoFillEnabled) return;
-      if (packet.channel === 'weight' && packet.stable) {
-        setWeightKg(packet.valueFormatted);
-      } else if (packet.channel === 'length' && packet.stable) {
-        setHeightCm(packet.valueFormatted);
+  // Direct lock handlers from ESP32-S3
+  const handleWeightLock = useCallback(
+    (val: string) => {
+      // ── LOG 4a: Final form field write ──────────────────────────────────
+      console.log(`[BLE] 📝 handleWeightLock called | val="${val}" | autoFillEnabled=${autoFillEnabled}`);
+      if (autoFillEnabled) {
+        console.log(`[BLE] ✏️  Setting weightKg → "${val}"`);
+        setWeightKg(val);
+      } else {
+        console.log('[BLE] 🚫 Auto-fill DISABLED — weight not written to form');
+      }
+    },
+    [autoFillEnabled]
+  );
+
+  const handleLengthLock = useCallback(
+    (val: string) => {
+      // ── LOG 4b: Final form field write ──────────────────────────────────
+      console.log(`[BLE] 📝 handleLengthLock called | val="${val}" | autoFillEnabled=${autoFillEnabled}`);
+      if (autoFillEnabled) {
+        console.log(`[BLE] ✏️  Setting heightCm → "${val}"`);
+        setHeightCm(val);
+      } else {
+        console.log('[BLE] 🚫 Auto-fill DISABLED — length not written to form');
       }
     },
     [autoFillEnabled]
@@ -184,7 +200,8 @@ export default function MeasurePage() {
             {/* ── BLE Scale Card (client-only, no SSR) ───────────────── */}
             <BleScaleCard
               ageMonths={child?.ageMonths}
-              onPacket={handleBlePacket}
+              onWeightLock={handleWeightLock}
+              onLengthLock={handleLengthLock}
             />
 
             {/* ── Form Inputs (Auto-Filled from ESP32 or Manual Entry) ───── */}
@@ -211,6 +228,7 @@ export default function MeasurePage() {
                 icon={Scale}
                 value={weightKg}
                 onChange={setWeightKg}
+                hint={weightKg ? '✓ Locked in from scale' : undefined}
               />
 
               <Field
@@ -221,7 +239,9 @@ export default function MeasurePage() {
                 value={heightCm}
                 onChange={setHeightCm}
                 hint={
-                  child
+                  heightCm
+                    ? '✓ Locked in from scale'
+                    : child
                     ? child.ageMonths < 24
                       ? t('measureLengthHint')
                       : t('measureHeightHint')
