@@ -277,5 +277,6 @@
   "classMam": "MAM",
   "classSam": "SAM",
   "classIndeterminate": "Indeterminate",
-  "selectRole": "Select Your Role"
+  "selectRole": "Select Your Role",
+  "navDeviceManager": "Device Manager"
 }

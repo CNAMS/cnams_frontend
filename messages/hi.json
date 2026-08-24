@@ -277,5 +277,6 @@
   "classMam": "मध्यम कुपोषण",
   "classSam": "गंभीर कुपोषण",
   "classIndeterminate": "अनिर्धारित",
-  "selectRole": "अपनी भूमिका चुनें"
+  "selectRole": "अपनी भूमिका चुनें",
+  "navDeviceManager": "उपकरण प्रबंधन"
 }

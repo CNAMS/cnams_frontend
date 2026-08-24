@@ -16,7 +16,23 @@ export const FRAME_LENGTH = 11;
 export const BLE_GATT_SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 export const BLE_GATT_MEASUREMENT_CHAR_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 export const BLE_GATT_CONTROL_CHAR_UUID = 'beb5483f-36e1-4688-b7f5-ea07361b26a8';
+export const BLE_GATT_CONFIG_CHAR_UUID = 'beb54843-36e1-4688-b7f5-ea07361b26a8';
 export const BLE_DEVICE_NAME_PREFIX = 'CGMS';
+
+// BLE OTA UUIDs
+export const BLE_GATT_OTA_SERVICE_UUID = 'beb54840-36e1-4688-b7f5-ea07361b26a8';
+export const BLE_GATT_OTA_CONTROL_CHAR_UUID = 'beb54841-36e1-4688-b7f5-ea07361b26a8';
+export const BLE_GATT_OTA_DATA_CHAR_UUID = 'beb54842-36e1-4688-b7f5-ea07361b26a8';
+
+export interface DeviceDiagnostics {
+  name: string;
+  fw: string;
+  hw: string;
+  mac: string;
+  w_cal: number;
+  l_cal: number;
+  uptime: number;
+}
 
 export type DeviceChannel = 'weight' | 'length';
 

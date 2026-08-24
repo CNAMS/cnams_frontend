@@ -12,6 +12,7 @@ import {
   Stethoscope,
   Users,
   Wrench,
+  Radio,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '@/theme/roles';
@@ -37,19 +38,21 @@ export type NavItem = {
 };
 
 export const ROLE_NAV: Record<AppRole, NavItem[]> = {
-  // AWW: Home / Children / Measure / Settings
+  // AWW: Home / Children / Measure / Device Manager / Settings
   aww: [
     { href: '/worker', labelKey: 'navHome', icon: Home, built: true },
     { href: '/worker/children', labelKey: 'navChildren', icon: Baby, built: true },
     { href: '/worker/measure', labelKey: 'navMeasure', icon: Ruler, built: true },
+    { href: '/device-manager', labelKey: 'navDeviceManager', icon: Radio, built: true },
     { href: '/settings', labelKey: 'navSettings', icon: Cog, built: true },
   ],
-  // Supervisor: Overview / Centres / Referrals / Diagnostics
+  // Supervisor: Overview / Centres / Referrals / Diagnostics / Device Manager
   supervisor: [
     { href: '/supervisor', labelKey: 'navOverview', icon: LayoutDashboard, built: true },
     { href: '/centres', labelKey: 'navCentres', icon: Users, built: true },
     { href: '/referrals', labelKey: 'navReferrals', icon: ClipboardList, built: true },
     { href: '/data-quality', labelKey: 'navDiagnostics', icon: Wrench, built: true },
+    { href: '/device-manager', labelKey: 'navDeviceManager', icon: Radio, built: true },
   ],
   // Doctor: Cases / Search / Settings
   doctor: [
@@ -61,15 +64,13 @@ export const ROLE_NAV: Record<AppRole, NavItem[]> = {
     { href: '/parent', labelKey: 'navMyChild', icon: Baby, built: true },
     { href: '/parent/card', labelKey: 'navGrowthCard', icon: IdCard, built: true },
   ],
-  // Admin: Console / Users / Analytics / App health / Config / Audit.
-  // The console at /admin is its own destination — it was previously labelled
-  // "Users", which meant the nav had no entry for the actual user-management
-  // page and two different things claimed the same name.
+  // Admin: Console / Users / Analytics / App health / Device Manager / Config / Audit.
   admin: [
     { href: '/admin', labelKey: 'navConsole', icon: LayoutDashboard, built: true },
     { href: '/admin/users', labelKey: 'navUsers', icon: Users, built: true },
     { href: '/admin/analytics', labelKey: 'navAnalytics', icon: BarChart3, built: true },
     { href: '/admin/app-health', labelKey: 'navAppHealth', icon: Activity, built: true },
+    { href: '/device-manager', labelKey: 'navDeviceManager', icon: Radio, built: true },
     { href: '/admin/config', labelKey: 'navConfig', icon: Cog, built: true },
     { href: '/admin/audit', labelKey: 'adminAudit', icon: ScrollText, built: true },
   ],

@@ -606,6 +606,7 @@ export const translations = {
   navAnalytics: { en: 'Program Analytics', hi: 'कार्यक्रम विश्लेषण', mr: 'कार्यक्रम विश्लेषण', gu: 'પ્રોગ્રામ એનાલિટિક્સ' },
   navAppHealth: { en: 'App Health', hi: 'ऐप स्वास्थ्य', mr: 'ॲप आरोग्य', gu: 'એપ્લિકેશન આરોગ્ય' },
   navConfig: { en: 'Configuration', hi: 'विन्यास', mr: 'कॉन्फिगरेशन', gu: 'રૂપરેખાંકન' },
+  navDeviceManager: { en: 'Device Manager', hi: 'उपकरण प्रबंधन', mr: 'डिव्हाइस व्यवस्थापक', gu: 'ઉપકરણ સંચાલક' },
   navSettings: { en: 'Settings', hi: 'सेटिंग्स', mr: 'सेटिंग्ज', gu: 'સેટિંગ્સ' },
   navComingSoon: { en: 'Soon', hi: 'जल्द', mr: 'लवकरच', gu: 'ટૂંક સમયમાં' },
   navMenu: { en: 'Menu', hi: 'मेन्यू', mr: 'मेनू', gu: 'મેનુ' },

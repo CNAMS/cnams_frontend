@@ -20,7 +20,6 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
 import { useTranslations } from 'next-intl';
-import type { DecodedBlePacket } from '@/lib/bleCodec';
 
 /**
  * BleScaleCard is loaded only on the client (ssr: false) so it never
