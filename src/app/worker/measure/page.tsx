@@ -1,14 +1,22 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
+  Bluetooth,
+  BluetoothConnected,
   BluetoothOff,
   Check,
+  Lock,
+  Radio,
+  RefreshCw,
   Ruler,
   RotateCcw,
   Scale,
+  Sparkles,
+  Unlock,
+  AlertCircle,
 } from 'lucide-react';
 import { mockRoster, type RosterChild } from '@/data/rosterData';
 import type { GrowthClass } from '@/theme/classification';
@@ -20,33 +28,20 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
 import { useTranslations } from 'next-intl';
+import { useBleDevice } from '@/lib/useBleDevice';
+import type { DecodedBlePacket } from '@/lib/bleCodec';
 
 /**
  * The capture flow: child → weight/length → MUAC + oedema → result.
  *
- * IMPORTANT — this does NOT compute z-scores.
- *
- * The engine lives on the device in pure Dart, and Gate G2 is still open: the
- * official WHO tables ship empty in assets/who_reference/tables.json, so the
- * engine currently reports `indeterminate` for everything, with the single
- * exception that oedema forces SAM under the WHO rule. This screen reproduces
- * exactly that documented behaviour rather than inventing a classification in
- * the browser.
- *
- * Guessing a z-score here would be actively dangerous: a worker could act on a
- * number the clinical reviewer has never signed off. Indeterminate is an
- * honest, meaningful result — it is why the palette has a grey band at all.
+ * Supports automatic Web Bluetooth data streaming and stabilization locking
+ * from the ESP32-S3 hardware scale (GATT service 4fafc201-1fb5-459e-8fcc-c5c9c331914b).
  */
 
 type Step = 'child' | 'weight' | 'muac' | 'result';
 
 const STEPS: Step[] = ['child', 'weight', 'muac', 'result'];
 
-/**
- * Explicit map rather than a `measureStep_${step}` template key. A template
- * literal defeats the string union — the whole point of which is that
- * a missing string fails the build rather than rendering the key name.
- */
 const STEP_LABEL: Record<Step, string> = {
   child: 'measureStep_child',
   weight: 'measureStep_weight',
@@ -54,10 +49,6 @@ const STEP_LABEL: Record<Step, string> = {
   result: 'measureStep_result',
 };
 
-/**
- * Mirrors the device engine's fail-safe path while the reference tables are
- * empty. Oedema forces SAM; everything else is indeterminate.
- */
 function classify(oedema: boolean): GrowthClass {
   return oedema ? 'sam' : 'indeterminate';
 }
@@ -72,10 +63,39 @@ export default function MeasurePage() {
   const [heightCm, setHeightCm] = useState('');
   const [muacMm, setMuacMm] = useState('');
   const [oedema, setOedema] = useState(false);
+  const [autoFillEnabled, setAutoFillEnabled] = useState(true);
 
   useEffect(() => {
     if (role !== 'aww') setRole('aww');
   }, [role, setRole]);
+
+  // Handle incoming live packet from the BLE scale
+  const handleBlePacket = useCallback(
+    (packet: DecodedBlePacket) => {
+      if (!autoFillEnabled) return;
+
+      if (packet.channel === 'weight' && packet.stable) {
+        setWeightKg(packet.valueFormatted);
+      } else if (packet.channel === 'length' && packet.stable) {
+        setHeightCm(packet.valueFormatted);
+      }
+    },
+    [autoFillEnabled]
+  );
+
+  const {
+    isSupported: isBleSupported,
+    connectionState: bleState,
+    deviceName: bleDeviceName,
+    errorMessage: bleError,
+    weight: bleWeight,
+    length: bleLength,
+    isSimulated: bleIsSimulated,
+    connect: connectBle,
+    disconnect: disconnectBle,
+    startSimulation: startBleSimulation,
+    stopSimulation: stopBleSimulation,
+  } = useBleDevice(handleBlePacket);
 
   // Only children with recorded consent may be measured.
   const eligible = mockRoster.filter((c) => c.centreId === 'c1' && c.consent === 'given');
@@ -97,7 +117,11 @@ export default function MeasurePage() {
 
   return (
     <AppShell
-      breadcrumbs={[{ labelKey: 'navHome', href: '/worker' }, { labelKey: 'navMeasure' }]} title={t('navMeasure')} subtitle={t('measureSubtitle')} actions={<SampleDataChip />}>
+      breadcrumbs={[{ labelKey: 'navHome', href: '/worker' }, { labelKey: 'navMeasure' }]}
+      title={t('navMeasure')}
+      subtitle={t('measureSubtitle')}
+      actions={<SampleDataChip />}
+    >
       <div className="max-w-2xl space-y-6">
         {/* ── Progress ──────────────────────────────────────────────────── */}
         <ol className="flex items-center gap-2" aria-label={t('measureProgress')}>
@@ -160,13 +184,223 @@ export default function MeasurePage() {
         {step === 'weight' && (
           <section className="space-y-4">
             <SectionHeader title={t('measureWeightLength')} />
-            <Card className="flex items-start gap-3 border-outline">
-              <BluetoothOff size={18} className="shrink-0 mt-0.5 text-on-surface-variant" aria-hidden="true" />
-              <p className="text-sm text-on-surface-variant leading-relaxed">
-                {t('measureManualFallback')}
-              </p>
+
+            {/* ── Smart BLE Hardware Scale Card ─────────────────────────── */}
+            <Card className="border-2 border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className={cn(
+                      'w-9 h-9 rounded-lg flex items-center justify-center transition-colors',
+                      bleState === 'connected'
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                        : bleState === 'scanning' || bleState === 'connecting'
+                        ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 animate-pulse'
+                        : 'bg-surface-variant text-on-surface-variant'
+                    )}
+                  >
+                    {bleState === 'connected' ? (
+                      <BluetoothConnected size={20} />
+                    ) : bleState === 'scanning' || bleState === 'connecting' ? (
+                      <Radio size={20} className="animate-spin" />
+                    ) : (
+                      <Bluetooth size={20} />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm flex items-center gap-2">
+                      <span>ESP32-S3 Wireless Scale</span>
+                      {bleState === 'connected' && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          {bleDeviceName || 'Connected'}
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-on-surface-variant">
+                      {bleState === 'connected'
+                        ? bleIsSimulated
+                          ? 'Streaming simulated sensor data (GATT Demo)'
+                          : 'Live streaming BLE GATT frames (11-byte CRC16)'
+                        : bleState === 'connecting'
+                        ? 'Connecting to hardware device...'
+                        : bleState === 'scanning'
+                        ? 'Scanning for CGMS Bluetooth devices...'
+                        : 'Connect wireless scale for automated measurement lock-in'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {bleState === 'connected' ? (
+                    <Button
+                      variant="ghost"
+                      onClick={bleIsSimulated ? stopBleSimulation : disconnectBle}
+                      className="text-xs h-8 px-2.5 text-error hover:bg-error-container"
+                    >
+                      <BluetoothOff size={14} className="mr-1" />
+                      Disconnect
+                    </Button>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      {isBleSupported ? (
+                        <Button
+                          variant="primary"
+                          onClick={connectBle}
+                          disabled={bleState === 'connecting' || bleState === 'scanning'}
+                          className="text-xs h-8 px-3"
+                        >
+                          <Bluetooth size={14} className="mr-1.5" />
+                          Connect Scale
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="secondary"
+                          onClick={startBleSimulation}
+                          className="text-xs h-8 px-3"
+                        >
+                          <Sparkles size={14} className="mr-1.5 text-brand" />
+                          Simulate Scale
+                        </Button>
+                      )}
+
+                      {/* Demo simulation mode toggle for testing */}
+                      {isBleSupported && (
+                        <Button
+                          variant="ghost"
+                          onClick={startBleSimulation}
+                          title="Simulate hardware stream in browser"
+                          className="text-xs h-8 px-2 text-on-surface-variant hover:text-brand"
+                        >
+                          <Sparkles size={14} className="mr-1" />
+                          Demo Mode
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {bleError && (
+                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-error-container text-on-error-container text-xs">
+                  <AlertCircle size={15} className="shrink-0" />
+                  <span>{bleError}</span>
+                </div>
+              )}
+
+              {/* ── Live Streaming Gauges ──────────────────────────────── */}
+              {bleState === 'connected' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  {/* Weight Stream Gauge */}
+                  <div
+                    className={cn(
+                      'p-3.5 rounded-xl border-2 transition-all duration-base',
+                      bleWeight?.stable
+                        ? 'bg-emerald-500/10 border-emerald-500/40'
+                        : 'bg-surface border-outline-variant'
+                    )}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
+                        <Scale size={14} />
+                        Weight Stream
+                      </span>
+                      {bleWeight ? (
+                        <span
+                          className={cn(
+                            'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full',
+                            bleWeight.stable
+                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+                              : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
+                          )}
+                        >
+                          {bleWeight.stable ? (
+                            <>
+                              <Lock size={10} /> Locked
+                            </>
+                          ) : (
+                            <>
+                              <Unlock size={10} className="animate-pulse" /> Stabilizing...
+                            </>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-on-surface-variant">Waiting...</span>
+                      )}
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-2xl font-bold tabular-nums tracking-tight">
+                        {bleWeight ? bleWeight.value : '—'}
+                      </span>
+                      <span className="text-sm font-medium text-on-surface-variant">kg</span>
+                    </div>
+                  </div>
+
+                  {/* Length Stream Gauge */}
+                  <div
+                    className={cn(
+                      'p-3.5 rounded-xl border-2 transition-all duration-base',
+                      bleLength?.stable
+                        ? 'bg-emerald-500/10 border-emerald-500/40'
+                        : 'bg-surface border-outline-variant'
+                    )}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
+                        <Ruler size={14} />
+                        {child && child.ageMonths < 24 ? 'Length Stream' : 'Height Stream'}
+                      </span>
+                      {bleLength ? (
+                        <span
+                          className={cn(
+                            'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full',
+                            bleLength.stable
+                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+                              : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
+                          )}
+                        >
+                          {bleLength.stable ? (
+                            <>
+                              <Lock size={10} /> Locked
+                            </>
+                          ) : (
+                            <>
+                              <Unlock size={10} className="animate-pulse" /> Stabilizing...
+                            </>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-on-surface-variant">Waiting...</span>
+                      )}
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-2xl font-bold tabular-nums tracking-tight">
+                        {bleLength ? bleLength.value : '—'}
+                      </span>
+                      <span className="text-sm font-medium text-on-surface-variant">cm</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </Card>
+
+            {/* ── Form Inputs (Auto-Filled or Manual Entry) ──────────────── */}
             <Card className="space-y-4">
+              <div className="flex items-center justify-between border-b border-outline-variant pb-2">
+                <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                  Recorded Values
+                </span>
+                <label className="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={autoFillEnabled}
+                    onChange={(e) => setAutoFillEnabled(e.target.checked)}
+                    className="rounded accent-brand"
+                  />
+                  <span>Auto-fill on stable lock</span>
+                </label>
+              </div>
+
               <Field
                 id="weight"
                 label={t('measureWeight')}
@@ -174,7 +408,13 @@ export default function MeasurePage() {
                 icon={Scale}
                 value={weightKg}
                 onChange={setWeightKg}
+                hint={
+                  bleWeight?.stable && weightKg === bleWeight.value
+                    ? '✓ Locked automatically from Bluetooth scale'
+                    : undefined
+                }
               />
+
               <Field
                 id="height"
                 label={child && child.ageMonths < 24 ? t('measureLength') : t('measureHeight')}
@@ -182,11 +422,10 @@ export default function MeasurePage() {
                 icon={Ruler}
                 value={heightCm}
                 onChange={setHeightCm}
-                // The 24-month boundary switches recumbent length to standing
-                // height with a position correction — the worker must know
-                // which one they are being asked for.
                 hint={
-                  child
+                  bleLength?.stable && heightCm === bleLength.value
+                    ? '✓ Locked automatically from Bluetooth scale'
+                    : child
                     ? child.ageMonths < 24
                       ? t('measureLengthHint')
                       : t('measureHeightHint')
@@ -240,8 +479,7 @@ export default function MeasurePage() {
               </p>
             </Card>
 
-            {/* CON-5: the referral prompt is advice the worker acts on, never
-                an instruction the app issues. */}
+            {/* Referral prompt */}
             {oedema && (
               <Card className="border-class-sam/40">
                 <p className="font-medium text-class-sam">{t('resultReferralAdvice')}</p>
@@ -343,7 +581,18 @@ function Field({
           {unit}
         </span>
       </div>
-      {hint && <p className="text-xs text-on-surface-variant">{hint}</p>}
+      {hint && (
+        <p
+          className={cn(
+            'text-xs',
+            hint.startsWith('✓')
+              ? 'text-emerald-600 dark:text-emerald-400 font-medium'
+              : 'text-on-surface-variant'
+          )}
+        >
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
