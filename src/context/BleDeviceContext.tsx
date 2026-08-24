@@ -203,21 +203,22 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
     deviceRef.current = null;
   }, []);
 
-  // Shared GATT session initializer with 5-second connection timeout
+  // Shared GATT session initializer with connection timeout
   const initGattSession = useCallback(async (device: BluetoothDeviceLike, timeoutMs: number = 5000) => {
     deviceRef.current = device;
-    setDeviceName(device.name || 'CGMS-ANKUR-S3');
-    setDeviceSerial(device.id || 'ESP32-S3');
-
-    device.addEventListener('gattserverdisconnected', handleDisconnected);
-
     setConnectionState('connecting');
-    
+
     // Connect GATT server with strict timeout
     const connectPromise = device.gatt?.connect() as Promise<BluetoothRemoteGATTServerLike>;
     const server = await withTimeout(connectPromise, timeoutMs, 'Scale connection timed out after 5s');
     if (!server) throw new Error('Could not connect to ESP32 GATT server');
     serverRef.current = server;
+
+    device.removeEventListener?.('gattserverdisconnected', handleDisconnected);
+    device.addEventListener?.('gattserverdisconnected', handleDisconnected);
+
+    setDeviceName(device.name || 'CGMS-ANKUR-S3');
+    setDeviceSerial(device.id || 'ESP32-S3');
 
     // 1. Primary Anthropometry Service
     const service = await server.getPrimaryService(BLE_GATT_SERVICE_UUID);

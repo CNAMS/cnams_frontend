@@ -278,5 +278,11 @@
   "classSam": "SAM",
   "classIndeterminate": "Indeterminate",
   "selectRole": "Select Your Role",
-  "navDeviceManager": "Device Manager"
+  "navDeviceManager": "Device Manager",
+  "errorTitle": "Something went wrong",
+  "errorBody": "This page could not be displayed. Your data has not been lost — nothing on this screen changes records.",
+  "errorReference": "Reference:",
+  "errorRetry": "Try again",
+  "notFoundTitle": "Page not found",
+  "notFoundBody": "This page does not exist, or the centre you were looking for has been removed."
 }

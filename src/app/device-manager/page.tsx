@@ -1,34 +1,35 @@
 'use client';
 
-import React from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState, useEffect } from 'react';
 import { AppShell } from '@/components/nav/AppShell';
 import { useBleDevice } from '@/lib/useBleDevice';
+import { DeviceInfoCard } from '@/components/device/DeviceInfoCard';
+import { CalibrationWizard } from '@/components/device/CalibrationWizard';
+import { BleOtaUpdater } from '@/components/device/BleOtaUpdater';
+import { WebSerialFlasher } from '@/components/device/WebSerialFlasher';
 import { Cpu, ShieldCheck, Zap, Sliders } from 'lucide-react';
-
-// Dynamic imports to prevent SSR execution of Web Bluetooth / Web Serial APIs
-const DeviceInfoCard = dynamic(
-  () => import('@/components/device/DeviceInfoCard').then((mod) => mod.DeviceInfoCard),
-  { ssr: false }
-);
-
-const CalibrationWizard = dynamic(
-  () => import('@/components/device/CalibrationWizard').then((mod) => mod.CalibrationWizard),
-  { ssr: false }
-);
-
-const BleOtaUpdater = dynamic(
-  () => import('@/components/device/BleOtaUpdater').then((mod) => mod.BleOtaUpdater),
-  { ssr: false }
-);
-
-const WebSerialFlasher = dynamic(
-  () => import('@/components/device/WebSerialFlasher').then((mod) => mod.WebSerialFlasher),
-  { ssr: false }
-);
 
 export default function DeviceManagerPage() {
   const ble = useBleDevice();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <AppShell
+        title="ESP32 Device Manager"
+        subtitle="Configure hardware identity, calibrate precision sensors, and update scale firmware."
+      >
+        <div className="max-w-5xl space-y-8 pb-12">
+          <div className="h-48 rounded-xl border border-border/60 bg-muted/20 animate-pulse" />
+          <div className="h-64 rounded-xl border border-border/60 bg-muted/20 animate-pulse" />
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell
