@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react';
 import { AlertCircle, CheckCircle2, Cpu, RefreshCw, WifiOff } from 'lucide-react';
 import { mockCentres, mockDataQualityRecords, type CentreData } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
@@ -12,6 +11,7 @@ import { DataTable, type Column } from '@/components/ui/DataTable';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/ui/Toast';
+import { useTranslations } from 'next-intl';
 
 const STALE_DAYS = 7;
 
@@ -23,7 +23,7 @@ const STALE_DAYS = 7;
  * It is now the supervisor's fourth nav destination.
  */
 export default function DataQualityPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const toast = useToast();
 

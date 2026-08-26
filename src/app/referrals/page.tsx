@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, CheckCircle2, Inbox, XCircle } from 'lucide-react';
 import { mockFlaggedChildren, type FlaggedChild } from '@/data/mockData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader } from '@/components/ui/Card';
@@ -12,6 +11,7 @@ import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 type SortOrder = 'asc' | 'desc';
 type Filter = 'ALL' | 'SAM' | 'MAM';
@@ -21,7 +21,7 @@ type Filter = 'ALL' | 'SAM' | 'MAM';
  * referral or an outcome, oldest first by default.
  */
 export default function ReferralsPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [filter, setFilter] = useState<Filter>('ALL');

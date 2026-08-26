@@ -1,6 +1,4 @@
 import type { GrowthClass } from '@/theme/classification';
-import type { TranslationKey } from '@/data/translations';
-
 /**
  * Roster, identity and telemetry mocks for the surfaces that the original
  * mockData.ts never covered — the child roster, user accounts, the audit
@@ -147,7 +145,7 @@ export interface AuditEntry {
   id: string;
   actor: string;
   /** Translation key, not an English sentence — the log localises too. */
-  action: TranslationKey;
+  action: string;
   target: string;
   timestampIso: string;
   severity: 'info' | 'warning';
@@ -224,9 +222,9 @@ export const mockAppHealth = {
 
 export interface ConfigItem {
   id: string;
-  labelKey: TranslationKey;
+  labelKey: string;
   value: string;
-  descriptionKey: TranslationKey;
+  descriptionKey: string;
   /** Locked settings are clinical constants, not preferences. */
   locked?: boolean;
 }

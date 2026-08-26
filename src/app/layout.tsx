@@ -1,19 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans_Devanagari } from "next/font/google";
+import { Source_Sans_3, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/context/LanguageContext";
+import { LocaleProvider } from "@/context/LocaleContext";
 import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
 import { ToastProvider } from "@/components/ui/Toast";
+import { BleProvider } from "@/context/BleDeviceContext";
 
-// Ankur's type pairing: Noto Sans Devanagari for Hindi, with a clean Latin
-// companion (ANKUR_EXPERIENCE_ROADMAP §2). Both are self-hosted by next/font
-// at build time — no render-blocking request to fonts.googleapis.com, which
-// matters on the low-bandwidth connections these centres actually have.
+// Ankur's type pairing: Noto Sans Devanagari for Hindi, with Source Sans 3 as
+// the Latin companion (clean, highly legible, open-source humanist sans-serif).
+// Both are self-hosted by next/font at build time — no render-blocking request
+// to fonts.googleapis.com, which matters on low-bandwidth connections.
 //
 // `latin` is subset on both faces because the UI mixes scripts constantly:
 // numerals, SAM/MAM classification codes, ICDS IDs and serial numbers stay
 // Latin even in Hindi mode.
-const inter = Inter({
+const sourceSans3 = Source_Sans_3({
   subsets: ["latin"],
   variable: "--font-latin",
   display: "swap",
@@ -56,8 +57,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // `lang` is hardcoded here and corrected on the client by LanguageProvider
-  // once the persisted locale is known — see src/context/LanguageContext.tsx.
+  // `lang` is hardcoded here and corrected on the client by LocaleProvider
+  // once the persisted locale is known — see src/context/LocaleContext.tsx.
   return (
     <html lang="hi" data-role="aww" suppressHydrationWarning>
       <head>
@@ -66,11 +67,13 @@ export default function RootLayout({
             before snapping to the user's actual role. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className={`${inter.variable} ${notoDevanagari.variable} antialiased`}>
+      <body className={`${sourceSans3.variable} ${notoDevanagari.variable} antialiased`}>
         <ThemeProvider>
-          <LanguageProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </LanguageProvider>
+          <LocaleProvider>
+            <ToastProvider>
+              <BleProvider>{children}</BleProvider>
+            </ToastProvider>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

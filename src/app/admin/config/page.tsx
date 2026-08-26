@@ -3,12 +3,12 @@
 import React, { useEffect } from 'react';
 import { Lock, Pencil, ShieldAlert } from 'lucide-react';
 import { mockConfig } from '@/data/rosterData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
+import { useTranslations } from 'next-intl';
 
 /**
  * Configuration and reference data.
@@ -23,7 +23,7 @@ import { SampleDataChip } from '@/components/ui/Feedback';
  * (which would imply they do not exist) or editable (which would be wrong).
  */
 export default function AdminConfigPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

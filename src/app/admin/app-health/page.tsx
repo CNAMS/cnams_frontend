@@ -13,13 +13,13 @@ import {
   YAxis,
 } from 'recharts';
 import { mockAppHealth, mockSyncHealth, mockVersionSpread } from '@/data/rosterData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * App health — SYSTEM PERFORMANCE, NOT CHILDREN.
@@ -31,7 +31,7 @@ import { cn } from '@/lib/cn';
  * severe acute malnutrition would cheapen a colour that has to mean one thing.
  */
 export default function AppHealthPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   useEffect(() => {

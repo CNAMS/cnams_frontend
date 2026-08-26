@@ -3,9 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Check, Mail, Phone, ShieldCheck, UserPlus, Users, X } from 'lucide-react';
 import { mockUsers, type AppUser, type UserStatus } from '@/data/rosterData';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import type { TranslationKey } from '@/data/translations';
 import { ROLE_LABEL_KEY } from '@/components/nav/navigation';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
@@ -15,6 +13,7 @@ import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/ui/Toast';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 /**
  * User & role administration (§EX2).
@@ -25,13 +24,13 @@ import { cn } from '@/lib/cn';
  * primary surface here, not an afterthought below the table.
  */
 
-const STATUS_STYLE: Record<UserStatus, { tone: string; labelKey: TranslationKey }> = {
+const STATUS_STYLE: Record<UserStatus, { tone: string; labelKey: string }> = {
   active: { tone: 'text-class-normal', labelKey: 'userActive' },
   pending: { tone: 'text-class-mam', labelKey: 'userPending' },
   suspended: { tone: 'text-class-indeterminate', labelKey: 'userSuspended' },
 };
 
-const METHOD_LABEL: Record<AppUser['signInMethod'], TranslationKey> = {
+const METHOD_LABEL: Record<AppUser['signInMethod'], string> = {
   google: 'authGoogle',
   phone_otp: 'authPhoneOtp',
   email_otp: 'authEmailOtp',
@@ -39,7 +38,7 @@ const METHOD_LABEL: Record<AppUser['signInMethod'], TranslationKey> = {
 };
 
 export default function AdminUsersPage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
   const [decided, setDecided] = useState<Record<string, 'approved' | 'rejected'>>({});
   const toast = useToast();

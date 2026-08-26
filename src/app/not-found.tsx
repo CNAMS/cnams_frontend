@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
 import { SproutMark } from '@/components/brand/SproutMark';
 import { ButtonLink } from '@/components/ui/Button';
+import { useTranslations } from 'next-intl';
 
 /**
  * The 404.
@@ -14,9 +14,8 @@ import { ButtonLink } from '@/components/ui/Button';
  * look like Ankur and offered no way back.
  */
 export default function NotFound() {
-  const { t } = useLanguage();
-
-  return (
+  const t = useTranslations();
+return (
     <div className="min-h-screen bg-surface text-on-surface font-sans flex items-center justify-center px-6">
       <div className="text-center max-w-md space-y-5">
         <SproutMark size={64} title="" className="mx-auto" />

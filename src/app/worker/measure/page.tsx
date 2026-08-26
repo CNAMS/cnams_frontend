@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
   ArrowRight,
-  BluetoothOff,
   Check,
   Ruler,
   RotateCcw,
@@ -12,59 +12,59 @@ import {
 } from 'lucide-react';
 import { mockRoster, type RosterChild } from '@/data/rosterData';
 import type { GrowthClass } from '@/theme/classification';
-import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import type { TranslationKey } from '@/data/translations';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { SampleDataChip } from '@/components/ui/Feedback';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
+
+/**
+ * BleScaleCard is loaded only on the client (ssr: false) so it never
+ * runs on the server. This eliminates the React hydration mismatch
+ * (NotFoundError: insertBefore) caused by navigator.bluetooth being
+ * undefined on the server while the client changes connection state
+ * during the first useEffect.
+ */
+const BleScaleCard = dynamic(
+  () => import('@/components/ble/BleScaleCard').then((m) => m.BleScaleCard),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-2xl border border-outline-variant bg-surface-container p-6 text-sm text-on-surface-variant animate-pulse">
+        Loading Bluetooth scale...
+      </div>
+    ),
+  }
+);
 
 /**
  * The capture flow: child → weight/length → MUAC + oedema → result.
  *
- * IMPORTANT — this does NOT compute z-scores.
- *
- * The engine lives on the device in pure Dart, and Gate G2 is still open: the
- * official WHO tables ship empty in assets/who_reference/tables.json, so the
- * engine currently reports `indeterminate` for everything, with the single
- * exception that oedema forces SAM under the WHO rule. This screen reproduces
- * exactly that documented behaviour rather than inventing a classification in
- * the browser.
- *
- * Guessing a z-score here would be actively dangerous: a worker could act on a
- * number the clinical reviewer has never signed off. Indeterminate is an
- * honest, meaningful result — it is why the palette has a grey band at all.
+ * Receives live Bluetooth GATT notifications from the ESP32-S3 microcontroller
+ * (Service: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, Char: beb5483e-36e1-4688-b7f5-ea07361b26a8)
+ * and automatically locks in weight and length when the ESP32 signals stability.
  */
 
 type Step = 'child' | 'weight' | 'muac' | 'result';
 
 const STEPS: Step[] = ['child', 'weight', 'muac', 'result'];
 
-/**
- * Explicit map rather than a `measureStep_${step}` template key. A template
- * literal defeats the TranslationKey union — the whole point of which is that
- * a missing string fails the build rather than rendering the key name.
- */
-const STEP_LABEL: Record<Step, TranslationKey> = {
+const STEP_LABEL: Record<Step, string> = {
   child: 'measureStep_child',
   weight: 'measureStep_weight',
   muac: 'measureStep_muac',
   result: 'measureStep_result',
 };
 
-/**
- * Mirrors the device engine's fail-safe path while the reference tables are
- * empty. Oedema forces SAM; everything else is indeterminate.
- */
 function classify(oedema: boolean): GrowthClass {
   return oedema ? 'sam' : 'indeterminate';
 }
 
 export default function MeasurePage() {
-  const { t } = useLanguage();
+  const t = useTranslations();
   const { role, setRole } = useTheme();
 
   const [step, setStep] = useState<Step>('child');
@@ -73,10 +73,30 @@ export default function MeasurePage() {
   const [heightCm, setHeightCm] = useState('');
   const [muacMm, setMuacMm] = useState('');
   const [oedema, setOedema] = useState(false);
+  const [autoFillEnabled, setAutoFillEnabled] = useState(true);
 
   useEffect(() => {
     if (role !== 'aww') setRole('aww');
   }, [role, setRole]);
+
+  // Direct lock handlers from ESP32-S3
+  const handleWeightLock = useCallback(
+    (val: string) => {
+      if (autoFillEnabled) {
+        setWeightKg(val);
+      }
+    },
+    [autoFillEnabled]
+  );
+
+  const handleLengthLock = useCallback(
+    (val: string) => {
+      if (autoFillEnabled) {
+        setHeightCm(val);
+      }
+    },
+    [autoFillEnabled]
+  );
 
   // Only children with recorded consent may be measured.
   const eligible = mockRoster.filter((c) => c.centreId === 'c1' && c.consent === 'given');
@@ -98,7 +118,11 @@ export default function MeasurePage() {
 
   return (
     <AppShell
-      breadcrumbs={[{ labelKey: 'navHome', href: '/worker' }, { labelKey: 'navMeasure' }]} title={t('navMeasure')} subtitle={t('measureSubtitle')} actions={<SampleDataChip />}>
+      breadcrumbs={[{ labelKey: 'navHome', href: '/worker' }, { labelKey: 'navMeasure' }]}
+      title={t('navMeasure')}
+      subtitle={t('measureSubtitle')}
+      actions={<SampleDataChip />}
+    >
       <div className="max-w-2xl space-y-6">
         {/* ── Progress ──────────────────────────────────────────────────── */}
         <ol className="flex items-center gap-2" aria-label={t('measureProgress')}>
@@ -125,7 +149,7 @@ export default function MeasurePage() {
         {/* ── Step: choose child ────────────────────────────────────────── */}
         {step === 'child' && (
           <section>
-            <SectionHeader title={t('measurePickChild')} description={t('measurePickChildHint')} />
+            <SectionHeader title={t('measurePickChild')} />
             <ul className="space-y-2">
               {eligible.map((c) => (
                 <li key={c.id}>
@@ -161,13 +185,31 @@ export default function MeasurePage() {
         {step === 'weight' && (
           <section className="space-y-4">
             <SectionHeader title={t('measureWeightLength')} />
-            <Card className="flex items-start gap-3 border-outline">
-              <BluetoothOff size={18} className="shrink-0 mt-0.5 text-on-surface-variant" aria-hidden="true" />
-              <p className="text-sm text-on-surface-variant leading-relaxed">
-                {t('measureManualFallback')}
-              </p>
-            </Card>
+
+            {/* ── BLE Scale Card (client-only, no SSR) ───────────────── */}
+            <BleScaleCard
+              ageMonths={child?.ageMonths}
+              onWeightLock={handleWeightLock}
+              onLengthLock={handleLengthLock}
+            />
+
+            {/* ── Form Inputs (Auto-Filled from ESP32 or Manual Entry) ───── */}
             <Card className="space-y-4">
+              <div className="flex items-center justify-between border-b border-outline-variant pb-2">
+                <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                  Recorded Values
+                </span>
+                <label className="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={autoFillEnabled}
+                    onChange={(e) => setAutoFillEnabled(e.target.checked)}
+                    className="rounded accent-brand"
+                  />
+                  <span>Auto-fill on stable lock</span>
+                </label>
+              </div>
+
               <Field
                 id="weight"
                 label={t('measureWeight')}
@@ -175,7 +217,9 @@ export default function MeasurePage() {
                 icon={Scale}
                 value={weightKg}
                 onChange={setWeightKg}
+                hint={weightKg ? '✓ Locked in from scale' : undefined}
               />
+
               <Field
                 id="height"
                 label={child && child.ageMonths < 24 ? t('measureLength') : t('measureHeight')}
@@ -183,11 +227,10 @@ export default function MeasurePage() {
                 icon={Ruler}
                 value={heightCm}
                 onChange={setHeightCm}
-                // The 24-month boundary switches recumbent length to standing
-                // height with a position correction — the worker must know
-                // which one they are being asked for.
                 hint={
-                  child
+                  heightCm
+                    ? '✓ Locked in from scale'
+                    : child
                     ? child.ageMonths < 24
                       ? t('measureLengthHint')
                       : t('measureHeightHint')
@@ -241,8 +284,7 @@ export default function MeasurePage() {
               </p>
             </Card>
 
-            {/* CON-5: the referral prompt is advice the worker acts on, never
-                an instruction the app issues. */}
+            {/* Referral prompt */}
             {oedema && (
               <Card className="border-class-sam/40">
                 <p className="font-medium text-class-sam">{t('resultReferralAdvice')}</p>
@@ -344,7 +386,18 @@ function Field({
           {unit}
         </span>
       </div>
-      {hint && <p className="text-xs text-on-surface-variant">{hint}</p>}
+      {hint && (
+        <p
+          className={cn(
+            'text-xs',
+            hint.startsWith('✓')
+              ? 'text-emerald-600 dark:text-emerald-400 font-medium'
+              : 'text-on-surface-variant'
+          )}
+        >
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
