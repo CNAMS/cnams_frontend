@@ -147,12 +147,18 @@
   "measureMuacOedema": "MUAC and oedema",
   "measureWeight": "Weight",
   "measureLength": "Length (lying down)",
+  "measureLengthHint": "Measured lying down for children under 24 months",
   "measureHeight": "Height (standing)",
+  "measureHeightHint": "Measured standing for children 24 months and older",
   "measureOedema": "Bilateral pitting oedema",
+  "measureOedemaHint": "Press both feet gently for 3 seconds to check for pitting",
   "measureBack": "Back",
   "measureNext": "Next",
   "measureNextChild": "Measure next child",
   "resultRecorded": "Readings recorded",
+  "resultOedemaSam": "Bilateral pitting oedema indicates Severe Acute Malnutrition (SAM)",
+  "resultIndeterminate": "Growth reference tables are being validated. Result is recorded.",
+  "resultReferralAdvice": "Refer to Primary Health Centre (PHC) / Nutrition Rehabilitation Centre (NRC)",
   "yes": "Yes",
   "no": "No",
   "rosterSubtitle": "Children registered at your centre",
@@ -271,5 +277,6 @@
   "classMam": "MAM",
   "classSam": "SAM",
   "classIndeterminate": "Indeterminate",
-  "selectRole": "Select Your Role"
+  "selectRole": "Select Your Role",
+  "navDeviceManager": "Device Manager"
 }

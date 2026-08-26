@@ -4,6 +4,7 @@ import "./globals.css";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
 import { ToastProvider } from "@/components/ui/Toast";
+import { BleProvider } from "@/context/BleDeviceContext";
 
 // Ankur's type pairing: Noto Sans Devanagari for Hindi, with Source Sans 3 as
 // the Latin companion (clean, highly legible, open-source humanist sans-serif).
@@ -69,7 +70,9 @@ export default function RootLayout({
       <body className={`${sourceSans3.variable} ${notoDevanagari.variable} antialiased`}>
         <ThemeProvider>
           <LocaleProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              <BleProvider>{children}</BleProvider>
+            </ToastProvider>
           </LocaleProvider>
         </ThemeProvider>
       </body>
