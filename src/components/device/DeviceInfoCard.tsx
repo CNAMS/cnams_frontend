@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 import {
   Cpu,
@@ -24,10 +25,11 @@ interface DeviceInfoCardProps {
 }
 
 export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
+  const t = useTranslations();
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [status, setStatus] = useState<{ text: string; ok: boolean } | null>(null);
 
   const {
     connectionState,
@@ -53,31 +55,31 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
     setIsSaving(true);
     try {
       await renameDevice(newName.trim());
-      setStatusMsg('Device name updated successfully!');
+      setStatus({ text: t('dmRenamed'), ok: true });
       setIsRenaming(false);
-      setTimeout(() => setStatusMsg(null), 3000);
+      setTimeout(() => setStatus(null), 3000);
     } catch (err: unknown) {
-      setStatusMsg(err instanceof Error ? err.message : 'Failed to rename');
+      setStatus({ text: err instanceof Error ? err.message : t('dmRenameFailed'), ok: false });
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleFactoryReset = async () => {
-    if (!confirm('Are you sure you want to reset all calibration and name settings to factory defaults?')) {
+    if (!confirm(t('dmFactoryResetConfirm'))) {
       return;
     }
     try {
       await factoryReset();
-      setStatusMsg('Device reset to factory defaults.');
-      setTimeout(() => setStatusMsg(null), 3000);
+      setStatus({ text: t('dmResetDone'), ok: true });
+      setTimeout(() => setStatus(null), 3000);
     } catch (err: unknown) {
-      setStatusMsg(err instanceof Error ? err.message : 'Reset failed');
+      setStatus({ text: err instanceof Error ? err.message : t('dmResetFailed'), ok: false });
     }
   };
 
   return (
-    <Card className="overflow-hidden border-border/80 shadow-md">
+    <Card flush>
       {/* Header Banner */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 bg-muted/30 px-6 py-4">
         <div className="flex items-center gap-3">
@@ -94,17 +96,17 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-semibold text-foreground">
-                {deviceName || 'ESP32 Smart Scale'}
+                {deviceName || t('dmScaleFallbackName')}
               </h3>
               {isConnected && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
                   <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-                  Connected
+                  {t('scaleConnected')}
                 </span>
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              {isConnected ? `ID: ${deviceSerial || 'ESP32-S3'}` : 'Bluetooth Low Energy Device'}
+              {isConnected ? `ID: ${deviceSerial || 'ESP32-S3'}` : t('dmBleDevice')}
             </p>
           </div>
         </div>
@@ -112,32 +114,36 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
         <div className="flex items-center gap-2">
           {isConnected ? (
             <>
-              <Button variant="secondary" size="sm" onClick={() => fetchDeviceInfo()} title="Refresh Diagnostics">
+              <Button variant="secondary" size="sm" onClick={() => fetchDeviceInfo()} title={t('dmRefresh')} aria-label={t('dmRefresh')}>
                 <RefreshCw className="h-4 w-4" />
               </Button>
               <Button variant="secondary" size="sm" onClick={handleStartRename}>
                 <Edit2 className="mr-1.5 h-3.5 w-3.5" />
-                Rename
+                {t('dmRename')}
               </Button>
               <Button variant="ghost" size="sm" onClick={disconnect} className="text-danger hover:bg-danger/10">
-                Disconnect
+                {t('scaleDisconnect')}
               </Button>
             </>
           ) : (
-            <Button
-              onClick={connect}
-              className="bg-success hover:bg-success text-white shadow-sm transition-all"
-            >
+            <Button variant="primary" onClick={connect}>
               <Bluetooth className="mr-2 h-4 w-4" />
-              {connectionState === 'connecting' ? 'Connecting... (Click to pick)' : connectionState === 'scanning' ? 'Scanning...' : 'Connect Scale'}
+              {connectionState === 'connecting' ? t('scaleConnecting') : connectionState === 'scanning' ? t('scaleScanning') : t('scaleConnect')}
             </Button>
           )}
         </div>
       </div>
 
-      {statusMsg && (
-        <div className="border-b border-border/40 bg-success/10 px-6 py-2 text-xs font-medium text-success">
-          {statusMsg}
+      {/* Errors used to show in the same green as successes. */}
+      {status && (
+        <div
+          role={status.ok ? 'status' : 'alert'}
+          className={cn(
+            'border-b border-outline-variant px-6 py-2 text-xs font-medium',
+            status.ok ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger',
+          )}
+        >
+          {status.text}
         </div>
       )}
 
@@ -148,39 +154,39 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
             {/* Metric 1: Firmware */}
             <div className="rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium">Firmware</span>
+                <span className="text-xs font-medium">{t('dmFirmware')}</span>
                 <Cpu className="h-4 w-4 text-primary" />
               </div>
               <div className="mt-2 text-xl font-semibold text-foreground">
                 {diagnostics?.fw || 'v1.3.0'}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Hardware: {diagnostics?.hw || 'ESP32-S3 N16R8'}
+                {t('dmHardware')}: {diagnostics?.hw || 'ESP32-S3 N16R8'}
               </p>
             </div>
 
             {/* Metric 2: Calibration Factors */}
             <div className="rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium">Calibration</span>
+                <span className="text-xs font-medium">{t('dmCalibration')}</span>
                 <Sparkles className="h-4 w-4 text-warning" />
               </div>
               <div className="mt-2 text-sm font-semibold text-foreground">
-                Scale: <span className="font-mono text-primary">{diagnostics?.w_cal ?? '420.0'}</span>
+                {t('dmScaleFactor')}: <span className="font-mono text-primary">{diagnostics?.w_cal ?? '420.0'}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground font-mono">
-                Encoder: {diagnostics?.l_cal ?? '0.50'} mm/tick
+                {t('dmEncoder')}: {diagnostics?.l_cal ?? '0.50'} mm/tick
               </p>
             </div>
 
             {/* Metric 3: Uptime */}
             <div className="rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium">Uptime</span>
+                <span className="text-xs font-medium">{t('dmUptime')}</span>
                 <Clock className="h-4 w-4 text-brand" />
               </div>
               <div className="mt-2 text-xl font-semibold text-foreground">
-                {diagnostics?.uptime ? `${Math.floor(diagnostics.uptime / 60)}m ${diagnostics.uptime % 60}s` : 'Active'}
+                {diagnostics?.uptime ? `${Math.floor(diagnostics.uptime / 60)}m ${diagnostics.uptime % 60}s` : t('dmActive')}
               </div>
               <p className="mt-1 text-xs text-muted-foreground font-mono">
                 MAC: {diagnostics?.mac || deviceSerial || '94:A9:90:...'}
@@ -191,10 +197,10 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
             <div className="flex flex-col justify-between rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div>
                 <span className="text-xs font-medium text-muted-foreground">
-                  Maintenance
+                  {t('dmMaintenance')}
                 </span>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Restore default factory calibration
+                  {t('dmMaintenanceHint')}
                 </p>
               </div>
               <Button
@@ -204,7 +210,7 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
                 className="mt-3 text-xs text-muted-foreground hover:text-destructive"
               >
                 <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-                Factory Reset
+                {t('dmFactoryReset')}
               </Button>
             </div>
           </div>
@@ -214,10 +220,10 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
               <Radio className="h-8 w-8 animate-pulse" />
             </div>
             <h4 className="mt-4 text-base font-semibold text-foreground">
-              No Hardware Scale Connected
+              {t('dmNoScale')}
             </h4>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-              Turn on your ESP32-S3 scale and click &ldquo;Connect Scale&rdquo; to manage settings, calibrate sensors, and update firmware.
+              {t('dmNoScaleHint')}
             </p>
           </div>
         )}
@@ -225,11 +231,18 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
 
       {/* Rename Modal */}
       {isRenaming && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-card border border-outline/30 bg-surface-container p-6 shadow-2xl animate-in fade-in zoom-in-95">
-            <h3 className="text-lg font-semibold text-on-surface">Rename Scale</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 page-enter">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="rename-scale-title"
+            className="w-full max-w-md rounded-dialog border border-outline-variant bg-raised p-6 shadow-lg page-enter"
+          >
+            <h3 id="rename-scale-title" className="text-section font-semibold text-on-surface">
+              {t('dmRenameTitle')}
+            </h3>
             <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
-              Enter a custom identifier for this scale (e.g. &ldquo;CGMS-ROOM-1&rdquo; or &ldquo;SCALE-ANM-02&rdquo;). Max 24 characters.
+              {t('dmRenameHint')}
             </p>
 
             <div className="mt-4">
@@ -238,7 +251,9 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
                 maxLength={24}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="w-full rounded-control border border-outline/40 bg-surface-variant px-4 py-2.5 text-sm font-semibold text-on-surface placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
+                aria-label={t('dmRenameTitle')}
+                autoFocus
+                className="w-full h-10 rounded-control border border-outline bg-surface-container px-3 text-sm font-medium text-on-surface placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25 shadow-xs"
                 placeholder="CGMS-ANKUR-S3"
               />
             </div>
@@ -246,11 +261,11 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
             <div className="mt-6 flex items-center justify-end gap-3">
               <Button variant="secondary" size="sm" onClick={() => setIsRenaming(false)} disabled={isSaving}>
                 <X className="mr-1.5 h-4 w-4" />
-                Cancel
+                {t('cancel')}
               </Button>
-              <Button size="sm" onClick={handleSaveRename} disabled={isSaving || !newName.trim()} className="bg-brand text-on-primary hover:bg-brand-dark shadow-sm">
+              <Button variant="primary" size="sm" onClick={handleSaveRename} disabled={isSaving || !newName.trim()}>
                 {isSaving ? <RefreshCw className="mr-1.5 h-4 w-4 animate-spin" /> : <Check className="mr-1.5 h-4 w-4" />}
-                Save to ESP32
+                {t('dmSaveToScale')}
               </Button>
             </div>
           </div>
