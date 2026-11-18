@@ -26,7 +26,7 @@ import { useTranslations } from 'next-intl';
 
 const STATUS_STYLE: Record<UserStatus, { tone: string; labelKey: string }> = {
   active: { tone: 'text-class-normal', labelKey: 'userActive' },
-  pending: { tone: 'text-class-mam', labelKey: 'userPending' },
+  pending: { tone: 'text-warning', labelKey: 'userPending' },
   suspended: { tone: 'text-class-indeterminate', labelKey: 'userSuspended' },
 };
 
@@ -86,8 +86,8 @@ export default function AdminUsersPage() {
   return (
     <AppShell
       breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navUsers' }]} title={t('navUsers')} subtitle={t('adminUsersSubtitle')} actions={<SampleDataChip />}>
-      <div className="space-y-8">
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <StatTile icon={Users} value={mockUsers.length} label={t('userAccounts')} />
           <StatTile icon={ShieldCheck} tone="normal" value={active.length} label={t('userActive')} />
           <StatTile icon={UserPlus} tone="mam" value={pending.length} label={t('userPendingApproval')} />

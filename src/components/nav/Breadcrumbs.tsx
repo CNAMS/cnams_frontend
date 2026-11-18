@@ -22,12 +22,12 @@ export type Crumb = {
   href?: string;
 };
 
-export function Breadcrumbs({ items }: { items: Crumb[] }) {
+export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: string }) {
   const t = useTranslations();
-if (items.length === 0) return null;
+  if (items.length === 0) return null;
 
   return (
-    <nav aria-label={t('breadcrumbLabel')} className="mb-4">
+    <nav aria-label={t('breadcrumbLabel')} className={className}>
       <ol className="flex flex-wrap items-center gap-1 text-sm">
         {items.map((item, i) => {
           const last = i === items.length - 1;
@@ -37,20 +37,20 @@ if (items.length === 0) return null;
                 <ChevronRight
                   size={14}
                   aria-hidden="true"
-                  className="text-on-surface-variant/60 shrink-0"
+                  className="text-faint shrink-0"
                 />
               )}
               {last || !item.href ? (
                 <span
                   aria-current={last ? 'page' : undefined}
-                  className="text-on-surface font-medium"
+                  className="text-on-surface"
                 >
                   {t(item.labelKey)}
                 </span>
               ) : (
                 <Link
                   href={item.href}
-                  className="text-on-surface-variant hover:text-brand hover:underline"
+                  className="text-on-surface-variant hover:text-on-surface transition-colors duration-fast"
                 >
                   {t(item.labelKey)}
                 </Link>

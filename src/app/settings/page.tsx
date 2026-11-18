@@ -54,7 +54,7 @@ export default function SettingsPage() {
 
   return (
     <AppShell title={t('navSettings')} subtitle={t('settingsSubtitle')}>
-      <div className="max-w-3xl space-y-8">
+      <div className="max-w-3xl space-y-6">
         {/* ── Appearance & locale ─────────────────────────────────────── */}
         <section>
           <SectionHeader title={t('settingsGeneral')} />

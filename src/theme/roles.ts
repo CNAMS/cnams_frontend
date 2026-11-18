@@ -1,13 +1,14 @@
 /**
- * Ankur's role palettes — a direct port of `_RolePalette` in the Flutter app
- * (cnams_app/lib/shared/theme/app_theme.dart).
+ * Ankur's role palettes — a direct port of `RolePalette` in the Flutter app
+ * (cnams_app/lib/shared/theme/role_palette.dart). Contrast checks and the
+ * reasoning behind each hue are in docs/DESIGN.md §2.1.
  *
  * One brand, five tuned skins. A role theme changes the primary and the
  * surface temperature and *nothing else* — the logo, the type scale, the
  * spacing and the clinical classification colours are identical everywhere
  * (ANKUR_EXPERIENCE_ROADMAP §2.1).
  *
- * Keep this table in lockstep with app_theme.dart. If a colour changes there,
+ * Keep this table in lockstep with role_palette.dart. If a colour changes there,
  * it changes here; the two products are one brand and a supervisor moving
  * between the phone and the portal should not notice a seam.
  */
@@ -34,50 +35,50 @@ export type RolePalette = {
 };
 
 export const ROLE_PALETTES: Record<AppRole, RolePalette> = {
-  // India Green — the field theme, echoing the green band of the tricolor.
+  // Teal on warm sand — the field theme and the brand anchor.
   aww: {
-    primary: '#138808',
-    primaryDark: '#0E6B06',
-    primaryContainer: '#D4EDCF',
-    onPrimaryContainer: '#0A3A06',
-    surface: '#FDFAF2',
-    surfaceDark: '#121008',
+    primary: '#00695C',
+    primaryDark: '#00584D',
+    primaryContainer: '#E0EDEB',
+    onPrimaryContainer: '#002F29',
+    surface: '#FBF8F1',
+    surfaceDark: '#0F1214',
   },
-  // Deep Saffron — oversight of growth, warm and authoritative.
+  // Indigo — oversight. Never the clinical "Normal" green.
   supervisor: {
-    primary: '#D4781A',
-    primaryDark: '#B86510',
-    primaryContainer: '#FFE8CC',
-    onPrimaryContainer: '#3D2000',
-    surface: '#FEFAF4',
-    surfaceDark: '#141008',
+    primary: '#3949AB',
+    primaryDark: '#303D90',
+    primaryContainer: '#E7E9F5',
+    onPrimaryContainer: '#1A214D',
+    surface: '#F5F6FB',
+    surfaceDark: '#0F1214',
   },
-  // Ashoka Chakra Navy — reads as precise and trustworthy.
+  // Violet — calm and precise. Never the clinical "Overweight" blue.
   doctor: {
-    primary: '#1A3C8F',
-    primaryDark: '#0F2B6E',
-    primaryContainer: '#D8E2FD',
-    onPrimaryContainer: '#0A1A3D',
-    surface: '#F5F7FC',
-    surfaceDark: '#0D1018',
+    primary: '#6A40B0',
+    primaryDark: '#593694',
+    primaryContainer: '#EDE8F6',
+    onPrimaryContainer: '#301D4F',
+    surface: '#F8F6FC',
+    surfaceDark: '#0F1214',
   },
-  // Warm Saffron — reassuring and approachable for a guardian.
+  // Rose — warm for families, and clear of the "MAM" amber.
   parent: {
-    primary: '#E8831A',
-    primaryDark: '#C06D0E',
-    primaryContainer: '#FFE0B8',
-    onPrimaryContainer: '#3D2200',
-    surface: '#FEF8F0',
-    surfaceDark: '#17120A',
+    primary: '#A8396F',
+    primaryDark: '#8D305D',
+    primaryContainer: '#F5E7EE',
+    onPrimaryContainer: '#4C1A32',
+    surface: '#FCF6F8',
+    surfaceDark: '#0F1214',
   },
-  // Deep Navy console — dense and data-first, deliberately a light theme.
+  // Slate console — dense and data-first, deliberately a light theme.
   admin: {
-    primary: '#2C3E6B',
-    primaryDark: '#1E2D52',
-    primaryContainer: '#DDE3F0',
-    onPrimaryContainer: '#121B2E',
+    primary: '#4B5570',
+    primaryDark: '#3F475E',
+    primaryContainer: '#E9EBEE',
+    onPrimaryContainer: '#222632',
     surface: '#EEF1F5',
-    surfaceDark: '#0F1116',
+    surfaceDark: '#0F1214',
   },
 };
 

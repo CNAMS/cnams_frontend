@@ -73,12 +73,12 @@ export function DataTable<T>({
       {/* ── Mobile: one card per row ──────────────────────────────────────── */}
       <ul className="md:hidden divide-y divide-outline-variant">
         {data.map((row) => (
-          <li key={getRowKey(row)} className="px-4 py-4 space-y-2">
-            <div className="font-semibold text-on-surface">{primary.cell(row)}</div>
+          <li key={getRowKey(row)} className="px-4 py-3.5 space-y-2">
+            <div className="font-medium text-on-surface">{primary.cell(row)}</div>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {secondary.map((col) => (
                 <React.Fragment key={col.key}>
-                  <dt className="text-xs text-on-surface-variant self-center">
+                  <dt className="text-xs text-faint self-center">
                     {col.header}
                   </dt>
                   <dd className="text-sm text-on-surface justify-self-end text-right">
@@ -103,9 +103,10 @@ export function DataTable<T>({
                   // `scope` is what lets a screen reader announce the column
                   // name with each cell. None of the original tables had it.
                   scope="col"
+                  // Sentence case, not uppercase: capitals do nothing for
+                  // Devanagari and make English shout (docs/DESIGN.md §3).
                   className={cn(
-                    'px-5 py-3 text-xs font-semibold uppercase tracking-wide',
-                    'text-on-surface-variant',
+                    'px-4 h-10 text-xs font-medium text-on-surface-variant whitespace-nowrap',
                     ALIGN[col.align ?? 'left'],
                   )}
                 >
@@ -118,13 +119,15 @@ export function DataTable<T>({
             {data.map((row) => (
               <tr
                 key={getRowKey(row)}
-                className="hover:bg-surface-variant/60 transition-colors duration-fast ease-ankur"
+                className="hover:bg-surface-variant transition-colors duration-fast ease-ankur"
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
                     className={cn(
-                      'px-5 py-3 text-on-surface',
+                      'px-4 h-11 text-on-surface',
+                      // Figures compared down a column line up on the right.
+                      col.align === 'right' && 'tabular-nums',
                       ALIGN[col.align ?? 'left'],
                       col.cellClassName,
                     )}

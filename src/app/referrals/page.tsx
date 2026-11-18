@@ -6,6 +6,7 @@ import { mockFlaggedChildren, type FlaggedChild } from '@/data/mockData';
 import { useTheme } from '@/context/ThemeContext';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader } from '@/components/ui/Card';
+import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
@@ -150,32 +151,17 @@ export default function ReferralsPage() {
         />
 
         {/* ── Filter ────────────────────────────────────────────────────── */}
-        <div
-          role="radiogroup"
-          aria-label={t('filter')}
-          className="flex flex-wrap items-center gap-2 px-5 py-3 border-b border-outline-variant"
-        >
-          {(['ALL', 'SAM', 'MAM'] as const).map((f) => {
-            const active = filter === f;
-            return (
-              <button
-                key={f}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() => setFilter(f)}
-                className={cn(
-                  'min-h-touch px-4 rounded-full text-sm font-semibold border-2',
-                  'transition-colors duration-fast ease-ankur',
-                  active
-                    ? 'border-brand bg-brand text-on-primary'
-                    : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant',
-                )}
-              >
-                {f === 'ALL' ? t('all') : f}
-              </button>
-            );
-          })}
+        <div className="px-5 sm:px-6 py-3 border-b border-outline-variant">
+          <SegmentedControl
+            label={t('filter')}
+            value={filter}
+            onChange={setFilter}
+            segments={[
+              { value: 'ALL', label: t('all') },
+              { value: 'SAM', label: 'SAM' },
+              { value: 'MAM', label: 'MAM' },
+            ]}
+          />
         </div>
 
         {/* Filtering and re-sorting rewrite the table with no announcement;

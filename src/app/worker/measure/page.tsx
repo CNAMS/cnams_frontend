@@ -33,7 +33,7 @@ const BleScaleCard = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="rounded-2xl border border-outline-variant bg-surface-container p-6 text-sm text-on-surface-variant animate-pulse">
+      <div className="rounded-card border border-outline-variant bg-surface-container p-6 text-sm text-on-surface-variant animate-pulse">
         Loading Bluetooth scale...
       </div>
     ),
@@ -159,7 +159,7 @@ export default function MeasurePage() {
                     aria-pressed={child?.id === c.id}
                     className={cn(
                       'w-full flex items-center justify-between gap-3 text-left',
-                      'min-h-touch px-4 py-3 rounded-xl border-2 bg-surface-container',
+                      'min-h-touch px-4 py-3 rounded-control border bg-surface-container',
                       'transition-colors duration-fast ease-ankur',
                       child?.id === c.id
                         ? 'border-brand bg-primary-container'
@@ -196,7 +196,7 @@ export default function MeasurePage() {
             {/* ── Form Inputs (Auto-Filled from ESP32 or Manual Entry) ───── */}
             <Card className="space-y-4">
               <div className="flex items-center justify-between border-b border-outline-variant pb-2">
-                <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                <span className="text-xs font-semibold text-on-surface-variant">
                   Recorded Values
                 </span>
                 <label className="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer">
@@ -249,7 +249,7 @@ export default function MeasurePage() {
               <Field id="muac" label={t('muac')} unit="mm" icon={Ruler} value={muacMm} onChange={setMuacMm} />
               <label
                 className={cn(
-                  'flex items-start gap-3 min-h-touch p-3 rounded-xl border-2 cursor-pointer',
+                  'flex items-start gap-3 min-h-touch p-3 rounded-control border cursor-pointer',
                   'transition-colors duration-fast ease-ankur',
                   oedema ? 'border-class-sam bg-sam-container' : 'border-outline-variant hover:bg-surface-variant',
                 )}
@@ -374,8 +374,8 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={cn(
-            'w-full min-h-touch pl-4 pr-14 rounded-xl bg-surface tabular-nums',
-            'border-2 border-outline focus:border-brand',
+            'w-full min-h-touch pl-4 pr-14 rounded-control bg-surface tabular-nums',
+            'border border-outline focus:border-brand',
             'transition-colors duration-fast ease-ankur',
           )}
         />
@@ -391,7 +391,7 @@ function Field({
           className={cn(
             'text-xs',
             hint.startsWith('✓')
-              ? 'text-emerald-600 dark:text-emerald-400 font-medium'
+              ? 'text-success font-medium'
               : 'text-on-surface-variant'
           )}
         >
