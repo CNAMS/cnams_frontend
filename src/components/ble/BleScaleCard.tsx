@@ -79,7 +79,7 @@ export function BleScaleCard({
   } = useBleDevice(handleReading);
 
   return (
-    <Card className="border-2 border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
+    <Card className="border border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
       {/* ── Header Row ──────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-3">
         <div className="flex items-center gap-2.5">
@@ -87,9 +87,9 @@ export function BleScaleCard({
             className={cn(
               'w-9 h-9 rounded-lg flex items-center justify-center transition-colors',
               bleState === 'connected'
-                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                ? 'bg-success/15 text-success'
                 : bleState === 'scanning' || bleState === 'connecting'
-                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 animate-pulse'
+                ? 'bg-warning/15 text-warning animate-pulse'
                 : 'bg-surface-variant text-on-surface-variant'
             )}
           >
@@ -105,8 +105,8 @@ export function BleScaleCard({
             <h3 className="font-semibold text-sm flex items-center gap-2">
               <span>ESP32-S3 Wireless Scale</span>
               {bleState === 'connected' && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-success/15 text-success">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
                   <span>{bleDeviceName ?? 'Connected'}</span>
                 </span>
               )}
@@ -226,10 +226,10 @@ function Gauge({
   return (
     <div
       className={cn(
-        'p-3.5 rounded-xl border-2 transition-all duration-300',
+        'p-3.5 rounded-control border transition-all duration-300',
         isStable
-          ? 'bg-emerald-500/10 border-emerald-500/50 shadow-sm'
-          : 'bg-amber-500/5 border-amber-500/40'
+          ? 'bg-success/10 border-success/50 shadow-sm'
+          : 'bg-warning/5 border-warning/40'
       )}
     >
       <div className="flex items-center justify-between mb-1.5">
@@ -243,18 +243,18 @@ function Gauge({
             className={cn(
               'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full transition-colors',
               isStable
-                ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold'
-                : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 animate-pulse'
+                ? 'bg-success/15 text-success font-semibold'
+                : 'bg-warning/15 text-warning animate-pulse'
             )}
           >
             {isStable ? (
               <span className="inline-flex items-center gap-1">
-                <Lock size={11} className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                <Lock size={11} className="text-success" aria-hidden="true" />
                 <span>Locked</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1">
-                <Unlock size={11} className="animate-pulse text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                <Unlock size={11} className="animate-pulse text-warning" aria-hidden="true" />
                 <span>Stabilizing...</span>
               </span>
             )}
@@ -267,9 +267,9 @@ function Gauge({
       <div className="flex items-baseline justify-between">
         <span
           className={cn(
-            'text-2xl font-bold tabular-nums tracking-tight transition-colors',
+            'text-2xl font-semibold tabular-nums tracking-tight transition-colors',
             isStable
-              ? 'text-emerald-700 dark:text-emerald-300'
+              ? 'text-success'
               : 'text-on-surface'
           )}
         >

@@ -83,7 +83,7 @@ export function BleOtaUpdater({ ble }: BleOtaUpdaterProps) {
     <Card className="overflow-hidden border-border/80 shadow-md">
       <div className="border-b border-border/60 bg-muted/30 px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
+          <div className="flex h-10 w-10 items-center justify-center rounded-control bg-brand/10 text-brand">
             <Cpu className="h-5 w-5" />
           </div>
           <div>
@@ -111,7 +111,7 @@ export function BleOtaUpdater({ ble }: BleOtaUpdaterProps) {
             <div
               onClick={() => fileInputRef.current?.click()}
               className={cn(
-                'group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all',
+                'group relative flex cursor-pointer flex-col items-center justify-center rounded-card border border-dashed p-6 text-center transition-all',
                 file
                   ? 'border-primary/50 bg-primary/5'
                   : 'border-border/80 hover:border-primary/40 hover:bg-muted/30'
@@ -125,7 +125,7 @@ export function BleOtaUpdater({ ble }: BleOtaUpdaterProps) {
                 className="hidden"
                 disabled={isUpdating}
               />
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-105">
+              <div className="flex h-12 w-12 items-center justify-center rounded-control bg-primary/10 text-primary transition-transform group-hover:scale-105">
                 <FileCode className="h-6 w-6" />
               </div>
               {file ? (
@@ -149,7 +149,7 @@ export function BleOtaUpdater({ ble }: BleOtaUpdaterProps) {
 
             {/* Flash Progress Bar */}
             {status === 'flashing' && (
-              <div className="rounded-xl border border-border/60 bg-card p-4 space-y-3">
+              <div className="rounded-control border border-border/60 bg-card p-4 space-y-3">
                 <div className="flex items-center justify-between text-xs font-semibold">
                   <span className="text-foreground">Flashing Firmware Chunks...</span>
                   <span className="text-primary font-mono">{progress}% ({speed.toFixed(1)} KB/s)</span>
@@ -168,10 +168,10 @@ export function BleOtaUpdater({ ble }: BleOtaUpdaterProps) {
 
             {/* Success Banner */}
             {status === 'success' && (
-              <div className="flex items-center gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-800 dark:text-emerald-300">
-                <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-600" />
+              <div className="flex items-center gap-3 rounded-control border border-success/40 bg-success/10 p-4 text-success">
+                <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-success" />
                 <div className="text-xs">
-                  <p className="font-bold">Firmware Update Complete!</p>
+                  <p className="font-semibold">Firmware Update Complete!</p>
                   <p className="mt-0.5">The ESP32 is now verifying and rebooting into the new firmware partition.</p>
                 </div>
               </div>
@@ -179,10 +179,10 @@ export function BleOtaUpdater({ ble }: BleOtaUpdaterProps) {
 
             {/* Error Banner */}
             {status === 'error' && errorText && (
-              <div className="flex items-center gap-3 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-destructive">
+              <div className="flex items-center gap-3 rounded-control border border-destructive/40 bg-destructive/10 p-4 text-destructive">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <div className="text-xs">
-                  <p className="font-bold">Update Failed</p>
+                  <p className="font-semibold">Update Failed</p>
                   <p className="mt-0.5">{errorText}</p>
                 </div>
               </div>

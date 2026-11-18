@@ -118,7 +118,7 @@ export function WebSerialFlasher() {
     <Card className="overflow-hidden border-border/80 shadow-md">
       <div className="border-b border-border/60 bg-muted/30 px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+          <div className="flex h-10 w-10 items-center justify-center rounded-control bg-brand/10 text-brand">
             <Usb className="h-5 w-5" />
           </div>
           <div>
@@ -134,7 +134,7 @@ export function WebSerialFlasher() {
 
       <div className="p-6 space-y-6">
         {!isSupported ? (
-          <div className="flex items-center gap-3 rounded-xl bg-amber-500/10 p-4 text-xs font-medium text-amber-800 dark:text-amber-300">
+          <div className="flex items-center gap-3 rounded-control bg-warning/10 p-4 text-xs font-medium text-warning">
             <AlertCircle className="h-5 w-5 flex-shrink-0" />
             <p>
               Web Serial is not supported in this browser. Please open this page in <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong>, or <strong>Opera</strong> on desktop.
@@ -146,10 +146,10 @@ export function WebSerialFlasher() {
             <div
               onClick={() => fileInputRef.current?.click()}
               className={cn(
-                'group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all',
+                'group relative flex cursor-pointer flex-col items-center justify-center rounded-card border border-dashed p-6 text-center transition-all',
                 file
-                  ? 'border-purple-500/50 bg-purple-500/5'
-                  : 'border-border/80 hover:border-purple-500/40 hover:bg-muted/30'
+                  ? 'border-brand/50 bg-brand/5'
+                  : 'border-border/80 hover:border-brand/40 hover:bg-muted/30'
               )}
             >
               <input
@@ -160,7 +160,7 @@ export function WebSerialFlasher() {
                 className="hidden"
                 disabled={isFlashing}
               />
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 transition-transform group-hover:scale-105">
+              <div className="flex h-12 w-12 items-center justify-center rounded-control bg-brand/10 text-brand transition-transform group-hover:scale-105">
                 <FileCode className="h-6 w-6" />
               </div>
               {file ? (
@@ -173,7 +173,7 @@ export function WebSerialFlasher() {
               ) : (
                 <div className="mt-3">
                   <p className="text-sm font-medium text-foreground">
-                    Click to select <span className="font-semibold text-purple-600">firmware.bin</span>
+                    Click to select <span className="font-semibold text-brand">firmware.bin</span>
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Select firmware image to burn directly over USB
@@ -184,7 +184,7 @@ export function WebSerialFlasher() {
 
             {/* Terminal Log Console */}
             {logs.length > 0 && (
-              <div className="rounded-xl border border-border/60 bg-neutral-950 p-4 font-mono text-xs text-neutral-200">
+              <div className="rounded-control border border-border/60 bg-neutral-950 p-4 font-mono text-xs text-neutral-200">
                 <div className="flex items-center gap-2 border-b border-neutral-800 pb-2 text-neutral-400">
                   <Terminal className="h-3.5 w-3.5" />
                   <span>Flashing Terminal Log</span>
@@ -204,7 +204,7 @@ export function WebSerialFlasher() {
               <Button
                 onClick={handleFlashUsb}
                 disabled={!fileData || isFlashing}
-                className="bg-purple-600 hover:bg-purple-700 text-white shadow-sm"
+                className="bg-brand hover:bg-brand text-white shadow-sm"
               >
                 <Zap className="mr-2 h-4 w-4" />
                 {isFlashing ? 'Flashing via USB...' : 'Flash Firmware via USB'}

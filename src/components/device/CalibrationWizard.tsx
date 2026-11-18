@@ -142,7 +142,7 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
       <div className="p-6">
         {!isConnected ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <AlertCircle className="h-10 w-10 text-amber-500/80" />
+            <AlertCircle className="h-10 w-10 text-warning/80" />
             <p className="mt-3 text-sm font-medium text-foreground">
               Please connect the ESP32 scale via Bluetooth above to perform sensor calibration.
             </p>
@@ -150,9 +150,9 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
         ) : activeTab === 'weight' ? (
           /* ── WEIGHT CALIBRATION WIZARD ── */
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/60 bg-muted/20 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-control border border-border/60 bg-muted/20 p-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-semibold text-muted-foreground">
                   Live Sensor Reading
                 </span>
                 <div className="mt-1 text-3xl font-extrabold text-foreground">
@@ -164,11 +164,11 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
                   className={cn(
                     'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
                     weight?.stable
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                      ? 'bg-success/10 text-success'
+                      : 'bg-warning/10 text-warning'
                   )}
                 >
-                  <span className={cn('h-1.5 w-1.5 rounded-full', weight?.stable ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse')} />
+                  <span className={cn('h-1.5 w-1.5 rounded-full', weight?.stable ? 'bg-success' : 'bg-warning animate-pulse')} />
                   {weight?.stable ? 'Stable Lock' : 'Live Stream'}
                 </span>
               </div>
@@ -177,15 +177,15 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div
                 className={cn(
-                  'rounded-xl border p-4 transition-all',
+                  'rounded-control border p-4 transition-all',
                   weightStep === 1
                     ? 'border-primary bg-primary/5 shadow-sm'
                     : 'border-border/60 bg-card opacity-80'
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="flex items-center gap-2 text-xs font-semibold text-primary">
                   <span>Step 1</span>
-                  {weightStep > 1 && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                  {weightStep > 1 && <CheckCircle2 className="h-4 w-4 text-success" />}
                 </div>
                 <h4 className="mt-1 font-semibold text-foreground">Zero / Tare Platform</h4>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -201,15 +201,15 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
 
               <div
                 className={cn(
-                  'rounded-xl border p-4 transition-all',
+                  'rounded-control border p-4 transition-all',
                   weightStep === 2
                     ? 'border-primary bg-primary/5 shadow-sm'
                     : 'border-border/60 bg-card opacity-80'
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="flex items-center gap-2 text-xs font-semibold text-primary">
                   <span>Step 2</span>
-                  {weightStep > 2 && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                  {weightStep > 2 && <CheckCircle2 className="h-4 w-4 text-success" />}
                 </div>
                 <h4 className="mt-1 font-semibold text-foreground">Place Calibration Mass</h4>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -223,10 +223,10 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
                         step="0.01"
                         value={refWeightKg}
                         onChange={(e) => setRefWeightKg(e.target.value)}
-                        className="w-full rounded-xl border-2 border-outline/40 bg-surface-variant px-3 py-2 text-sm font-semibold text-on-surface focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
+                        className="w-full rounded-control border border-outline/40 bg-surface-variant px-3 py-2 text-sm font-semibold text-on-surface focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
                         placeholder="5.00"
                       />
-                      <span className="text-xs font-bold text-on-surface-variant">kg</span>
+                      <span className="text-xs font-semibold text-on-surface-variant">kg</span>
                     </div>
                     <Button size="sm" onClick={handleApplyWeightCal} className="w-full bg-brand hover:bg-brand-dark text-on-primary shadow-sm">
                       <Sparkles className="mr-1.5 h-3.5 w-3.5" />
@@ -241,13 +241,13 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
 
               <div
                 className={cn(
-                  'rounded-xl border p-4 transition-all',
+                  'rounded-control border p-4 transition-all',
                   weightStep === 3
-                    ? 'border-emerald-500 bg-emerald-500/5 shadow-sm'
+                    ? 'border-success bg-success/5 shadow-sm'
                     : 'border-border/60 bg-card opacity-80'
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600">
+                <div className="flex items-center gap-2 text-xs font-semibold text-success">
                   <span>Step 3</span>
                   <ShieldCheck className="h-4 w-4" />
                 </div>
@@ -260,7 +260,7 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
                     <Button variant="secondary" size="sm" onClick={() => setWeightStep(1)} className="w-full">
                       Recalibrate Again
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={handleRevertWeightCal} className="w-full text-xs text-rose-600 hover:bg-rose-500/10">
+                    <Button variant="ghost" size="sm" onClick={handleRevertWeightCal} className="w-full text-xs text-danger hover:bg-danger/10">
                       <RotateCcw className="mr-1.5 h-3 w-3" />
                       Revert to Factory Default
                     </Button>
@@ -270,7 +270,7 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
             </div>
 
             {weightCalStatus && (
-              <div className="rounded-xl bg-emerald-500/10 p-3 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+              <div className="rounded-control bg-success/10 p-3 text-xs font-semibold text-success">
                 {weightCalStatus}
               </div>
             )}
@@ -278,9 +278,9 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
         ) : (
           /* ── LENGTH CALIBRATION WIZARD ── */
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/60 bg-muted/20 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-control border border-border/60 bg-muted/20 p-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-semibold text-muted-foreground">
                   Live Height Reading
                 </span>
                 <div className="mt-1 text-3xl font-extrabold text-foreground">
@@ -288,8 +288,8 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
                   Encoder Online
                 </span>
               </div>
@@ -298,15 +298,15 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div
                 className={cn(
-                  'rounded-xl border p-4 transition-all',
+                  'rounded-control border p-4 transition-all',
                   lengthStep === 1
                     ? 'border-primary bg-primary/5 shadow-sm'
                     : 'border-border/60 bg-card opacity-80'
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="flex items-center gap-2 text-xs font-semibold text-primary">
                   <span>Step 1</span>
-                  {lengthStep > 1 && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                  {lengthStep > 1 && <CheckCircle2 className="h-4 w-4 text-success" />}
                 </div>
                 <h4 className="mt-1 font-semibold text-foreground">Zero Height Position</h4>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -322,15 +322,15 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
 
               <div
                 className={cn(
-                  'rounded-xl border p-4 transition-all',
+                  'rounded-control border p-4 transition-all',
                   lengthStep === 2
                     ? 'border-primary bg-primary/5 shadow-sm'
                     : 'border-border/60 bg-card opacity-80'
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="flex items-center gap-2 text-xs font-semibold text-primary">
                   <span>Step 2</span>
-                  {lengthStep > 2 && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                  {lengthStep > 2 && <CheckCircle2 className="h-4 w-4 text-success" />}
                 </div>
                 <h4 className="mt-1 font-semibold text-foreground">Extend to Reference Bar</h4>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -344,10 +344,10 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
                         step="0.1"
                         value={refLengthCm}
                         onChange={(e) => setRefLengthCm(e.target.value)}
-                        className="w-full rounded-xl border-2 border-outline/40 bg-surface-variant px-3 py-2 text-sm font-semibold text-on-surface focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
+                        className="w-full rounded-control border border-outline/40 bg-surface-variant px-3 py-2 text-sm font-semibold text-on-surface focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
                         placeholder="50.0"
                       />
-                      <span className="text-xs font-bold text-on-surface-variant">cm</span>
+                      <span className="text-xs font-semibold text-on-surface-variant">cm</span>
                     </div>
                     <Button size="sm" onClick={handleApplyLengthCal} className="w-full bg-brand hover:bg-brand-dark text-on-primary shadow-sm">
                       <Sparkles className="mr-1.5 h-3.5 w-3.5" />
@@ -362,13 +362,13 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
 
               <div
                 className={cn(
-                  'rounded-xl border p-4 transition-all',
+                  'rounded-control border p-4 transition-all',
                   lengthStep === 3
-                    ? 'border-emerald-500 bg-emerald-500/5 shadow-sm'
+                    ? 'border-success bg-success/5 shadow-sm'
                     : 'border-border/60 bg-card opacity-80'
                 )}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600">
+                <div className="flex items-center gap-2 text-xs font-semibold text-success">
                   <span>Step 3</span>
                   <ShieldCheck className="h-4 w-4" />
                 </div>
@@ -381,7 +381,7 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
                     <Button variant="secondary" size="sm" onClick={() => setLengthStep(1)} className="w-full">
                       Recalibrate Again
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={handleRevertLengthCal} className="w-full text-xs text-rose-600 hover:bg-rose-500/10">
+                    <Button variant="ghost" size="sm" onClick={handleRevertLengthCal} className="w-full text-xs text-danger hover:bg-danger/10">
                       <RotateCcw className="mr-1.5 h-3 w-3" />
                       Revert to Factory Default
                     </Button>
@@ -391,7 +391,7 @@ export function CalibrationWizard({ ble }: CalibrationWizardProps) {
             </div>
 
             {lengthCalStatus && (
-              <div className="rounded-xl bg-emerald-500/10 p-3 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+              <div className="rounded-control bg-success/10 p-3 text-xs font-semibold text-success">
                 {lengthCalStatus}
               </div>
             )}

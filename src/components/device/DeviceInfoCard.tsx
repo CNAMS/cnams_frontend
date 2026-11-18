@@ -83,9 +83,9 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
         <div className="flex items-center gap-3">
           <div
             className={cn(
-              'flex h-10 w-10 items-center justify-center rounded-xl transition-colors',
+              'flex h-10 w-10 items-center justify-center rounded-control transition-colors',
               isConnected
-                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                ? 'bg-success/15 text-success'
                 : 'bg-muted text-muted-foreground'
             )}
           >
@@ -97,8 +97,8 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
                 {deviceName || 'ESP32 Smart Scale'}
               </h3>
               {isConnected && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
                   Connected
                 </span>
               )}
@@ -119,14 +119,14 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
                 <Edit2 className="mr-1.5 h-3.5 w-3.5" />
                 Rename
               </Button>
-              <Button variant="ghost" size="sm" onClick={disconnect} className="text-rose-600 hover:bg-rose-500/10">
+              <Button variant="ghost" size="sm" onClick={disconnect} className="text-danger hover:bg-danger/10">
                 Disconnect
               </Button>
             </>
           ) : (
             <Button
               onClick={connect}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all"
+              className="bg-success hover:bg-success text-white shadow-sm transition-all"
             >
               <Bluetooth className="mr-2 h-4 w-4" />
               {connectionState === 'connecting' ? 'Connecting... (Click to pick)' : connectionState === 'scanning' ? 'Scanning...' : 'Connect Scale'}
@@ -136,7 +136,7 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
       </div>
 
       {statusMsg && (
-        <div className="border-b border-border/40 bg-emerald-500/10 px-6 py-2 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+        <div className="border-b border-border/40 bg-success/10 px-6 py-2 text-xs font-medium text-success">
           {statusMsg}
         </div>
       )}
@@ -146,12 +146,12 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
         {isConnected ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {/* Metric 1: Firmware */}
-            <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+            <div className="rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Firmware</span>
+                <span className="text-xs font-medium">Firmware</span>
                 <Cpu className="h-4 w-4 text-primary" />
               </div>
-              <div className="mt-2 text-xl font-bold text-foreground">
+              <div className="mt-2 text-xl font-semibold text-foreground">
                 {diagnostics?.fw || 'v1.3.0'}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
@@ -160,10 +160,10 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
             </div>
 
             {/* Metric 2: Calibration Factors */}
-            <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+            <div className="rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Calibration</span>
-                <Sparkles className="h-4 w-4 text-amber-500" />
+                <span className="text-xs font-medium">Calibration</span>
+                <Sparkles className="h-4 w-4 text-warning" />
               </div>
               <div className="mt-2 text-sm font-semibold text-foreground">
                 Scale: <span className="font-mono text-primary">{diagnostics?.w_cal ?? '420.0'}</span>
@@ -174,12 +174,12 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
             </div>
 
             {/* Metric 3: Uptime */}
-            <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+            <div className="rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Uptime</span>
-                <Clock className="h-4 w-4 text-sky-500" />
+                <span className="text-xs font-medium">Uptime</span>
+                <Clock className="h-4 w-4 text-brand" />
               </div>
-              <div className="mt-2 text-xl font-bold text-foreground">
+              <div className="mt-2 text-xl font-semibold text-foreground">
                 {diagnostics?.uptime ? `${Math.floor(diagnostics.uptime / 60)}m ${diagnostics.uptime % 60}s` : 'Active'}
               </div>
               <p className="mt-1 text-xs text-muted-foreground font-mono">
@@ -188,9 +188,9 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
             </div>
 
             {/* Metric 4: Factory Reset Action */}
-            <div className="flex flex-col justify-between rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+            <div className="flex flex-col justify-between rounded-control border border-border/60 bg-card p-4 shadow-sm">
               <div>
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-medium text-muted-foreground">
                   Maintenance
                 </span>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -210,7 +210,7 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-10 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/60 text-muted-foreground">
+            <div className="flex h-16 w-16 items-center justify-center rounded-card bg-muted/60 text-muted-foreground">
               <Radio className="h-8 w-8 animate-pulse" />
             </div>
             <h4 className="mt-4 text-base font-semibold text-foreground">
@@ -226,8 +226,8 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
       {/* Rename Modal */}
       {isRenaming && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-2xl border-2 border-outline/30 bg-surface-container p-6 shadow-2xl animate-in fade-in zoom-in-95">
-            <h3 className="text-lg font-bold text-on-surface">Rename Scale</h3>
+          <div className="w-full max-w-md rounded-card border border-outline/30 bg-surface-container p-6 shadow-2xl animate-in fade-in zoom-in-95">
+            <h3 className="text-lg font-semibold text-on-surface">Rename Scale</h3>
             <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
               Enter a custom identifier for this scale (e.g. &ldquo;CGMS-ROOM-1&rdquo; or &ldquo;SCALE-ANM-02&rdquo;). Max 24 characters.
             </p>
@@ -238,7 +238,7 @@ export function DeviceInfoCard({ ble }: DeviceInfoCardProps) {
                 maxLength={24}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="w-full rounded-xl border-2 border-outline/40 bg-surface-variant px-4 py-2.5 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/50 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
+                className="w-full rounded-control border border-outline/40 bg-surface-variant px-4 py-2.5 text-sm font-semibold text-on-surface placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
                 placeholder="CGMS-ANKUR-S3"
               />
             </div>
