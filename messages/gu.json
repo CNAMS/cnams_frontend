@@ -48,7 +48,7 @@
   "flaggedCases": "ફ્લેગ કરેલા કેસો (ધ્યાન જરૂરી)",
   "noFlaggedHere": "આ કેન્દ્ર પર કોઈ ફ્લેગ કરેલા કેસ નથી.",
   "dataQualityTitle": "ડાયગ્નોસ્ટિક્સ અને ડેટા ગુણવત્તા",
-  "dataQualitySubtitle": "આંતરિક ટ્રેકિંગ અને વિકાસકર્તા ડાયગ્નોસ્ટિક્સ પેનલ",
+  "dataQualitySubtitle": "જે માપની ફરી તપાસ જરૂરી છે, અને જે સ્કેલ પર ધ્યાન આપવાનું છે",
   "engineMismatches": "એન્જિન મેળ ખાતું નથી",
   "implausibleValues": "અકલ્પ્ય મૂલ્યો",
   "staleDevices7d": "જૂના ઉપકરણો (>7d)",

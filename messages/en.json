@@ -48,7 +48,7 @@
   "flaggedCases": "Flagged Cases (Attention Required)",
   "noFlaggedHere": "No flagged cases at this centre.",
   "dataQualityTitle": "Diagnostics & Data Quality",
-  "dataQualitySubtitle": "Internal tracking & developer diagnostics panel",
+  "dataQualitySubtitle": "Measurements that need a second look, and scales that need attention",
   "engineMismatches": "Engine Mismatches",
   "implausibleValues": "Implausible Values",
   "staleDevices7d": "Stale Devices (>7d)",

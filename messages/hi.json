@@ -48,7 +48,7 @@
   "flaggedCases": "चिह्नित मामले (ध्यान देने की आवश्यकता)",
   "noFlaggedHere": "इस केंद्र पर कोई चिह्नित मामले नहीं हैं।",
   "dataQualityTitle": "निदान और डेटा गुणवत्ता",
-  "dataQualitySubtitle": "आंतरिक ट्रैकिंग और डेवलपर डायग्नोस्टिक्स पैनल",
+  "dataQualitySubtitle": "जिन मापों की दोबारा जाँच ज़रूरी है, और जिन स्केलों पर ध्यान देना है",
   "engineMismatches": "इंजन बेमेल",
   "implausibleValues": "असंभव मूल्य",
   "staleDevices7d": "पुराने डिवाइस (>7d)",
