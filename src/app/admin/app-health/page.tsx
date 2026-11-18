@@ -45,8 +45,8 @@ export default function AppHealthPage() {
   return (
     <AppShell
       breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navAppHealth' }]} title={t('navAppHealth')} subtitle={t('appHealthSubtitle')} actions={<SampleDataChip />}>
-      <div className="space-y-8">
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <StatTile
             icon={Activity}
             value={`${mockAppHealth.crashFreeSessionsPct}%`}

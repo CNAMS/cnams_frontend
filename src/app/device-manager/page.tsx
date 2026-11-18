@@ -35,7 +35,7 @@ export default function DeviceManagerPage() {
       title="ESP32 Device Manager"
       subtitle="Configure hardware identity, calibrate precision sensors, and update scale firmware."
     >
-      <div className="max-w-5xl space-y-8 pb-12">
+      <div className="max-w-5xl space-y-6 pb-12">
         {/* 1. Device Overview & Renaming */}
         <section className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">

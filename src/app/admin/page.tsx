@@ -90,10 +90,10 @@ export default function AdminDashboard() {
 
   return (
     <AppShell title={t('adminConsole')} subtitle={t('adminConsoleSubtitle')} actions={<SampleDataChip />}>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <section>
           <SectionHeader title={t('systemOverview')} />
-          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
             <StatTile icon={Users} value={5} label={t('activeUsers')} />
             <StatTile icon={Activity} value={mockCentres.length} label={t('totalCentresActive')} />
             <StatTile

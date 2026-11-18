@@ -60,8 +60,8 @@ export default function ProgrammeAnalyticsPage() {
       subtitle={t('analyticsSubtitle')}
       actions={<SampleDataChip />}
     >
-      <div className="space-y-8">
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <StatTile icon={Users} value={latest.screened} label={t('analyticsScreenedLatest')} />
           <StatTile icon={Activity} tone="sam" value={latest.sam} label={t('classSam')} />
           <StatTile tone="mam" value={latest.mam} label={t('classMam')} />

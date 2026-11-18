@@ -36,7 +36,7 @@ export default function AdminConfigPage() {
   return (
     <AppShell
       breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navConfig' }]} title={t('navConfig')} subtitle={t('configSubtitle')} actions={<SampleDataChip />}>
-      <div className="max-w-3xl space-y-8">
+      <div className="max-w-3xl space-y-6">
         {/* ── Clinical constants ────────────────────────────────────────── */}
         <section>
           <SectionHeader title={t('configClinical')} description={t('configClinicalHint')} />

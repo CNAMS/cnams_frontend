@@ -97,7 +97,7 @@ export default function CentreDetail({ centre }: { centre: CentreData }) {
       subtitle={t('centreDrillDown')}
       actions={<SampleDataChip />}
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         <p className="text-sm">
           <Link href="/centres" className="text-brand hover:underline">
             ← {t('navCentres')}
@@ -107,7 +107,7 @@ export default function CentreDetail({ centre }: { centre: CentreData }) {
         {/* ── Screening + classification counts ─────────────────────────── */}
         <section>
           <SectionHeader title={t('malnutritionSummary')} description={t('casesFromCriteria')} />
-          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
             <StatTile
               icon={Users}
               value={centre.screenedThisMonth}
