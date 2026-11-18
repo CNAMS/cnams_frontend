@@ -8,6 +8,7 @@ import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
 import { DataTable, type Column } from '@/components/ui/DataTable';
+import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { StatusBadge } from '@/components/ui/ClassificationBadge';
 import { EmptyState, SampleDataChip } from '@/components/ui/Feedback';
 import { Button, IconButton } from '@/components/ui/Button';
@@ -67,7 +68,7 @@ export default function DoctorDashboard() {
       cell: (c) => (
         <span>
           {c.initials}
-          <span className="ml-2 text-xs font-normal text-on-surface-variant">{c.icdsId}</span>
+          <span className="ml-2 text-xs font-normal text-faint">{c.icdsId}</span>
         </span>
       ),
     },
@@ -107,8 +108,8 @@ export default function DoctorDashboard() {
 
   return (
     <AppShell title={t('doctorInbox')} subtitle={t('doctorInboxSubtitle')} actions={<SampleDataChip />}>
-      <div className="space-y-8">
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
           <StatTile icon={Inbox} value={referred.length} label={t('casesReferred')} />
           <StatTile
             icon={Stethoscope}
@@ -125,29 +126,17 @@ export default function DoctorDashboard() {
 
         <Card flush>
           <CardHeader title={t('caseList')} />
-          <div
-            role="radiogroup"
-            aria-label={t('filter')}
-            className="flex flex-wrap gap-2 px-5 py-3 border-b border-outline-variant"
-          >
-            {(['ALL', 'SAM', 'MAM'] as const).map((s) => (
-              <button
-                key={s}
-                type="button"
-                role="radio"
-                aria-checked={severity === s}
-                onClick={() => setSeverity(s)}
-                className={cn(
-                  'min-h-touch px-4 rounded-full text-sm font-semibold border-2',
-                  'transition-colors duration-fast ease-ankur',
-                  severity === s
-                    ? 'border-brand bg-brand text-on-primary'
-                    : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant',
-                )}
-              >
-                {s === 'ALL' ? t('all') : s}
-              </button>
-            ))}
+          <div className="px-5 sm:px-6 py-3 border-b border-outline-variant">
+            <SegmentedControl
+              label={t('filter')}
+              value={severity}
+              onChange={setSeverity}
+              segments={[
+                { value: 'ALL', label: t('all'), count: referred.length },
+                { value: 'SAM', label: 'SAM', count: referred.filter((c) => c.status === 'SAM').length },
+                { value: 'MAM', label: 'MAM', count: referred.filter((c) => c.status === 'MAM').length },
+              ]}
+            />
           </div>
           <p aria-live="polite" className="sr-only">
             {cases.length} {t('caseList')}
@@ -210,20 +199,20 @@ function OutcomeDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/40 page-enter" onClick={onClose} aria-hidden="true" />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="outcome-title"
         className={cn(
-          'relative w-full sm:max-w-md bg-surface-container',
-          'rounded-t-2xl sm:rounded-2xl border border-outline-variant shadow-xl',
-          'p-5 space-y-4',
+          'relative w-full sm:max-w-md bg-raised page-enter',
+          'rounded-t-dialog sm:rounded-dialog border border-outline-variant shadow-lg',
+          'p-5 sm:p-6 space-y-5',
         )}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h2 id="outcome-title" className="font-semibold">
+            <h2 id="outcome-title" className="text-section font-semibold">
               {t('recordOutcome')}
             </h2>
             <p className="text-sm text-on-surface-variant">
@@ -244,11 +233,11 @@ function OutcomeDialog({
               aria-checked={choice === o}
               onClick={() => setChoice(o)}
               className={cn(
-                'w-full text-left min-h-touch px-4 py-3 rounded-xl border-2',
+                'w-full text-left px-4 py-3 rounded-control border',
                 'transition-colors duration-fast ease-ankur',
                 choice === o
-                  ? 'border-brand bg-primary-container text-on-primary-container'
-                  : 'border-outline-variant hover:bg-surface-variant',
+                  ? 'border-brand ring-1 ring-brand bg-primary-container text-on-primary-container'
+                  : 'border-line-strong hover:bg-surface-variant',
               )}
             >
               <span className="font-medium block">{t(OUTCOME_LABEL[o])}</span>
@@ -259,17 +248,12 @@ function OutcomeDialog({
           ))}
         </div>
 
-        <div className="flex gap-2 pt-1">
-          <Button
-            variant="primary"
-            block
-            disabled={choice === null}
-            onClick={() => choice && onRecord(choice)}
-          >
-            {t('save')}
-          </Button>
-          <Button variant="ghost" onClick={onClose}>
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1">
+          <Button variant="secondary" onClick={onClose}>
             {t('cancel')}
+          </Button>
+          <Button variant="primary" disabled={choice === null} onClick={() => choice && onRecord(choice)}>
+            {t('save')}
           </Button>
         </div>
       </div>
