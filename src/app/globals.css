@@ -16,26 +16,37 @@
      .dark            dark counterparts, applied on <html>
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Values and contrast checks: docs/DESIGN.md §2. The role table is shared
+   with the app (cnams_app/lib/shared/theme/role_palette.dart). */
+
 :root {
-  /* ── Brand: AWW India Green on warm cream (Indian tricolor 🟢) ────────── */
-  --primary: #138808;
-  --primary-dark: #0e6b06;
+  /* ── Role accent: AWW teal on warm sand (the default) ─────────────────── */
+  --primary: #00695c;
+  --primary-dark: #00584d; /* hover / pressed */
   --on-primary: #ffffff;
-  --primary-container: #d4edcf;
-  --on-primary-container: #0a3a06;
+  --primary-container: #e0edeb; /* selected rows, active nav */
+  --on-primary-container: #002f29;
 
   /* ── Surfaces ─────────────────────────────────────────────────────────── */
-  --surface: #fdfaf2; /* page background — warm cream, echoes the white band */
-  --surface-container: #ffffff; /* cards, sheets, table bodies */
-  --surface-variant: #f0ece2; /* subtle fills, table headers, hovers */
+  --surface: #fbf8f1; /* page — the role's tint */
+  --surface-container: #ffffff; /* cards, tables, sheets */
+  --surface-variant: #f6f5f3; /* sunken: table heads, wells, hovers */
+  --surface-raised: #ffffff; /* menus, dialogs */
 
-  /* ── Outline ──────────────────────────────────────────────────────────── */
-  --outline: #5a8a57;
-  --outline-variant: #d5cfc2;
+  /* ── Lines ────────────────────────────────────────────────────────────── */
+  --outline: #8a847d; /* input borders — 3.7:1, WCAG 1.4.11 */
+  --outline-variant: #e7e5e2; /* card edges, dividers */
+  --line-strong: #d3d0cb; /* emphasised dividers, resting buttons */
 
   /* ── Text ─────────────────────────────────────────────────────────────── */
-  --on-surface: #1a1a1a;
-  --on-surface-variant: #55524a;
+  --on-surface: #1c1b19; /* 17.2:1 */
+  --on-surface-variant: #57534e; /* 7.6:1 */
+  --text-faint: #6f6a64; /* 5.4:1 — the floor */
+
+  /* ── Elevation: borders first; three shadows for what really floats ─── */
+  --shadow-xs: 0 1px 2px rgb(28 27 25 / 0.06);
+  --shadow-md: 0 8px 24px rgb(28 27 25 / 0.1), 0 2px 6px rgb(28 27 25 / 0.05);
+  --shadow-lg: 0 24px 60px rgb(28 27 25 / 0.18), 0 8px 20px rgb(28 27 25 / 0.08);
 
   /* ── Clinical classification — NEVER re-themed ────────────────────────────
      Not by role, not in dark mode, not for aesthetics. Ported verbatim from
@@ -60,76 +71,74 @@
   --class-indeterminate-container: #f5f5f5;
   --class-indeterminate-on-container: #2b2b2b;
 
-  /* ── Motion (ANKUR_EXPERIENCE_ROADMAP §2: 150–200ms, informative) ─────── */
-  --motion-fast: 150ms;
-  --motion-base: 200ms;
+  /* ── Feedback: re-uses the clinical hues — one red, one green ─────────── */
+  --warning: #b45309;
+
+  /* ── Motion (docs/DESIGN.md §5) ───────────────────────────────────────── */
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-page: 200ms;
   --motion-sprout: 900ms; /* the one signature animation, on the splash */
-  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* ── Role skins: primary + surface temperature only ───────────────────────── */
+/* ── Role skins: accent + page tint only ──────────────────────────────────── */
 
-/* Supervisor — Deep Saffron (Indian tricolor 🟠) */
 [data-role='supervisor'] {
-  --primary: #d4781a;
-  --primary-dark: #b86510;
-  --primary-container: #ffe8cc;
-  --on-primary-container: #3d2000;
-  --surface: #fefaf4;
-  --surface-variant: #f6ede0;
-  --outline: #a8845a;
-  --outline-variant: #e5d8c5;
+  --primary: #3949ab;
+  --primary-dark: #303d90;
+  --primary-container: #e7e9f5;
+  --on-primary-container: #1a214d;
+  --surface: #f5f6fb;
 }
 
-/* Doctor — Ashoka Chakra Navy Blue (Indian tricolor 🔵) */
 [data-role='doctor'] {
-  --primary: #1a3c8f;
-  --primary-dark: #0f2b6e;
-  --primary-container: #d8e2fd;
-  --on-primary-container: #0a1a3d;
-  --surface: #f5f7fc;
-  --surface-variant: #e6eaf4;
-  --outline: #6878a0;
-  --outline-variant: #ccd3e4;
+  --primary: #6a40b0;
+  --primary-dark: #593694;
+  --primary-container: #ede8f6;
+  --on-primary-container: #301d4f;
+  --surface: #f8f6fc;
 }
 
-/* Parent — Warm Saffron (Indian tricolor 🟠, lighter) */
 [data-role='parent'] {
-  --primary: #e8831a;
-  --primary-dark: #c06d0e;
-  --primary-container: #ffe0b8;
-  --on-primary-container: #3d2200;
-  --surface: #fef8f0;
-  --surface-variant: #f6ebda;
-  --outline: #a88a5c;
-  --outline-variant: #e5d5bd;
+  --primary: #a8396f;
+  --primary-dark: #8d305d;
+  --primary-container: #f5e7ee;
+  --on-primary-container: #4c1a32;
+  --surface: #fcf6f8;
 }
 
-/* Admin — Deep Navy, a LIGHT console (Indian tricolor 🔵, darker) */
 [data-role='admin'] {
-  --primary: #2c3e6b;
-  --primary-dark: #1e2d52;
-  --primary-container: #dde3f0;
-  --on-primary-container: #121b2e;
+  --primary: #4b5570;
+  --primary-dark: #3f475e;
+  --primary-container: #e9ebee;
+  --on-primary-container: #222632;
   --surface: #eef1f5;
-  --surface-variant: #e2e6ee;
-  --outline: #6b7898;
-  --outline-variant: #ccd2df;
 }
 
 /* ── Dark theme — first-class, not an inversion ───────────────────────────
-   Surfaces and text flip; the clinical classification colours above do not.
-   Containers are darkened so the same tokens keep working on a dark card. */
+   Neutrals are shared by every role; only the accent changes. The clinical
+   colours above do not change; their containers darken so the same tokens
+   keep working on a dark card. */
 
 .dark {
-  --on-primary: #ffffff;
-  --surface: #121008;
-  --surface-container: #1c1a12;
-  --surface-variant: #262318;
-  --outline: #7a9a76;
-  --outline-variant: #3a362c;
-  --on-surface: #f2efe8;
-  --on-surface-variant: #b8b3a6;
+  --on-primary: #0f1214;
+  --surface: #0f1214;
+  --surface-container: #171b1e;
+  --surface-variant: #13171a;
+  --surface-raised: #1e2327;
+  --outline: #6b737b;
+  --outline-variant: #2a3035;
+  --line-strong: #3a4147;
+  --on-surface: #eceef0;
+  --on-surface-variant: #a3aab1;
+  --text-faint: #80878f;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 10px 28px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 28px 70px rgb(0 0 0 / 0.65), 0 10px 24px rgb(0 0 0 / 0.4);
+
+  --warning: #fbbf24;
 
   --class-normal-container: #16301a;
   --class-normal-on-container: #b7e0ba;
@@ -141,59 +150,44 @@
   --class-sam-on-container: #f2b4b4;
   --class-indeterminate-container: #262626;
   --class-indeterminate-on-container: #d6d6d6;
+
+  /* AWW (default) dark accent */
+  --primary: #4db6ac;
+  --primary-dark: #71c5bd;
+  --primary-container: #1d3635;
+  --on-primary-container: #afdeda;
 }
 
-/* AWW dark — lightened India Green */
-.dark[data-role='aww'],
-.dark:not([data-role]) {
-  --primary: #7ed87a;
-  --primary-dark: #a3e5a0;
-  --primary-container: #0a3006;
-  --on-primary-container: #c0edc0;
-}
-
-/* Supervisor dark — lightened Saffron */
 .dark[data-role='supervisor'] {
-  --primary: #ffb866;
-  --primary-dark: #ffcf99;
-  --primary-container: #4a2800;
-  --on-primary-container: #ffddb8;
-  --surface: #141008;
-  --surface-container: #1e1a10;
-  --surface-variant: #282114;
+  --primary: #9fa8da;
+  --primary-dark: #b2b9e1;
+  --primary-container: #2f3340;
+  --on-primary-container: #d4d8ee;
+  --surface: #0f1214;
 }
 
-/* Doctor dark — lightened Ashoka Navy */
 .dark[data-role='doctor'] {
-  --primary: #92b4f4;
-  --primary-dark: #b8cfff;
-  --primary-container: #0f2555;
-  --on-primary-container: #d0deff;
-  --surface: #0d1018;
-  --surface-container: #151823;
-  --surface-variant: #1e2230;
+  --primary: #b9a2e0;
+  --primary-dark: #c7b5e6;
+  --primary-container: #343241;
+  --on-primary-container: #e0d5f1;
+  --surface: #0f1214;
 }
 
-/* Parent dark — lightened Warm Saffron */
 .dark[data-role='parent'] {
-  --primary: #ffb04d;
-  --primary-dark: #ffc880;
-  --primary-container: #4a2800;
-  --on-primary-container: #ffdfae;
-  --surface: #17120a;
-  --surface-container: #201a10;
-  --surface-variant: #2b2317;
+  --primary: #eda1c2;
+  --primary-dark: #f1b4ce;
+  --primary-container: #40313a;
+  --on-primary-container: #f7d5e4;
+  --surface: #0f1214;
 }
 
-/* Admin dark — lightened Deep Navy */
 .dark[data-role='admin'] {
-  --primary: #a8b6d8;
-  --primary-dark: #c4cee6;
-  --primary-container: #1e2840;
-  --on-primary-container: #dde3f2;
-  --surface: #0f1116;
-  --surface-container: #171a21;
-  --surface-variant: #21252e;
+  --primary: #a9b4cc;
+  --primary-dark: #bac3d6;
+  --primary-container: #31363c;
+  --on-primary-container: #d8dde8;
+  --surface: #0f1214;
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
@@ -204,32 +198,41 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
+  min-height: 100vh;
   color: var(--on-surface);
   background-color: var(--surface);
-  /* Devanagari first: Hindi is the primary locale, so the Hindi face must win
-     for any codepoint it covers. Inter then serves Latin text and numerals. */
-  font-family: var(--font-devanagari), var(--font-latin), system-ui,
+  /* Latin face first: Inter has no Devanagari, so Hindi falls through to
+     Noto while numerals, IDs and SAM/MAM codes stay in Inter. */
+  font-family: var(--font-latin), var(--font-devanagari), system-ui,
     -apple-system, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
-  /* Measurements, z-scores and counts are compared down a column; proportional
-     digits make them jitter (mirrors FontFeature.tabularFigures() in the app's
-     DashStatTile). */
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Measurements, z-scores and counts are compared down a column. */
   font-variant-numeric: tabular-nums;
-  /* Role and theme swaps should feel like a change of light, not a repaint. */
-  transition: background-color var(--motion-base) var(--ease),
-    color var(--motion-base) var(--ease);
 }
 
-/* A visible, branded focus ring on every keyboard-focused control. The portal
-   had none — keyboard users could not tell where they were. */
+::selection {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* A visible, branded focus ring on every keyboard-focused control. */
 :focus-visible {
-  outline: 3px solid var(--primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-/* Motion is informative, never decorative — and always optional (§EX5). */
+/* Motion is informative, never decorative — and always optional. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -241,26 +244,29 @@ body {
   }
 }
 
-@layer base {
-  html, body {
-    @apply antialiased min-h-screen text-on-surface bg-surface;
-    /* Add smooth transition for theme changes as a fallback for browsers without View Transitions */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* We also want surface containers (cards, sidebars) to transition smoothly */
-  /* Replaced '*' universal selector with targeted elements to fix severe LCP/rendering delay */
-  header, footer, nav, aside, .card, [class*="bg-"], [class*="border-"] {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
-  }
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Page content enters with one quiet fade — only opacity and transform. */
+@keyframes ankur-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: ankur-page-in var(--motion-page) var(--ease) both;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

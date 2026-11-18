@@ -15,16 +15,40 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // docs/DESIGN.md §3. Latin face first: Inter has no Devanagari, so
+      // Hindi falls through to Noto while numerals and IDs stay in Inter.
       fontFamily: {
-        // Matches the body stack in globals.css — Devanagari first (Hindi is
-        // the primary locale), Latin companion second.
         sans: [
-          'var(--font-devanagari)',
           'var(--font-latin)',
+          'var(--font-devanagari)',
           'system-ui',
           '-apple-system',
           'sans-serif',
         ],
+        // Page titles and the landing hero only.
+        serif: [
+          'var(--font-serif)',
+          'var(--font-serif-devanagari)',
+          'Georgia',
+          'serif',
+        ],
+      },
+      fontSize: {
+        display: ['clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        title: ['clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem)', { lineHeight: '1.25', letterSpacing: '-0.01em' }],
+        section: ['1.0625rem', { lineHeight: '1.4' }],
+        body: ['0.9375rem', { lineHeight: '1.6' }],
+        eyebrow: ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.04em' }],
+      },
+      borderRadius: {
+        control: '8px',
+        card: '12px',
+        dialog: '16px',
+      },
+      boxShadow: {
+        xs: 'var(--shadow-xs)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
       },
       colors: {
         // ── Brand (role-dependent) ──────────────────────────────────────────
@@ -58,6 +82,10 @@ const config: Config = {
         // ── Text ────────────────────────────────────────────────────────────
         'on-surface': 'var(--on-surface)',
         'on-surface-variant': 'var(--on-surface-variant)',
+        faint: 'var(--text-faint)',
+        raised: 'var(--surface-raised)',
+        'line-strong': 'var(--line-strong)',
+        warning: 'var(--warning)',
 
         // ── Clinical classification — never role-themed ─────────────────────
         class: {
@@ -82,15 +110,17 @@ const config: Config = {
       // app and the accessibility rule is the same on the web.
       spacing: {
         touch: '48px',
+        sidebar: '248px',
       },
       minWidth: { touch: '48px' },
       minHeight: { touch: '48px' },
+      maxWidth: { content: '1200px' },
       transitionDuration: {
-        fast: '150ms',
-        base: '200ms',
+        fast: '120ms',
+        base: '180ms',
       },
       transitionTimingFunction: {
-        ankur: 'cubic-bezier(0.2, 0, 0, 1)',
+        ankur: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
       },
     },
   },
