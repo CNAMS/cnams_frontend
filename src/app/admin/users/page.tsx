@@ -26,7 +26,7 @@ import { useTranslations } from 'next-intl';
 
 const STATUS_STYLE: Record<UserStatus, { tone: string; labelKey: string }> = {
   active: { tone: 'text-class-normal', labelKey: 'userActive' },
-  pending: { tone: 'text-class-mam', labelKey: 'userPending' },
+  pending: { tone: 'text-warning', labelKey: 'userPending' },
   suspended: { tone: 'text-class-indeterminate', labelKey: 'userSuspended' },
 };
 

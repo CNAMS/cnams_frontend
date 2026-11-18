@@ -33,7 +33,7 @@ import { useTranslations } from 'next-intl';
 
 const DEVICE_STATUS = {
   connected: { icon: Wifi, tone: 'text-class-normal', labelKey: 'connected' },
-  calibration_overdue: { icon: Wrench, tone: 'text-class-mam', labelKey: 'calOverdue' },
+  calibration_overdue: { icon: Wrench, tone: 'text-warning', labelKey: 'calOverdue' },
   disconnected: { icon: WifiOff, tone: 'text-class-indeterminate', labelKey: 'disconnected' },
 } as const;
 

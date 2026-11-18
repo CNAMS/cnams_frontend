@@ -90,7 +90,7 @@ export default function AdminConfigPage() {
             The single most important operational fact about this deployment,
             and it belongs on the config page where the tables are listed. */}
         <Card className="flex items-start gap-3 border-class-mam/40">
-          <ShieldAlert size={20} className="text-class-mam shrink-0 mt-0.5" aria-hidden="true" />
+          <ShieldAlert size={20} className="text-warning shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="font-semibold">{t('configGateTitle')}</p>
             <p className="text-sm text-on-surface-variant leading-relaxed mt-1">
