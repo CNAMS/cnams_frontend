@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import { mockAppHealth, mockSyncHealth, mockVersionSpread } from '@/data/rosterData';
 import { useTheme } from '@/context/ThemeContext';
+import { chartGrid, chartLegend, chartTooltip } from '@/components/ui/chartTheme';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -39,7 +40,7 @@ export default function AppHealthPage() {
   }, [role, setRole]);
 
   const totalDevices = mockVersionSpread.reduce((s, v) => s + v.devices, 0);
-  const axis = { fill: 'var(--on-surface-variant)', fontSize: 12 };
+  const axis = { fill: 'var(--text-faint)', fontSize: 12 };
 
   return (
     <AppShell
@@ -100,19 +101,14 @@ export default function AppHealthPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={mockSyncHealth} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <CartesianGrid {...chartGrid} />
                   <XAxis dataKey="day" tickLine={false} axisLine={false} tick={axis} dy={8} />
                   <YAxis tickLine={false} axisLine={false} tick={axis} allowDecimals={false} />
                   <Tooltip
-                    contentStyle={{
-                      borderRadius: 12,
-                      border: '1px solid var(--outline-variant)',
-                      background: 'var(--surface-container)',
-                      color: 'var(--on-surface)',
-                    }}
+                    {...chartTooltip}
                     cursor={{ fill: 'var(--surface-variant)' }}
                   />
-                  <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                  <Legend {...chartLegend} />
                   {/* Brand primary and a muted outline — engineering colours,
                       deliberately not the clinical green/red. */}
                   <Bar

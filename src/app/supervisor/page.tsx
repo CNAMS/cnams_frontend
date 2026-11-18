@@ -17,6 +17,7 @@ import { getDashboardMetrics } from '@/data/mockData';
 import { mockProgrammeTrend } from '@/data/rosterData';
 import { styleFor } from '@/theme/classification';
 import { useTheme } from '@/context/ThemeContext';
+import { chartGrid, chartLegend, chartTooltip } from '@/components/ui/chartTheme';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -185,32 +186,24 @@ export default function SupervisorDashboard() {
                   data={mockProgrammeTrend}
                   margin={{ top: 8, right: 8, left: -22, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <CartesianGrid {...chartGrid} />
                   <XAxis
                     dataKey="month"
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                    tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                     dy={8}
                   />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
-                    tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                    tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                   />
                   <Tooltip
-                    contentStyle={{
-                      borderRadius: 8,
-                      border: '1px solid var(--outline-variant)',
-                      background: 'var(--surface-raised)',
-                      color: 'var(--on-surface)',
-                      boxShadow: 'var(--shadow-md)',
-                      fontSize: 13,
-                    }}
-                    cursor={{ stroke: 'var(--line-strong)' }}
+                    {...chartTooltip}
                   />
-                  <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                  <Legend {...chartLegend} />
                   <Line
                     type="monotone"
                     dataKey="sam"

@@ -18,6 +18,7 @@ import {
 import { mockClassBreakdown, mockProgrammeTrend } from '@/data/rosterData';
 import { styleFor } from '@/theme/classification';
 import { useTheme } from '@/context/ThemeContext';
+import { chartGrid, chartLegend, chartTooltip } from '@/components/ui/chartTheme';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -50,13 +51,7 @@ export default function ProgrammeAnalyticsPage() {
   const totalClassified = mockClassBreakdown.reduce((s, d) => s + d.count, 0);
   const samDelta = latest.sam - first.sam;
 
-  const axis = { fill: 'var(--on-surface-variant)', fontSize: 12 };
-  const tooltipStyle = {
-    borderRadius: 12,
-    border: '1px solid var(--outline-variant)',
-    background: 'var(--surface-container)',
-    color: 'var(--on-surface)',
-  };
+  const axis = { fill: 'var(--text-faint)', fontSize: 12 };
 
   return (
     <AppShell
@@ -86,10 +81,10 @@ export default function ProgrammeAnalyticsPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={mockProgrammeTrend} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <CartesianGrid {...chartGrid} />
                   <XAxis dataKey="month" tickLine={false} axisLine={false} tick={axis} dy={8} />
                   <YAxis tickLine={false} axisLine={false} tick={axis} />
-                  <Tooltip contentStyle={tooltipStyle} />
+                  <Tooltip {...chartTooltip} />
                   <Line
                     type="monotone"
                     dataKey="screened"
@@ -111,11 +106,11 @@ export default function ProgrammeAnalyticsPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={mockProgrammeTrend} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <CartesianGrid {...chartGrid} />
                   <XAxis dataKey="month" tickLine={false} axisLine={false} tick={axis} dy={8} />
                   <YAxis tickLine={false} axisLine={false} tick={axis} allowDecimals={false} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                  <Tooltip {...chartTooltip} />
+                  <Legend {...chartLegend} />
                   {/* Clinical colours, not chart colours — SAM red here is the
                       same red as a SAM badge anywhere else in the product. */}
                   <Line
@@ -159,10 +154,10 @@ export default function ProgrammeAnalyticsPage() {
                   }))}
                   margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <CartesianGrid {...chartGrid} />
                   <XAxis dataKey="label" tickLine={false} axisLine={false} tick={axis} dy={8} />
                   <YAxis tickLine={false} axisLine={false} tick={axis} allowDecimals={false} />
-                  <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'var(--surface-variant)' }} />
+                  <Tooltip {...chartTooltip} cursor={{ fill: 'var(--surface-variant)' }} />
                   <Bar dataKey="count" name={t('analyticsChildren')} radius={[6, 6, 0, 0]}>
                     {mockClassBreakdown.map((d) => (
                       <Cell key={d.growthClass} fill={styleFor(d.growthClass).color} />

@@ -22,6 +22,7 @@ import {
 } from 'recharts';
 import { getChildrenByCentre, type CentreData, type FlaggedChild } from '@/data/mockData';
 import { useTheme } from '@/context/ThemeContext';
+import { chartTooltip } from '@/components/ui/chartTheme';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -193,21 +194,16 @@ export default function CentreDetail({ centre }: { centre: CentreData }) {
                       dataKey="month"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                      tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                       dy={8}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                      tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                     />
                     <Tooltip
-                      contentStyle={{
-                        borderRadius: 12,
-                        border: '1px solid var(--outline-variant)',
-                        background: 'var(--surface-container)',
-                        color: 'var(--on-surface)',
-                      }}
+                      {...chartTooltip}
                       labelStyle={{ fontWeight: 600, color: 'var(--on-surface)' }}
                       itemStyle={{ color: 'var(--primary)', fontWeight: 600 }}
                     />

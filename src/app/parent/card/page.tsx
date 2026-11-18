@@ -12,6 +12,7 @@ import {
   YAxis,
 } from 'recharts';
 import { useTheme } from '@/context/ThemeContext';
+import { chartGrid, chartTooltip } from '@/components/ui/chartTheme';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
 import { ClassificationBadge } from '@/components/ui/ClassificationBadge';
@@ -108,28 +109,23 @@ export default function GrowthCardPage() {
                       <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--outline-variant)" />
+                  <CartesianGrid {...chartGrid} />
                   <XAxis
                     dataKey="month"
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fill: 'var(--on-surface-variant)', fontSize: 11 }}
+                    tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                     dy={8}
                   />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
                     width={44}
-                    tick={{ fill: 'var(--on-surface-variant)', fontSize: 11 }}
+                    tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                     unit=" kg"
                   />
                   <Tooltip
-                    contentStyle={{
-                      borderRadius: 12,
-                      border: '1px solid var(--outline-variant)',
-                      background: 'var(--surface-container)',
-                      color: 'var(--on-surface)',
-                    }}
+                    {...chartTooltip}
                     formatter={(value) => [`${value ?? '—'} kg`, t('measureWeight')]}
                   />
                   <Area
