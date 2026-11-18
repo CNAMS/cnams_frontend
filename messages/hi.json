@@ -278,5 +278,7 @@
   "classSam": "गंभीर कुपोषण",
   "classIndeterminate": "अनिर्धारित",
   "selectRole": "अपनी भूमिका चुनें",
-  "navDeviceManager": "उपकरण प्रबंधन"
+  "navDeviceManager": "उपकरण प्रबंधन",
+  "landingEyebrow": "आंगनवाड़ी केंद्रों के लिए बाल विकास निगरानी",
+  "landingSecondaryCta": "यह कैसे काम करता है"
 }

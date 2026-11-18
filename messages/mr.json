@@ -277,5 +277,7 @@
   "classMam": "MAM",
   "classSam": "SAM",
   "classIndeterminate": "अनिश्चित",
-  "selectRole": "तुमची भूमिका निवडा"
+  "selectRole": "तुमची भूमिका निवडा",
+  "landingEyebrow": "अंगणवाडी केंद्रांसाठी बाल वाढ देखरेख",
+  "landingSecondaryCta": "हे कसे काम करते"
 }

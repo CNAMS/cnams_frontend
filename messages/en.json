@@ -278,5 +278,7 @@
   "classSam": "SAM",
   "classIndeterminate": "Indeterminate",
   "selectRole": "Select Your Role",
-  "navDeviceManager": "Device Manager"
+  "navDeviceManager": "Device Manager",
+  "landingEyebrow": "Child growth monitoring for Anganwadi centres",
+  "landingSecondaryCta": "How it works"
 }
