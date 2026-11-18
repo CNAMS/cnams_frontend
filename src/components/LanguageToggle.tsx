@@ -48,25 +48,27 @@ export default function LanguageToggle({ className }: { className?: string }) {
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
         className={cn(
-          'flex items-center gap-1.5 px-3 h-9 rounded-full text-sm font-semibold',
-          'bg-surface-variant border border-outline-variant text-on-surface',
-          'hover:bg-surface-container transition-colors duration-fast ease-ankur',
-          open && 'ring-2 ring-brand ring-offset-1 ring-offset-surface-container'
+          'flex items-center gap-1.5 pl-3 pr-2 h-9 pointer-coarse:h-11 rounded-control text-sm font-medium',
+          'bg-surface-container border border-line-strong text-on-surface shadow-xs',
+          'hover:bg-surface-variant transition-colors duration-fast ease-ankur',
+          open && 'border-outline'
         )}
       >
         <span lang={locale}>{LANGUAGE_LABELS[locale]}</span>
-        <ChevronDown size={16} className={cn("transition-transform", open && "rotate-180")} />
+        <ChevronDown
+          size={15}
+          aria-hidden="true"
+          className={cn('text-faint transition-transform duration-fast', open && 'rotate-180')}
+        />
       </button>
 
       {open && (
         <ul
           role="listbox"
           className={cn(
-            'absolute right-0 top-[calc(100%+0.5rem)] min-w-[120px] z-50',
-            'bg-surface-container backdrop-blur-xl',
-            'border border-outline-variant rounded-xl overflow-hidden',
-            'shadow-xl shadow-black/[0.08]',
-            'py-1 flex flex-col'
+            'absolute right-0 top-[calc(100%+0.375rem)] min-w-[140px] z-50',
+            'bg-raised border border-outline-variant rounded-card overflow-hidden shadow-md',
+            'p-1 flex flex-col page-enter'
           )}
         >
           {locales.map((code) => {
@@ -83,7 +85,7 @@ export default function LanguageToggle({ className }: { className?: string }) {
                   }}
                   lang={code}
                   className={cn(
-                    'w-full text-left px-4 py-2.5 text-sm font-medium',
+                    'w-full text-left px-3 h-9 pointer-coarse:h-11 rounded-control text-sm',
                     'transition-colors duration-fast ease-ankur',
                     active
                       ? 'bg-primary-container text-on-primary-container'

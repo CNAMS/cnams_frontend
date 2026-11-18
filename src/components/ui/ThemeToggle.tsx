@@ -24,12 +24,12 @@ const OPTIONS: { value: ColorScheme; icon: typeof Sun; labelKey: string }[] = [
 export function ThemeToggle({ className }: { className?: string }) {
   const { colorScheme, setColorScheme } = useTheme();
   const t = useTranslations();
-return (
+  return (
     <div
       role="radiogroup"
       aria-label={t('toggleTheme')}
       className={cn(
-        'inline-flex items-center gap-0.5 p-0.5 rounded-full',
+        'inline-flex items-center gap-0.5 p-0.5 rounded-control',
         'bg-surface-variant border border-outline-variant',
         className,
       )}
@@ -46,11 +46,11 @@ return (
             title={t(labelKey)}
             onClick={() => setColorScheme(value)}
             className={cn(
-              'flex items-center justify-center w-8 h-8 rounded-full',
+              'flex items-center justify-center w-7 h-7 rounded-[6px]',
               'transition-colors duration-fast ease-ankur',
               active
-                ? 'bg-brand text-on-primary'
-                : 'text-on-surface-variant hover:bg-surface-container',
+                ? 'bg-surface-container text-on-surface shadow-xs'
+                : 'text-faint hover:text-on-surface',
             )}
           >
             <Icon size={15} aria-hidden="true" />
