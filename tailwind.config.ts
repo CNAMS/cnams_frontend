@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
 
 /**
  * Every colour here resolves to a CSS variable declared in src/app/globals.css.
@@ -124,7 +125,13 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Touch screens keep 44px targets while desktop controls can be 40px
+    // (docs/DESIGN.md §6). Usage: `pointer-coarse:min-h-11`.
+    plugin(({ addVariant }) => {
+      addVariant('pointer-coarse', '@media (pointer: coarse)');
+    }),
+  ],
 };
 
 export default config;
