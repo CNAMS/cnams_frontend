@@ -143,7 +143,7 @@ export default function AdminDashboard() {
                       aria-disabled="true"
                     >
                       {content}
-                      <span className="text-[10px] uppercase tracking-wide rounded-full bg-surface-variant px-2 py-0.5 shrink-0">
+                      <span className="text-[11px] rounded-md border border-outline-variant bg-surface-variant px-1.5 leading-5 shrink-0">
                         {t('navComingSoon')}
                       </span>
                     </Card>
