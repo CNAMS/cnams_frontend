@@ -7,6 +7,7 @@
  * to avoid hydration mismatches.
  */
 
+import { useTranslations } from 'next-intl';
 import React, { useCallback, useRef, useEffect } from 'react';
 import {
   Bluetooth,
@@ -65,6 +66,7 @@ export function BleScaleCard({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally empty — refs keep it fresh without recreating
 
+  const t = useTranslations();
   const {
     isSupported: isBleSupported,
     connectionState: bleState,
@@ -79,7 +81,7 @@ export function BleScaleCard({
   } = useBleDevice(handleReading);
 
   return (
-    <Card className="border border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
+    <Card className="space-y-4">
       {/* ── Header Row ──────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-3">
         <div className="flex items-center gap-2.5">
@@ -103,24 +105,24 @@ export function BleScaleCard({
           </div>
           <div>
             <h3 className="font-semibold text-sm flex items-center gap-2">
-              <span>ESP32-S3 Wireless Scale</span>
+              <span>{t('scaleTitle')}</span>
               {bleState === 'connected' && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-success/15 text-success">
                   <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                  <span>{bleDeviceName ?? 'Connected'}</span>
+                  <span>{bleDeviceName ?? t('scaleConnected')}</span>
                 </span>
               )}
             </h3>
             <p className="text-xs text-on-surface-variant">
               {bleState === 'connected'
-                ? 'Scale ready — press Take Measurement or click BOOT on ESP32'
+                ? t('scaleReadyHint')
                 : bleState === 'connecting'
-                ? 'Connecting to ESP32-S3...'
+                ? t('scaleConnectingHint')
                 : bleState === 'scanning'
-                ? 'Scanning for CGMS-ANKUR-S3...'
+                ? t('scaleScanningHint')
                 : isBleSupported
-                ? 'Connect to ESP32-S3 for automatic measurement lock-in'
-                : 'Web Bluetooth not available — use Google Chrome or MS Edge'}
+                ? t('scaleIdleHint')
+                : t('scaleUnsupportedHint')}
             </p>
           </div>
         </div>
@@ -132,19 +134,19 @@ export function BleScaleCard({
                 variant="primary"
                 onClick={() => triggerMeasurement()}
                 className="text-xs h-8 px-3 bg-brand hover:bg-brand/90 text-on-brand"
-                title="Trigger a new measurement cycle on the ESP32 scale"
+                title={t('scaleTakeMeasurement')}
               >
                 <Play size={13} className="mr-1 fill-current" />
-                <span>Take Measurement</span>
+                <span>{t('scaleTakeMeasurement')}</span>
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => tareScale()}
                 className="text-xs h-8 px-2 text-on-surface-variant hover:text-on-surface"
-                title="Zero/Tare scale"
+                title={t('scaleZero')}
               >
                 <RotateCcw size={13} className="mr-1" />
-                <span>Zero</span>
+                <span>{t('scaleZero')}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -152,7 +154,7 @@ export function BleScaleCard({
                 className="text-xs h-8 px-2 text-error hover:bg-error-container"
               >
                 <BluetoothOff size={13} className="mr-1" />
-                <span>Disconnect</span>
+                <span>{t('scaleDisconnect')}</span>
               </Button>
             </>
           ) : (
@@ -165,10 +167,10 @@ export function BleScaleCard({
               <Bluetooth size={14} className="mr-1.5" />
               <span>
                 {bleState === 'scanning'
-                  ? 'Scanning...'
+                  ? t('scaleScanning')
                   : bleState === 'connecting'
-                  ? 'Connecting...'
-                  : 'Connect Scale'}
+                  ? t('scaleConnecting')
+                  : t('scaleConnect')}
               </span>
             </Button>
           )}
@@ -187,14 +189,14 @@ export function BleScaleCard({
       {bleState === 'connected' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <Gauge
-            label="Live Weight"
+            label={t('scaleWeight')}
             icon={Scale}
             unit="kg"
             reading={bleWeight}
             onUseValue={onWeightLock}
           />
           <Gauge
-            label={ageMonths !== undefined && ageMonths < 24 ? 'Live Length' : 'Live Height'}
+            label={ageMonths !== undefined && ageMonths < 24 ? t('scaleLength') : t('scaleHeight')}
             icon={Ruler}
             unit="cm"
             reading={bleLength}
@@ -221,6 +223,7 @@ function Gauge({
   reading: ChannelReading | null;
   onUseValue?: (val: string) => void;
 }) {
+  const t = useTranslations();
   const isStable = reading?.stable ?? false;
 
   return (
@@ -250,17 +253,17 @@ function Gauge({
             {isStable ? (
               <span className="inline-flex items-center gap-1">
                 <Lock size={11} className="text-success" aria-hidden="true" />
-                <span>Locked</span>
+                <span>{t('scaleLocked')}</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1">
                 <Unlock size={11} className="animate-pulse text-warning" aria-hidden="true" />
-                <span>Stabilizing...</span>
+                <span>{t('scaleStabilizing')}</span>
               </span>
             )}
           </span>
         ) : (
-          <span className="text-xs text-on-surface-variant">Waiting for ESP32...</span>
+          <span className="text-xs text-on-surface-variant">{t('scaleWaiting')}</span>
         )}
       </div>
 
@@ -283,7 +286,7 @@ function Gauge({
               onClick={() => onUseValue(reading.value)}
               className="text-[11px] font-semibold text-brand hover:underline inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 rounded bg-primary-container"
             >
-              <span>Use</span>
+              <span>{t('scaleUse')}</span>
             </button>
           )}
         </div>
