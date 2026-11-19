@@ -3,30 +3,32 @@ import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 /**
- * A metric tile: big number, small label, optional icon.
+ * A metric tile (docs/DESIGN.md §6): label, figure, optional qualifier.
  *
- * Ported from DashStatTile in the app's dashboard_widgets.dart, including its
- * tint approach — a 12%-alpha wash of the accent colour rather than a solid
- * pastel fill. The portal's KPI row used fully saturated containers
- * (bg-sam-container, bg-mam-container, ...), which turned the dashboard into a
- * patchwork where four cards shouted at once.
+ * Ported from DashStatTile in the app's dashboard_widgets.dart. The figure is
+ * always body-text colour; a clinical tone shows as the icon chip and a 3px
+ * rule, never as coloured digits — MAM amber text is 1.9:1 on white, so
+ * colouring the number made the one tile that mattered unreadable.
  *
- * `tone` is deliberately limited. A tile is either neutral (the default, which
- * is most of them) or carries a clinical colour because the number IS a
- * clinical count. There is no decorative colour option.
+ * `tone` is deliberately limited. A tile is either neutral (most of them) or
+ * carries a clinical colour because the number IS a clinical count. There is
+ * no decorative colour option.
  */
 
 export type StatTone = 'neutral' | 'normal' | 'overweight' | 'mam' | 'sam' | 'indeterminate';
 
-const TONES: Record<StatTone, { accent: string; wash: string }> = {
-  neutral: { accent: 'var(--primary)', wash: 'var(--primary)' },
-  normal: { accent: 'var(--class-normal)', wash: 'var(--class-normal)' },
-  overweight: { accent: 'var(--class-overweight)', wash: 'var(--class-overweight)' },
-  mam: { accent: 'var(--class-mam)', wash: 'var(--class-mam)' },
-  sam: { accent: 'var(--class-sam)', wash: 'var(--class-sam)' },
+const TONES: Record<StatTone, { accent: string; ink: string }> = {
+  neutral: { accent: 'var(--primary)', ink: 'var(--on-primary-container)' },
+  normal: { accent: 'var(--class-normal)', ink: 'var(--class-normal-on-container)' },
+  overweight: {
+    accent: 'var(--class-overweight)',
+    ink: 'var(--class-overweight-on-container)',
+  },
+  mam: { accent: 'var(--class-mam)', ink: 'var(--class-mam-on-container)' },
+  sam: { accent: 'var(--class-sam)', ink: 'var(--class-sam-on-container)' },
   indeterminate: {
     accent: 'var(--class-indeterminate)',
-    wash: 'var(--class-indeterminate)',
+    ink: 'var(--class-indeterminate-on-container)',
   },
 };
 
@@ -42,36 +44,50 @@ export function StatTile({
   label: React.ReactNode;
   tone?: StatTone;
   icon?: LucideIcon;
-  /** Small qualifier under the label — e.g. "of 40 referred". */
+  /** Small qualifier under the figure — e.g. "of 40 referred". */
   hint?: React.ReactNode;
   className?: string;
 }) {
-  const { accent, wash } = TONES[tone];
+  const { accent, ink } = TONES[tone];
+  const clinical = tone !== 'neutral';
 
   return (
     <div
       className={cn(
-        'rounded-2xl border border-outline-variant p-4 flex flex-col gap-1',
+        'relative overflow-hidden rounded-card border border-outline-variant',
+        'bg-surface-container p-4 sm:p-5 flex flex-col gap-3',
         className,
       )}
-      style={{
-        // color-mix keeps one colour definition doing both jobs, instead of
-        // maintaining a second hardcoded pastel per tone the way the old
-        // *-container classes did.
-        backgroundColor: `color-mix(in srgb, ${wash} 10%, var(--surface-container))`,
-      }}
     >
-      {Icon && (
-        <Icon size={20} aria-hidden="true" style={{ color: accent }} className="mb-1" />
+      {clinical && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-0 left-0 w-[3px]"
+          style={{ backgroundColor: accent }}
+        />
       )}
-      <span
-        className="text-3xl font-bold leading-none tabular-nums"
-        style={{ color: accent }}
-      >
-        {value}
-      </span>
-      <span className="text-sm text-on-surface-variant leading-snug">{label}</span>
-      {hint && <span className="text-xs text-on-surface-variant/80">{hint}</span>}
+      <div className="flex items-start justify-between gap-3">
+        <span className="text-sm text-on-surface-variant leading-snug">{label}</span>
+        {Icon && (
+          <span
+            className="grid place-items-center w-8 h-8 rounded-control shrink-0"
+            style={{
+              // One colour definition doing both jobs: a 14% wash behind the
+              // icon, with the icon in the readable on-container tone.
+              backgroundColor: `color-mix(in srgb, ${accent} 14%, transparent)`,
+              color: ink,
+            }}
+          >
+            <Icon size={16} aria-hidden="true" />
+          </span>
+        )}
+      </div>
+      <div>
+        <span className="block text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums text-on-surface">
+          {value}
+        </span>
+        {hint && <span className="block mt-1.5 text-xs text-faint">{hint}</span>}
+      </div>
     </div>
   );
 }

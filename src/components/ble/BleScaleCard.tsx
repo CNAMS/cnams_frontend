@@ -7,6 +7,7 @@
  * to avoid hydration mismatches.
  */
 
+import { useTranslations } from 'next-intl';
 import React, { useCallback, useRef, useEffect } from 'react';
 import {
   Bluetooth,
@@ -65,6 +66,7 @@ export function BleScaleCard({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally empty — refs keep it fresh without recreating
 
+  const t = useTranslations();
   const {
     isSupported: isBleSupported,
     connectionState: bleState,
@@ -79,7 +81,7 @@ export function BleScaleCard({
   } = useBleDevice(handleReading);
 
   return (
-    <Card className="border-2 border-brand/20 bg-surface-container/60 shadow-sm space-y-4">
+    <Card className="space-y-4">
       {/* ── Header Row ──────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-3">
         <div className="flex items-center gap-2.5">
@@ -87,9 +89,9 @@ export function BleScaleCard({
             className={cn(
               'w-9 h-9 rounded-lg flex items-center justify-center transition-colors',
               bleState === 'connected'
-                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                ? 'bg-success/15 text-success'
                 : bleState === 'scanning' || bleState === 'connecting'
-                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 animate-pulse'
+                ? 'bg-warning/15 text-warning animate-pulse'
                 : 'bg-surface-variant text-on-surface-variant'
             )}
           >
@@ -103,24 +105,24 @@ export function BleScaleCard({
           </div>
           <div>
             <h3 className="font-semibold text-sm flex items-center gap-2">
-              <span>ESP32-S3 Wireless Scale</span>
+              <span>{t('scaleTitle')}</span>
               {bleState === 'connected' && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>{bleDeviceName ?? 'Connected'}</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-success/15 text-success">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                  <span>{bleDeviceName ?? t('scaleConnected')}</span>
                 </span>
               )}
             </h3>
             <p className="text-xs text-on-surface-variant">
               {bleState === 'connected'
-                ? 'Scale ready — press Take Measurement or click BOOT on ESP32'
+                ? t('scaleReadyHint')
                 : bleState === 'connecting'
-                ? 'Connecting to ESP32-S3...'
+                ? t('scaleConnectingHint')
                 : bleState === 'scanning'
-                ? 'Scanning for CGMS-ANKUR-S3...'
+                ? t('scaleScanningHint')
                 : isBleSupported
-                ? 'Connect to ESP32-S3 for automatic measurement lock-in'
-                : 'Web Bluetooth not available — use Google Chrome or MS Edge'}
+                ? t('scaleIdleHint')
+                : t('scaleUnsupportedHint')}
             </p>
           </div>
         </div>
@@ -132,19 +134,19 @@ export function BleScaleCard({
                 variant="primary"
                 onClick={() => triggerMeasurement()}
                 className="text-xs h-8 px-3 bg-brand hover:bg-brand/90 text-on-brand"
-                title="Trigger a new measurement cycle on the ESP32 scale"
+                title={t('scaleTakeMeasurement')}
               >
                 <Play size={13} className="mr-1 fill-current" />
-                <span>Take Measurement</span>
+                <span>{t('scaleTakeMeasurement')}</span>
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => tareScale()}
                 className="text-xs h-8 px-2 text-on-surface-variant hover:text-on-surface"
-                title="Zero/Tare scale"
+                title={t('scaleZero')}
               >
                 <RotateCcw size={13} className="mr-1" />
-                <span>Zero</span>
+                <span>{t('scaleZero')}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -152,7 +154,7 @@ export function BleScaleCard({
                 className="text-xs h-8 px-2 text-error hover:bg-error-container"
               >
                 <BluetoothOff size={13} className="mr-1" />
-                <span>Disconnect</span>
+                <span>{t('scaleDisconnect')}</span>
               </Button>
             </>
           ) : (
@@ -165,10 +167,10 @@ export function BleScaleCard({
               <Bluetooth size={14} className="mr-1.5" />
               <span>
                 {bleState === 'scanning'
-                  ? 'Scanning...'
+                  ? t('scaleScanning')
                   : bleState === 'connecting'
-                  ? 'Connecting...'
-                  : 'Connect Scale'}
+                  ? t('scaleConnecting')
+                  : t('scaleConnect')}
               </span>
             </Button>
           )}
@@ -187,14 +189,14 @@ export function BleScaleCard({
       {bleState === 'connected' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <Gauge
-            label="Live Weight"
+            label={t('scaleWeight')}
             icon={Scale}
             unit="kg"
             reading={bleWeight}
             onUseValue={onWeightLock}
           />
           <Gauge
-            label={ageMonths !== undefined && ageMonths < 24 ? 'Live Length' : 'Live Height'}
+            label={ageMonths !== undefined && ageMonths < 24 ? t('scaleLength') : t('scaleHeight')}
             icon={Ruler}
             unit="cm"
             reading={bleLength}
@@ -221,15 +223,16 @@ function Gauge({
   reading: ChannelReading | null;
   onUseValue?: (val: string) => void;
 }) {
+  const t = useTranslations();
   const isStable = reading?.stable ?? false;
 
   return (
     <div
       className={cn(
-        'p-3.5 rounded-xl border-2 transition-all duration-300',
+        'p-3.5 rounded-control border transition-all duration-300',
         isStable
-          ? 'bg-emerald-500/10 border-emerald-500/50 shadow-sm'
-          : 'bg-amber-500/5 border-amber-500/40'
+          ? 'bg-success/10 border-success/50 shadow-sm'
+          : 'bg-warning/5 border-warning/40'
       )}
     >
       <div className="flex items-center justify-between mb-1.5">
@@ -243,33 +246,33 @@ function Gauge({
             className={cn(
               'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full transition-colors',
               isStable
-                ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold'
-                : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 animate-pulse'
+                ? 'bg-success/15 text-success font-semibold'
+                : 'bg-warning/15 text-warning animate-pulse'
             )}
           >
             {isStable ? (
               <span className="inline-flex items-center gap-1">
-                <Lock size={11} className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-                <span>Locked</span>
+                <Lock size={11} className="text-success" aria-hidden="true" />
+                <span>{t('scaleLocked')}</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1">
-                <Unlock size={11} className="animate-pulse text-amber-600 dark:text-amber-400" aria-hidden="true" />
-                <span>Stabilizing...</span>
+                <Unlock size={11} className="animate-pulse text-warning" aria-hidden="true" />
+                <span>{t('scaleStabilizing')}</span>
               </span>
             )}
           </span>
         ) : (
-          <span className="text-xs text-on-surface-variant">Waiting for ESP32...</span>
+          <span className="text-xs text-on-surface-variant">{t('scaleWaiting')}</span>
         )}
       </div>
 
       <div className="flex items-baseline justify-between">
         <span
           className={cn(
-            'text-2xl font-bold tabular-nums tracking-tight transition-colors',
+            'text-2xl font-semibold tabular-nums tracking-tight transition-colors',
             isStable
-              ? 'text-emerald-700 dark:text-emerald-300'
+              ? 'text-success'
               : 'text-on-surface'
           )}
         >
@@ -283,7 +286,7 @@ function Gauge({
               onClick={() => onUseValue(reading.value)}
               className="text-[11px] font-semibold text-brand hover:underline inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 rounded bg-primary-container"
             >
-              <span>Use</span>
+              <span>{t('scaleUse')}</span>
             </button>
           )}
         </div>

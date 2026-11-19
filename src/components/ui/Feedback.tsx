@@ -30,16 +30,16 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center text-center gap-2 px-6 py-12',
+        'flex flex-col items-center justify-center text-center gap-1.5 px-6 py-12',
         className,
       )}
     >
       {Icon && (
-        <div className="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center mb-1">
-          <Icon size={22} className="text-on-surface-variant" aria-hidden="true" />
+        <div className="w-10 h-10 rounded-card border border-outline-variant bg-surface-variant grid place-items-center mb-2">
+          <Icon size={18} className="text-on-surface-variant" aria-hidden="true" />
         </div>
       )}
-      <p className="font-semibold text-on-surface">{title}</p>
+      <p className="font-medium text-on-surface">{title}</p>
       {description && (
         <p className="text-sm text-on-surface-variant max-w-sm">{description}</p>
       )}
@@ -62,12 +62,12 @@ export function EmptyState({
  */
 export function SampleDataChip({ className }: { className?: string }) {
   const t = useTranslations();
-return (
+  return (
     <span
       className={cn(
         'inline-flex items-center gap-1.5 shrink-0',
-        'rounded-full bg-surface-variant border border-outline-variant',
-        'px-2.5 py-1 text-xs font-medium text-on-surface-variant',
+        'rounded-md bg-surface-variant border border-outline-variant',
+        'px-2 h-6 text-xs font-medium text-on-surface-variant',
         className,
       )}
     >

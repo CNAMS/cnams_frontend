@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Baby, Ruler, Search, ShieldOff, X } from 'lucide-react';
+import { AlertTriangle, Baby, Clock, Ruler, Search, ShieldOff, X } from 'lucide-react';
 import {
   mockRoster,
   isOverdue,
@@ -9,6 +9,7 @@ import {
   type RosterChild,
 } from '@/data/rosterData';
 import { useTheme } from '@/context/ThemeContext';
+import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -82,71 +83,56 @@ export default function ChildrenRosterPage() {
       actions={<SampleDataChip />}
     >
       <div className="space-y-6">
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <StatTile icon={Baby} value={counts.total} label={t('rosterRegistered')} />
           <StatTile icon={AlertTriangle} tone="mam" value={counts.overdue} label={t('rosterOverdue')} />
           <StatTile icon={Ruler} tone="sam" value={counts.flagged} label={t('rosterFlagged')} />
           <StatTile icon={ShieldOff} tone="indeterminate" value={counts.noConsent} label={t('rosterNoConsent')} />
         </div>
 
-        {/* ── Search ────────────────────────────────────────────────────── */}
-        <div className="relative">
-          <Search
-            size={18}
-            aria-hidden="true"
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none"
-          />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t('rosterSearchPlaceholder')}
-            aria-label={t('rosterSearchPlaceholder')}
-            className={cn(
-              'w-full min-h-touch pl-11 pr-11 rounded-xl bg-surface-container',
-              'border-2 border-outline-variant focus:border-brand',
-              'transition-colors duration-fast ease-ankur',
-              'placeholder:text-on-surface-variant/60',
-            )}
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery('')}
-              aria-label={t('rosterClearSearch')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant"
-            >
-              <X size={16} aria-hidden="true" />
-            </button>
-          )}
-        </div>
-
-        {/* ── Filters ───────────────────────────────────────────────────── */}
-        <div role="radiogroup" aria-label={t('filter')} className="flex flex-wrap gap-2">
-          {FILTERS.map(({ key, labelKey, count }) => {
-            const active = filter === key;
-            return (
+        {/* ── Toolbar: search + filter ──────────────────────────────────── */}
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative w-full lg:max-w-sm">
+            <Search
+              size={16}
+              aria-hidden="true"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-faint pointer-events-none"
+            />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('rosterSearchPlaceholder')}
+              aria-label={t('rosterSearchPlaceholder')}
+              className={cn(
+                'w-full h-10 pointer-coarse:h-11 pl-9 pr-10 rounded-control bg-surface-container text-sm',
+                'border border-line-strong shadow-xs focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25',
+                'transition-[border-color,box-shadow] duration-fast ease-ankur',
+                'placeholder:text-faint',
+              )}
+            />
+            {query && (
               <button
-                key={key}
                 type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() => setFilter(key)}
-                className={cn(
-                  'inline-flex items-center gap-2 min-h-touch px-4 rounded-full border-2 text-sm font-semibold',
-                  'transition-colors duration-fast ease-ankur',
-                  active
-                    ? 'border-brand bg-brand text-on-primary'
-                    : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant',
-                )}
+                onClick={() => setQuery('')}
+                aria-label={t('rosterClearSearch')}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-[6px] grid place-items-center text-faint hover:text-on-surface hover:bg-surface-variant"
               >
-                {t(labelKey)}
-                <span className={cn('tabular-nums text-xs', active ? 'opacity-80' : 'opacity-60')}>
-                  {count}
-                </span>
+                <X size={14} aria-hidden="true" />
               </button>
-            );
-          })}
+            )}
+          </div>
+
+          <SegmentedControl
+            label={t('filter')}
+            value={filter}
+            onChange={setFilter}
+            segments={FILTERS.map(({ key, labelKey, count }) => ({
+              value: key,
+              label: t(labelKey),
+              count,
+            }))}
+          />
         </div>
 
         {/* Search and filtering change the list silently for anyone not
@@ -199,9 +185,9 @@ function ChildCard({ child }: { child: RosterChild }) {
     <Card as="li" className="space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-semibold">
+          <p className="font-medium">
             {child.initials}
-            <span className="ml-2 text-xs font-normal text-on-surface-variant">{child.icdsId}</span>
+            <span className="ml-2 text-xs font-normal text-faint">{child.icdsId}</span>
           </p>
           <p className="text-sm text-on-surface-variant">
             {child.sex === 'M' ? t('sexMale') : t('sexFemale')} ·{' '}
@@ -209,7 +195,7 @@ function ChildCard({ child }: { child: RosterChild }) {
             {/* An estimated DOB changes how the z-score should be read, so it
                 is surfaced rather than hidden (P0 data-model rule). */}
             {child.dobPrecision !== 'exact' && (
-              <span className="ml-1.5 text-xs rounded-full bg-surface-variant px-1.5 py-0.5">
+              <span className="ml-1.5 text-xs rounded-md border border-outline-variant bg-surface-variant px-1.5 py-0.5">
                 {child.dobPrecision === 'estimated' ? t('dobEstimated') : t('dobMonthOnly')}
               </span>
             )}
@@ -229,21 +215,29 @@ function ChildCard({ child }: { child: RosterChild }) {
 
       <dl className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
         <div>
-          <dt className="text-xs text-on-surface-variant">{t('rosterLastMeasured')}</dt>
-          <dd className={cn('font-medium tabular-nums', overdue && 'text-class-mam')}>
+          <dt className="text-xs text-faint">{t('rosterLastMeasured')}</dt>
+          {/* Warning tone, not MAM amber: amber text is 1.9:1 on white. The
+              icon and word carry the meaning for anyone who can't see it. */}
+          <dd
+            className={cn(
+              'inline-flex items-center gap-1 font-medium tabular-nums',
+              overdue && 'text-warning',
+            )}
+          >
+            {overdue && <Clock size={13} aria-hidden="true" />}
             {days === null ? t('rosterNever') : `${days} ${t('daysAgo')}`}
-            {overdue && <span className="ml-1 text-xs">{t('overdue')}</span>}
+            {overdue && <span className="ml-0.5 text-xs">{t('overdue')}</span>}
           </dd>
         </div>
         {child.waz !== null && (
           <div>
-            <dt className="text-xs text-on-surface-variant">{t('waz')}</dt>
+            <dt className="text-xs text-faint">{t('waz')}</dt>
             <dd className="font-medium tabular-nums">{child.waz.toFixed(1)}</dd>
           </div>
         )}
         {child.muacMm !== null && (
           <div>
-            <dt className="text-xs text-on-surface-variant">{t('muac')}</dt>
+            <dt className="text-xs text-faint">{t('muac')}</dt>
             <dd className="font-medium tabular-nums">{child.muacMm} mm</dd>
           </div>
         )}

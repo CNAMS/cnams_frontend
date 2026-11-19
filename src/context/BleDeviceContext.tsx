@@ -95,6 +95,42 @@ const BleContext = createContext<BleContextValue | null>(null);
 
 const STORAGE_KEY_LAST_DEVICE = 'cnams_last_ble_device_id';
 
+// localStorage throws in private windows, sandboxed frames and when site data
+// is blocked. Remembering the last scale is a convenience, so a storage failure
+// must never turn a successful connection into a failed one.
+function readLastDeviceId(): string | null {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY_LAST_DEVICE);
+  } catch {
+    return null;
+  }
+}
+
+function rememberDeviceId(id: string): void {
+  try {
+    window.localStorage.setItem(STORAGE_KEY_LAST_DEVICE, id);
+  } catch {
+    // Best effort.
+  }
+}
+
+function forgetDeviceId(): void {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY_LAST_DEVICE);
+  } catch {
+    // Best effort.
+  }
+}
+
+function dropLink(device: BluetoothDeviceLike): void {
+  try {
+    // Also aborts a connect() that is still pending.
+    device.gatt?.disconnect();
+  } catch {
+    // Best effort.
+  }
+}
+
 // Helper to enforce strict promise timeout
 function withTimeout<T>(promise: Promise<T>, ms: number, timeoutMsg: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -131,6 +167,13 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
 
   const listenersRef = useRef<Set<(packet: DecodedBlePacket) => void>>(new Set());
   const abortAutoReconnectRef = useRef<boolean>(false);
+
+  // Every connection attempt is a numbered session. Ending a session bumps the
+  // number, so an attempt still awaiting GATT (an auto-reconnect racing a
+  // manual pick, or one that already timed out) sees it is stale and stops
+  // instead of attaching listeners to a link nobody owns.
+  const sessionRef = useRef(0);
+  const sessionCleanupRef = useRef<(() => void) | null>(null);
 
   // Process a decoded measurement packet from ESP32-S3
   const handlePacket = useCallback((packet: DecodedBlePacket) => {
@@ -188,13 +231,24 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Handle GATT disconnection
-  const handleDisconnected = useCallback(() => {
-    console.log('[BLE] ESP32 disconnected');
+  /**
+   * Ends the current session, whatever state it is in: invalidates any attempt
+   * still in flight, detaches every listener, drops the GATT link and clears
+   * the readings. A disconnected scale must not keep showing a "stable" value
+   * that looks live.
+   */
+  const endSession = useCallback(() => {
+    sessionRef.current += 1;
+    const cleanup = sessionCleanupRef.current;
+    sessionCleanupRef.current = null;
+    cleanup?.();
+
     setConnectionState('disconnected');
     setDeviceName(null);
     setDeviceSerial(null);
     setDiagnostics(null);
+    setWeight(null);
+    setLength(null);
     measureCharRef.current = null;
     controlCharRef.current = null;
     otaControlCharRef.current = null;
@@ -203,59 +257,113 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
     deviceRef.current = null;
   }, []);
 
-  // Shared GATT session initializer with connection timeout
+  /**
+   * Opens a GATT session with a connection timeout.
+   *
+   * Resolves `true` once connected, or `false` if a newer session (or a manual
+   * disconnect) superseded this one while it was waiting. Throws only for a
+   * real failure of the current session, after tearing it down.
+   */
   const initGattSession = useCallback(async (device: BluetoothDeviceLike, timeoutMs: number = 5000) => {
+    endSession(); // never run two sessions side by side
+    const session = sessionRef.current;
+    const isCurrent = () => sessionRef.current === session;
+
+    let ended = false;
+    let measureChar: BluetoothRemoteGATTCharacteristicLike | null = null;
+    let controlChar: BluetoothRemoteGATTCharacteristicLike | null = null;
+
+    const onLinkLost = () => {
+      if (isCurrent()) endSession();
+    };
+
+    sessionCleanupRef.current = () => {
+      ended = true;
+      device.removeEventListener('gattserverdisconnected', onLinkLost);
+      if (measureChar) {
+        measureChar.removeEventListener('characteristicvaluechanged', handleCharacteristicValue);
+        measureChar.stopNotifications().catch(() => {});
+      }
+      if (controlChar) {
+        controlChar.removeEventListener('characteristicvaluechanged', handleControlNotification);
+        controlChar.stopNotifications().catch(() => {});
+      }
+      dropLink(device);
+    };
+
     deviceRef.current = device;
-    setConnectionState('connecting');
-
-    // Connect GATT server with strict timeout
-    const connectPromise = device.gatt?.connect() as Promise<BluetoothRemoteGATTServerLike>;
-    const server = await withTimeout(connectPromise, timeoutMs, 'Scale connection timed out after 5s');
-    if (!server) throw new Error('Could not connect to ESP32 GATT server');
-    serverRef.current = server;
-
-    device.removeEventListener?.('gattserverdisconnected', handleDisconnected);
-    device.addEventListener?.('gattserverdisconnected', handleDisconnected);
-
     setDeviceName(device.name || 'CGMS-ANKUR-S3');
     setDeviceSerial(device.id || 'ESP32-S3');
+    setConnectionState('connecting');
+    device.addEventListener('gattserverdisconnected', onLinkLost);
 
-    // 1. Primary Anthropometry Service
-    const service = await server.getPrimaryService(BLE_GATT_SERVICE_UUID);
-    
-    // Measurement Characteristic (Notify)
-    const measureChar = await service.getCharacteristic(BLE_GATT_MEASUREMENT_CHAR_UUID);
-    measureCharRef.current = measureChar;
-    await measureChar.startNotifications();
-    measureChar.addEventListener('characteristicvaluechanged', handleCharacteristicValue);
-
-    // Control Characteristic (Write/Notify)
     try {
-      const controlChar = await service.getCharacteristic(BLE_GATT_CONTROL_CHAR_UUID);
-      controlCharRef.current = controlChar;
-      await controlChar.startNotifications();
-      controlChar.addEventListener('characteristicvaluechanged', handleControlNotification);
+      if (!device.gatt) throw new Error('Could not connect to ESP32 GATT server');
+      const connectPromise = device.gatt.connect();
+      // If the link comes up after this session already ended (it timed out,
+      // or was superseded by a different scale), drop it rather than leave an
+      // orphaned connection holding the scale.
+      connectPromise.then(
+        () => {
+          if (ended && deviceRef.current !== device) dropLink(device);
+        },
+        () => {},
+      );
 
-      // Fetch initial device info
-      await controlChar.writeValue(new Uint8Array([0x10]));
-    } catch (cErr) {
-      console.info('[BLE ESP32] Control characteristic optional error:', cErr);
-    }
+      const seconds = Math.round(timeoutMs / 1000);
+      const server = await withTimeout(connectPromise, timeoutMs, `Scale connection timed out after ${seconds}s`);
+      if (!isCurrent()) return false;
+      if (!server) throw new Error('Could not connect to ESP32 GATT server');
+      serverRef.current = server;
 
-    // 2. BLE OTA Service (Optional)
-    try {
-      const otaService = await server.getPrimaryService(BLE_GATT_OTA_SERVICE_UUID);
-      otaControlCharRef.current = await otaService.getCharacteristic(BLE_GATT_OTA_CONTROL_CHAR_UUID);
-      otaDataCharRef.current = await otaService.getCharacteristic(BLE_GATT_OTA_DATA_CHAR_UUID);
-    } catch (otaErr) {
-      console.info('[BLE ESP32] OTA service optional:', otaErr);
-    }
+      // 1. Primary anthropometry service, measurement characteristic (notify)
+      const service = await server.getPrimaryService(BLE_GATT_SERVICE_UUID);
+      if (!isCurrent()) return false;
+      const measure = await service.getCharacteristic(BLE_GATT_MEASUREMENT_CHAR_UUID);
+      if (!isCurrent()) return false;
+      await measure.startNotifications();
+      if (!isCurrent()) return false;
+      measureChar = measure;
+      measureCharRef.current = measure;
+      measure.addEventListener('characteristicvaluechanged', handleCharacteristicValue);
 
-    setConnectionState('connected');
-    if (typeof window !== 'undefined' && device.id) {
-      localStorage.setItem(STORAGE_KEY_LAST_DEVICE, device.id);
+      // Control characteristic (write/notify) — optional on older firmware
+      try {
+        const control = await service.getCharacteristic(BLE_GATT_CONTROL_CHAR_UUID);
+        if (!isCurrent()) return false;
+        await control.startNotifications();
+        if (!isCurrent()) return false;
+        controlChar = control;
+        controlCharRef.current = control;
+        control.addEventListener('characteristicvaluechanged', handleControlNotification);
+        await control.writeValue(new Uint8Array([0x10])); // request device info
+      } catch (cErr) {
+        console.info('[BLE ESP32] Control characteristic optional error:', cErr);
+      }
+      if (!isCurrent()) return false;
+
+      // 2. BLE OTA service — optional
+      try {
+        const otaService = await server.getPrimaryService(BLE_GATT_OTA_SERVICE_UUID);
+        const otaControl = await otaService.getCharacteristic(BLE_GATT_OTA_CONTROL_CHAR_UUID);
+        const otaData = await otaService.getCharacteristic(BLE_GATT_OTA_DATA_CHAR_UUID);
+        if (!isCurrent()) return false;
+        otaControlCharRef.current = otaControl;
+        otaDataCharRef.current = otaData;
+      } catch (otaErr) {
+        console.info('[BLE ESP32] OTA service optional:', otaErr);
+      }
+      if (!isCurrent()) return false;
+
+      setConnectionState('connected');
+      if (device.id) rememberDeviceId(device.id);
+      return true;
+    } catch (err) {
+      if (!isCurrent()) return false;
+      endSession();
+      throw err;
     }
-  }, [handleCharacteristicValue, handleControlNotification, handleDisconnected]);
+  }, [endSession, handleCharacteristicValue, handleControlNotification]);
 
   // Check Web Bluetooth availability & attempt quick 5-second auto-reconnect on refresh
   useEffect(() => {
@@ -273,23 +381,25 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
       try {
         if (nav.bluetooth?.getDevices) {
           const permitted = await nav.bluetooth.getDevices();
-          const savedId = localStorage.getItem(STORAGE_KEY_LAST_DEVICE);
+          const savedId = readLastDeviceId();
           const match = permitted.find(
             (d) => (savedId && d.id === savedId) || d.name?.startsWith(BLE_DEVICE_NAME_PREFIX)
           );
           if (match && match.gatt && !abortAutoReconnectRef.current) {
-            console.log('[BLE] Attempting 5s auto-reconnect on refresh to:', match.name || match.id);
+            console.info('[BLE] Attempting 5s auto-reconnect on refresh to:', match.name || match.id);
             await initGattSession(match, 5000);
           }
         }
       } catch (err) {
+        // initGattSession already tore the session down; the manual
+        // Connect button is the way forward.
         console.info('[BLE] Auto-reconnect timed out or bypassed (ready for manual connect):', err);
-        setConnectionState('disconnected');
       }
     };
 
     autoReconnect();
-  }, [initGattSession]);
+    return () => endSession();
+  }, [initGattSession, endSession]);
 
   // Manual connect popup (cancels auto-reconnect and opens picker immediately)
   const connect = useCallback(async () => {
@@ -302,6 +412,10 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
       setConnectionState('unsupported');
       return;
     }
+
+    // Cancel an auto-reconnect still in flight so it cannot connect behind the
+    // picker, or flip the state back to "disconnected" after the user's pick.
+    endSession();
 
     try {
       setErrorMessage(null);
@@ -326,12 +440,14 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
       if (!isUserCancel) {
         setErrorMessage(err instanceof Error ? err.message : 'Failed to connect to ESP32 scale');
         setConnectionState('error');
-        setTimeout(() => setConnectionState('disconnected'), 4000);
+        // Only clear the error banner; never clobber a connection the user
+        // made by retrying inside those four seconds.
+        setTimeout(() => setConnectionState((s) => (s === 'error' ? 'disconnected' : s)), 4000);
       } else {
         setConnectionState('disconnected');
       }
     }
-  }, [initGattSession]);
+  }, [initGattSession, endSession]);
 
   // Request fresh diagnostics
   const fetchDeviceInfo = useCallback(async () => {
@@ -446,30 +562,9 @@ export function BleProvider({ children }: { children: React.ReactNode }) {
   // Disconnect ESP32 device
   const disconnect = useCallback(() => {
     abortAutoReconnectRef.current = true;
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(STORAGE_KEY_LAST_DEVICE);
-    }
-
-    if (measureCharRef.current) {
-      try {
-        measureCharRef.current.removeEventListener('characteristicvaluechanged', handleCharacteristicValue);
-        measureCharRef.current.stopNotifications().catch(() => {});
-      } catch {
-        // Best-effort cleanup
-      }
-      measureCharRef.current = null;
-    }
-
-    if (deviceRef.current && deviceRef.current.gatt?.connected) {
-      try {
-        deviceRef.current.gatt.disconnect();
-      } catch {
-        // Best-effort cleanup
-      }
-    }
-
-    handleDisconnected();
-  }, [handleCharacteristicValue, handleDisconnected]);
+    forgetDeviceId();
+    endSession();
+  }, [endSession]);
 
   const resetReadings = useCallback(() => {
     setWeight(null);

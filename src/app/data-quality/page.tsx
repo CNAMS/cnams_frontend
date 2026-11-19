@@ -90,7 +90,7 @@ export default function DataQualityPage() {
       subtitle={t('dataQualitySubtitle')}
       actions={<SampleDataChip />}
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         <section>
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
             <StatTile

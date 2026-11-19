@@ -36,7 +36,7 @@ export default function AdminConfigPage() {
   return (
     <AppShell
       breadcrumbs={[{ labelKey: 'navConsole', href: '/admin' }, { labelKey: 'navConfig' }]} title={t('navConfig')} subtitle={t('configSubtitle')} actions={<SampleDataChip />}>
-      <div className="max-w-3xl space-y-8">
+      <div className="max-w-3xl space-y-6">
         {/* ── Clinical constants ────────────────────────────────────────── */}
         <section>
           <SectionHeader title={t('configClinical')} description={t('configClinicalHint')} />
@@ -90,7 +90,7 @@ export default function AdminConfigPage() {
             The single most important operational fact about this deployment,
             and it belongs on the config page where the tables are listed. */}
         <Card className="flex items-start gap-3 border-class-mam/40">
-          <ShieldAlert size={20} className="text-class-mam shrink-0 mt-0.5" aria-hidden="true" />
+          <ShieldAlert size={20} className="text-warning shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="font-semibold">{t('configGateTitle')}</p>
             <p className="text-sm text-on-surface-variant leading-relaxed mt-1">

@@ -22,6 +22,7 @@ import {
 } from 'recharts';
 import { getChildrenByCentre, type CentreData, type FlaggedChild } from '@/data/mockData';
 import { useTheme } from '@/context/ThemeContext';
+import { chartTooltip } from '@/components/ui/chartTheme';
 import { AppShell } from '@/components/nav/AppShell';
 import { Card, CardHeader, SectionHeader } from '@/components/ui/Card';
 import { StatTile } from '@/components/ui/StatTile';
@@ -33,7 +34,7 @@ import { useTranslations } from 'next-intl';
 
 const DEVICE_STATUS = {
   connected: { icon: Wifi, tone: 'text-class-normal', labelKey: 'connected' },
-  calibration_overdue: { icon: Wrench, tone: 'text-class-mam', labelKey: 'calOverdue' },
+  calibration_overdue: { icon: Wrench, tone: 'text-warning', labelKey: 'calOverdue' },
   disconnected: { icon: WifiOff, tone: 'text-class-indeterminate', labelKey: 'disconnected' },
 } as const;
 
@@ -96,7 +97,7 @@ export default function CentreDetail({ centre }: { centre: CentreData }) {
       subtitle={t('centreDrillDown')}
       actions={<SampleDataChip />}
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         <p className="text-sm">
           <Link href="/centres" className="text-brand hover:underline">
             ← {t('navCentres')}
@@ -106,7 +107,7 @@ export default function CentreDetail({ centre }: { centre: CentreData }) {
         {/* ── Screening + classification counts ─────────────────────────── */}
         <section>
           <SectionHeader title={t('malnutritionSummary')} description={t('casesFromCriteria')} />
-          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
             <StatTile
               icon={Users}
               value={centre.screenedThisMonth}
@@ -193,21 +194,16 @@ export default function CentreDetail({ centre }: { centre: CentreData }) {
                       dataKey="month"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                      tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                       dy={8}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
+                      tick={{ fill: 'var(--text-faint)', fontSize: 12 }}
                     />
                     <Tooltip
-                      contentStyle={{
-                        borderRadius: 12,
-                        border: '1px solid var(--outline-variant)',
-                        background: 'var(--surface-container)',
-                        color: 'var(--on-surface)',
-                      }}
+                      {...chartTooltip}
                       labelStyle={{ fontWeight: 600, color: 'var(--on-surface)' }}
                       itemStyle={{ color: 'var(--primary)', fontWeight: 600 }}
                     />

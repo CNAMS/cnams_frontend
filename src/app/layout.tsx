@@ -1,20 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Source_Sans_3, Noto_Sans_Devanagari } from "next/font/google";
+import {
+  Inter,
+  Noto_Sans_Devanagari,
+  Noto_Serif_Devanagari,
+  Source_Serif_4,
+} from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { ThemeProvider, themeInitScript } from "@/context/ThemeContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import { BleProvider } from "@/context/BleDeviceContext";
 
-// Ankur's type pairing: Noto Sans Devanagari for Hindi, with Source Sans 3 as
-// the Latin companion (clean, highly legible, open-source humanist sans-serif).
-// Both are self-hosted by next/font at build time — no render-blocking request
-// to fonts.googleapis.com, which matters on low-bandwidth connections.
+// Type (docs/DESIGN.md §3): Inter for the UI, Source Serif 4 for page titles
+// and the landing hero, each paired with the Noto face for Devanagari. All are
+// self-hosted by next/font at build time — no render-blocking request to
+// Google, which matters on district-office connections.
 //
-// `latin` is subset on both faces because the UI mixes scripts constantly:
-// numerals, SAM/MAM classification codes, ICDS IDs and serial numbers stay
-// Latin even in Hindi mode.
-const sourceSans3 = Source_Sans_3({
+// `latin` is subset on the Devanagari faces too because the UI mixes scripts
+// constantly: numerals, SAM/MAM codes, ICDS IDs and serials stay Latin.
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-latin",
   display: "swap",
@@ -23,6 +27,20 @@ const sourceSans3 = Source_Sans_3({
 const notoDevanagari = Noto_Sans_Devanagari({
   subsets: ["devanagari", "latin"],
   variable: "--font-devanagari",
+  display: "swap",
+});
+
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  weight: ["600"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
+const notoSerifDevanagari = Noto_Serif_Devanagari({
+  subsets: ["devanagari"],
+  weight: ["600"],
+  variable: "--font-serif-devanagari",
   display: "swap",
 });
 
@@ -48,7 +66,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FBF8F1" },
-    { media: "(prefers-color-scheme: dark)", color: "#12100C" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F1214" },
   ],
 };
 
@@ -67,7 +85,9 @@ export default function RootLayout({
             before snapping to the user's actual role. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className={`${sourceSans3.variable} ${notoDevanagari.variable} antialiased`}>
+      <body
+        className={`${inter.variable} ${notoDevanagari.variable} ${sourceSerif.variable} ${notoSerifDevanagari.variable} antialiased`}
+      >
         <ThemeProvider>
           <LocaleProvider>
             <ToastProvider>

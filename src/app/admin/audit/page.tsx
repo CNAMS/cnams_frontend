@@ -64,7 +64,7 @@ function AuditRow({ entry }: { entry: AuditEntry }) {
       <Icon
         size={17}
         aria-hidden="true"
-        className={cn('shrink-0 mt-0.5', warning ? 'text-class-mam' : 'text-on-surface-variant')}
+        className={cn('shrink-0 mt-0.5', warning ? 'text-warning' : 'text-on-surface-variant')}
       />
       <div className="min-w-0 flex-1">
         <p className="text-sm">

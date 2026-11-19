@@ -90,10 +90,10 @@ export default function AdminDashboard() {
 
   return (
     <AppShell title={t('adminConsole')} subtitle={t('adminConsoleSubtitle')} actions={<SampleDataChip />}>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <section>
           <SectionHeader title={t('systemOverview')} />
-          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
             <StatTile icon={Users} value={5} label={t('activeUsers')} />
             <StatTile icon={Activity} value={mockCentres.length} label={t('totalCentresActive')} />
             <StatTile
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
                       aria-disabled="true"
                     >
                       {content}
-                      <span className="text-[10px] uppercase tracking-wide rounded-full bg-surface-variant px-2 py-0.5 shrink-0">
+                      <span className="text-[11px] rounded-md border border-outline-variant bg-surface-variant px-1.5 leading-5 shrink-0">
                         {t('navComingSoon')}
                       </span>
                     </Card>
